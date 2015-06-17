@@ -27,7 +27,7 @@ public class Crawler extends WebCrawler {
     }
 
     @Override
-    public boolean shouldVisit(WebURL url) {
+    public boolean shouldVisit(Page page, WebURL url) {
         String href = url.getURL().toLowerCase();
         if (FILTERS.matcher(href).matches()) {
             return false;
@@ -53,7 +53,7 @@ public class Crawler extends WebCrawler {
             HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
             String text = htmlParseData.getText();
             String html = htmlParseData.getHtml();
-            List<WebURL> links = htmlParseData.getOutgoingUrls();
+            Set<WebURL> links = htmlParseData.getOutgoingUrls();
 
         }
 
