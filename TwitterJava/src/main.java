@@ -1,24 +1,25 @@
 
 import twitter4j.*;
 
-
 import java.io.PrintWriter;
+
 import java.util.ArrayList;
+
 import java.util.List;
+
 import twitter4j.conf.*;
 
-
-
 //This program requires an OAuth property file for access to the twitter API.
+
 public class main {
 
     public static int pageNumber = 1;
     public static String user = "Nettkvalitet";
     public static List<Status> statuses = new ArrayList<>();
+
+    //Set variables to the current year. Then magic happens
     public static String year = "2015";
     public static String lastYear = "2015";
-
-
 
     public static void main(String[] args) throws Exception {
 
@@ -26,28 +27,21 @@ public class main {
         Twitter twitter = new TwitterFactory().getInstance();
         PrintWriter writer = new PrintWriter(year +".txt", "UTF-8");
 
-
-
-
         while (true) {
             try {
 
                 Paging page = new Paging(pageNumber++, 100);
                 statuses = twitter.getUserTimeline(user, page);
 
-                //iterate and write tweets to a file
+                //iterate and write tweets to files
                 for (Status status : statuses) {
-
-
                     String tweet = status.getText();
-
 
                     //Creates a string with the year the tweet was posted
                     year = status.getCreatedAt().toString();
                     year = year.substring(year.length()-4, year.length());
 
-
-
+                    //Create new file if the year has changed
                     if (!lastYear.equals(year)) {
                         writer.close();
                         writer = new PrintWriter(year +".txt", "UTF-8");
@@ -55,52 +49,29 @@ public class main {
 
                     lastYear = year;
 
-                    //System.out.println(year);
-
-
                     //check if retweet
                     if (tweet.startsWith("RT")) {
                         writer.println("Detta var vist ein retweet");
                     } else {
-
                         //Prints every tweet that is not a RT to a file
-
                          writer.println(status.getUser().getName() + " : " + status.getText() + status.getCreatedAt());
-
                     }
-
-
-
-
                 }
 
                 //Breaks the chain after x iterations
                 if (pageNumber == 10)
                     break;
-
-
-            } catch (TwitterException e) {
-                e.printStackTrace();
-
-
             }
 
-
+            //catches exception if twitter is down
+            catch (TwitterException e) {
+                e.printStackTrace();
+            }
         }
-
         writer.close();
-
     }
-/*    public Object printYear(Object writer) {
-
-        PrintWriter createFileYear = new PrintWriter(year + ".txt", "UTF-8" );
-
-        return createFileYear;
-
-    }*/
-
-
 }
+
 
 
 //Old code used for interacting with the API
