@@ -15,15 +15,18 @@ public class main {
     public static int pageNumber = 1;
     public static String user = "Nettkvalitet";
     public static List<Status> statuses = new ArrayList<>();
-    public static String year;
-    public static String currentYear = "2015";
+    public static String year = "2015";
+    public static String lastYear = "2015";
+
 
 
     public static void main(String[] args) throws Exception {
 
         //Initialize some stuff
-        PrintWriter writer = new PrintWriter("DIFI_TWITTER.TXT", "UTF-8");
         Twitter twitter = new TwitterFactory().getInstance();
+        PrintWriter writer = new PrintWriter(year +".txt", "UTF-8");
+
+
 
 
         while (true) {
@@ -35,13 +38,25 @@ public class main {
                 //iterate and write tweets to a file
                 for (Status status : statuses) {
 
+
                     String tweet = status.getText();
+
 
                     //Creates a string with the year the tweet was posted
                     year = status.getCreatedAt().toString();
                     year = year.substring(year.length()-4, year.length());
 
+
+
+                    if (!lastYear.equals(year)) {
+                        writer.close();
+                        writer = new PrintWriter(year +".txt", "UTF-8");
+                    }
+
+                    lastYear = year;
+
                     //System.out.println(year);
+
 
                     //check if retweet
                     if (tweet.startsWith("RT")) {
@@ -49,29 +64,40 @@ public class main {
                     } else {
 
                         //Prints every tweet that is not a RT to a file
-                        if (year.compareTo(currentYear) < currentYear.compareTo(year)) {
-                            writer.println(year);
 
-                        }
-
-                         writer.println(status.getUser().getName() + " : " + status.getText());
+                         writer.println(status.getUser().getName() + " : " + status.getText() + status.getCreatedAt());
 
                     }
+
+
+
+
                 }
 
                 //Breaks the chain after x iterations
                 if (pageNumber == 10)
                     break;
+
+
             } catch (TwitterException e) {
                 e.printStackTrace();
+
+
             }
 
 
         }
 
         writer.close();
-    }
 
+    }
+/*    public Object printYear(Object writer) {
+
+        PrintWriter createFileYear = new PrintWriter(year + ".txt", "UTF-8" );
+
+        return createFileYear;
+
+    }*/
 
 
 }
