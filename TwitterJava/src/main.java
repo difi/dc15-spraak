@@ -1,4 +1,6 @@
+
 import twitter4j.*;
+
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,21 +28,30 @@ public class main {
 
         while(true) {
             try {
-                //
+
                 Paging page = new Paging(pageNumber++, 100);
                 statuses = twitter.getUserTimeline(user, page);
 
                 //iterate and write tweets to a file
                 for (Status status : statuses) {
-                    writer.println(status.getUser().getName() + " : " + status.getText() + "  Weeeee");
+                    String tweet = status.getText();
+                    //System.out.println(tweet);
+
+                    //Retweet check
+                    if (tweet.startsWith("RT")) {
+                        writer.println("Detta var vist ein retweet");
+                    }
+                    else{
+
+                        //Prints every tweet that is not a RT to a file
+                        writer.println(status.getUser().getName() + " : " + status.getText());
+                    }
                 }
+                //add date and year checker.
 
-                //
-                if (statuses.size() == 2000)
-                  break;
-
-
-
+                //Breaks the chain after x iterations
+                if (pageNumber == 10)
+                        break;
             }
             catch(TwitterException e) {
                 e.printStackTrace();
