@@ -8,7 +8,7 @@ import twitter4j.conf.*;
 public class main {
 
     private static int pageNumber = 1;
-    private static String user = "Senjinx";
+    private static String user = "Nettkvalitet";
     public static List<Status> statuses = new ArrayList<>();
 
 
