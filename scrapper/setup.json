@@ -1,0 +1,32 @@
+{
+  "crawler": [
+    {
+      "domain": "http://norge.no/nb"
+    },
+    {
+      "domain": "http://norge.no/nn"
+    }
+  ],
+
+  "oauth": {
+    "fb": {
+      "secret_token": "asdfasdf",
+      "token": "asfadfsd"
+  },
+    "twitter": {
+      "secret_token": "aasdf",
+      "token": "asdffasdf"
+    }
+  },
+
+  "files": [
+      "/path/til/noe"
+  ],
+
+  "database": {
+    "host": "127.0.0.1",
+    "password": "",
+    "port": 3306,
+    "table": "something"
+  }
+}
