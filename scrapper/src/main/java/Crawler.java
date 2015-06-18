@@ -3,14 +3,20 @@
  */
 
 
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 
 
 public class Crawler extends WebCrawler {
@@ -19,11 +25,17 @@ public class Crawler extends WebCrawler {
             ".*(\\.(css|js|bmp|gif|jpe?g" + "|png|tiff?|mid|mp2|mp3|mp4" + "|wav|avi|mov|mpeg|ram|m4v|pdf" +
                     "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
 
+    private String prev = null;
     private String[] myCrawlDomains;
+    private DatabaseConnector database;
+    private String myDomain;
+    private CrawlController myController;
+
 
     @Override
     public void onStart() {
         myCrawlDomains = (String[]) myController.getCustomData();
+        this.database = myController.getDatabase();
     }
 
     @Override
@@ -42,20 +54,60 @@ public class Crawler extends WebCrawler {
         return false;
     }
 
+
+    public String clean(String s){
+
+        // Remove multiple spaces and tabs
+        s = s.replace("\n","").replace("\r","");
+        s = s.trim().replaceAll(" +"," ");
+        s = s.trim().replaceAll("\t+", " ");
+
+        if(this.prev == null) {
+            this.prev = s;
+            return s;
+        }
+
+
+        // Clean away difference in string
+        // if we find a difference, keep the string
+        // for the next page, or replace.
+
+        // TODO: Actually make sure this works in the long run
+        String diff = StringUtils.difference(this.prev, s);
+        if(!diff.equals("")){
+            s = diff;
+        }else{
+            this.prev = s;
+        }
+        return s;
+    }
+
     @Override
     public void visit(Page page) {
-        int docid = page.getWebURL().getDocid();
-        String url = page.getWebURL().getURL();
-        System.out.println(url);
-        int parentDocid = page.getWebURL().getParentDocid();
-
         if (page.getParseData() instanceof HtmlParseData) {
+            System.out.println(this.myDomain);
+            System.out.println(page.getWebURL().getURL());
+            System.out.println("=======");
+            // Review
             HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
             String text = htmlParseData.getText();
             String html = htmlParseData.getHtml();
             Set<WebURL> links = htmlParseData.getOutgoingUrls();
 
-        }
+            Document doc = Jsoup.parse(html);
 
+            // Construct a string based on textnodes
+            String out = "";
+            for(Element el: doc.select("body").select("*")){
+                if(!el.textNodes().isEmpty()){
+                    for(TextNode node : el.textNodes()){
+                        if(!node.isBlank())
+                            out = out + " " + node.getWholeText();
+                    }
+                }
+            }
+            out = this.clean(out);
+            this.database.write(out);
+        }
     }
 }
