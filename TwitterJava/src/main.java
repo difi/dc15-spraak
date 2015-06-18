@@ -8,28 +8,30 @@ import twitter4j.conf.*;
 public class main {
 
     private static int pageNumber = 1;
-    private static String user = "Nettkvalitet";
+    private static String user = "Senjinx";
     public static List<Status> statuses = new ArrayList<>();
 
 
     public static void main(String[] args) throws Exception {
 
+        //Initialize some stuff
         PrintWriter writer = new PrintWriter("DIFI_TWITTER.TXT", "UTF-8");
         Twitter twitter = new TwitterFactory().getInstance();
-        System.out.println(statuses.isEmpty());
+
 
 
         while(true) {
             try {
-                //int size = statuses.size();
+                //
                 Paging page = new Paging(pageNumber++, 100);
                 statuses = twitter.getUserTimeline(user, page);
 
+                //iterate and write tweets to a file
                 for (Status status : statuses) {
-                    writer.println(status.getUser().getName() + " : " + status.getText());
+                    writer.println(status.getUser().getName() + " : " + status.getText() + "  Weeeee");
                 }
 
-
+                //
                 if (statuses.size() == 2000)
                   break;
 
