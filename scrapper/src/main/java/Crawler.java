@@ -29,13 +29,16 @@ public class Crawler extends WebCrawler {
     private String[] myCrawlDomains;
     private DatabaseConnector database;
     private String myDomain;
-    private CrawlController myController;
-
+    private DatabaseConnector db;
 
     @Override
     public void onStart() {
+
         myCrawlDomains = (String[]) myController.getCustomData();
-        this.database = myController.getDatabase();
+
+        myDomain = myCrawlDomains[0];
+        String fname = myDomain.split("/",4)[3];
+        DatabaseConnector db = DatabaseConnector.getInstance(fname);
     }
 
     @Override
@@ -107,7 +110,7 @@ public class Crawler extends WebCrawler {
                 }
             }
             out = this.clean(out);
-            this.database.write(out);
+            this.db.write(out);
         }
     }
 }

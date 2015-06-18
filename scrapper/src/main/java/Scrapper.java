@@ -48,11 +48,7 @@ public class Scrapper {
         String[] crawler1Domains = {"http://www.norge.no/nn"};
         String[] crawler2Domains = {"http://www.norge.no/nb"};
 
-        String myDomain = crawler1Domains[0];
-        String fname = crawler1Domains[0].split("/",4)[3];
 
-        DatabaseConnector database1 = new DatabaseConnector(fname);
-        DatabaseConnector database2 = new DatabaseConnector("lel");
         try {
             controller1 = new CrawlController(config1, pageFetcher1, robotstxtServer);
             controller2 = new CrawlController(config2, pageFetcher2, robotstxtServer);
@@ -72,6 +68,7 @@ public class Scrapper {
      * The first crawler will have 5 concurrent threads and the second
      * crawler will have 7 threads.
      */
+
         controller1.startNonBlocking(Crawler.class, 5);
         controller2.startNonBlocking(Crawler.class, 7);
 
