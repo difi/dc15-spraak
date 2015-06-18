@@ -12,10 +12,11 @@ import twitter4j.conf.*;
 //This program requires an OAuth property file for access to the twitter API.
 public class main {
 
-    private static int pageNumber = 1;
-    private static String user = "Nettkvalitet";
+    public static int pageNumber = 1;
+    public static String user = "Nettkvalitet";
     public static List<Status> statuses = new ArrayList<>();
-
+    public static String year;
+    public static String currentYear = "2015";
 
 
     public static void main(String[] args) throws Exception {
@@ -25,8 +26,7 @@ public class main {
         Twitter twitter = new TwitterFactory().getInstance();
 
 
-
-        while(true) {
+        while (true) {
             try {
 
                 Paging page = new Paging(pageNumber++, 100);
@@ -34,26 +34,35 @@ public class main {
 
                 //iterate and write tweets to a file
                 for (Status status : statuses) {
-                    String tweet = status.getText();
-                    //System.out.println(tweet);
 
-                    //Retweet check
+                    String tweet = status.getText();
+
+                    //Creates a string with the year the tweet was posted
+                    year = status.getCreatedAt().toString();
+                    year = year.substring(year.length()-4, year.length());
+
+                    //System.out.println(year);
+
+                    //check if retweet
                     if (tweet.startsWith("RT")) {
                         writer.println("Detta var vist ein retweet");
-                    }
-                    else{
+                    } else {
 
                         //Prints every tweet that is not a RT to a file
-                        writer.println(status.getUser().getName() + " : " + status.getText());
+                        if (year.compareTo(currentYear) < currentYear.compareTo(year)) {
+                            writer.println(year);
+
+                        }
+
+                         writer.println(status.getUser().getName() + " : " + status.getText());
+
                     }
                 }
-                //add date and year checker.
 
                 //Breaks the chain after x iterations
                 if (pageNumber == 10)
-                        break;
-            }
-            catch(TwitterException e) {
+                    break;
+            } catch (TwitterException e) {
                 e.printStackTrace();
             }
 
@@ -61,18 +70,14 @@ public class main {
         }
 
         writer.close();
-
-
     }
+
 
 
 }
 
 
-
-
 //Old code used for interacting with the API
-
 
 /*    private static int counter = 0;
     private static int pageNumber = 1;
