@@ -42,23 +42,13 @@ public class Setup {
         this.modules = new HashMap<String, Thread>();
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
+
+        // Wait for the other modules
         /*if(!this.fileSettings.isEmpty())
             this.modules.put("file", new Scrapper(this.crawlerSettings));
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Scrapper(this.crawlerSettings));
         */
-
-    }
-
-    public void setupCrawler(){
-        System.out.println("Started crawler");
-    }
-
-    public void setupFileCrawler(){
-
-    }
-
-    public void setupOAuthCrawler(){
 
     }
 
@@ -68,13 +58,9 @@ public class Setup {
         FileConnector fconn = FileConnector.getInstance("Something");
     }
 
-    public void setup(){
-        this.setupConnector();
-        this.setupCrawler();
-    }
-
     public void start(){
         // Not used yet
+        this.setupConnector();
         for(Thread entry: this.modules.values()){
             entry.start();
         }
