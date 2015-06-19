@@ -263,33 +263,6 @@ public final class LangIdV3 implements ILangIdClassifier {
 
     return pdc;
   }
-  
-  
-  
-  
-  
-  //Altered
-  
-
-  public void addLangList(String target, String[] words){
-	  languages.put(target,words);
-  }
-  
-  
-  private Map<String,String[]> languages = new HashMap();
-  private boolean checkSpecific(CharSequence str, String lang){
-	  
-	  String[] toCheck = ((String) str).split(" ");	  
-	  for(String x : toCheck){
-		  for(String y : languages.get(lang))
-			  if(x.toLowerCase().equals(y))
-				  return true;
-	  }
-	  
-	  return false;
-  }
-  
-  
   /* 
    *
    */

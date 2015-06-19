@@ -13,7 +13,7 @@ import com.carrotsearch.labs.langid.DetectedLanguage;
  */
 public class Navn {
     public Navn(){
-    	
+    	long time = System.currentTimeMillis();
     	try{
     		String FILE = "C:\\Users\\camp-lsa\\Documents\\DIFI_TWITTER.txt";
 	    	
@@ -54,6 +54,8 @@ public class Navn {
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
 	    	}
+    	long time1 = System.currentTimeMillis();
+    	System.out.println(time1-time + "ms");
     }
     public static void main(String... args) {
         new Navn();
