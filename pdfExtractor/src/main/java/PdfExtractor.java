@@ -1,5 +1,6 @@
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.util.PDFTextStripper;
 import java.io.File;
 import java.io.FileInputStream;
@@ -105,6 +106,11 @@ public class PdfExtractor implements DocumentTextExtractor {
         String allText = textStripper.getText(pddoc);
         ArrayList<String> pages = splitString(allText, SPLIT_STRING);
         return pages;
+    }
+
+    public Boolean containsInputFields() throws IOException {
+        PDAcroForm forms = pddoc.getDocumentCatalog().getAcroForm();
+        return forms != null;
     }
 }
 
