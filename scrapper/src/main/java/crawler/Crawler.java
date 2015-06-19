@@ -37,8 +37,8 @@ public class Crawler extends WebCrawler {
         myCrawlDomains = (String[]) myController.getCustomData();
 
         myDomain = myCrawlDomains[0];
-        String fname = myDomain.split("/",4)[3];
-        FileConnector db = FileConnector.getInstance(fname);
+        FileConnector db = FileConnector.getInstance("Something");
+        System.out.println("Lel");
     }
 
     @Override

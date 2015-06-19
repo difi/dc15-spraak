@@ -1,11 +1,8 @@
 {
   "crawler": [
     {
-      "domain": "http://norge.no/nb"
+      "domain": "http://www.norge.no/nb"
     },
-    {
-      "domain": "http://norge.no/nn"
-    }
   ],
 
   "oauth": {

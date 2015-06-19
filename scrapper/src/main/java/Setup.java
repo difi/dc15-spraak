@@ -37,11 +37,11 @@ public class Setup {
         this.fileSettings = (ArrayList<String>)jsonObject.get("files");
         this.oAuthSettings = (Map)jsonObject.get("oauth");
 
-        this.setupCrawler();
 
     }
 
     public void setupCrawler(){
+        System.out.println("Started crawler");
         Scrapper.start(this.crawlerSettings);
     }
 
@@ -60,7 +60,8 @@ public class Setup {
     }
 
     public void setup(){
-
+        this.setupConnector();
+        this.setupCrawler();
     }
 
     public void start(){
@@ -70,7 +71,7 @@ public class Setup {
     public static void main(String[] args) {
         Setup s = new Setup("setup.json");
         s.setup();
-        //s.start();
+        s.start();
     }
 
 }

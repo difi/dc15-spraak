@@ -21,7 +21,6 @@ public class Scrapper {
             return;
 
         // For handing an ID to the crawler
-        int c = 0;
         for (Map entry: settings){
 
 
@@ -33,18 +32,27 @@ public class Scrapper {
 
             if(entry.containsKey("domain")){
                 domain = (String) entry.get("domain");
+                //crawlerDomains = new String[]{domain};
+                //fname = domain.split("/",4)[3];
+                fname = "norge";
                 crawlerDomains = new String[]{domain};
-                fname = domain.split("/",4)[3];
             }else{
                 System.out.println("Needs a domain!");
                 return;
+            }
+
+            int threads = 5;
+
+            if(entry.containsKey("threads")){
+                Number n = (Number)entry.get("threads");
+                threads = n.intValue();
             }
 
 
             // Setup config
             CrawlConfig config = new CrawlConfig();
 
-            String crawlStorageFolder = ".";
+            String crawlStorageFolder = "";
 
             config.setCrawlStorageFolder(crawlStorageFolder + "/"+fname);
 
@@ -72,15 +80,18 @@ public class Scrapper {
                 config.setMaxPagesToFetch(n.intValue());
             }
 
+            System.out.println("started");
             controller.setCustomData(crawlerDomains);
 
             controller.addSeed(domain);
 
-            controller.startNonBlocking(Crawler.class, c);
+
+            System.out.println("started");
+            controller.startNonBlocking(Crawler.class, threads);
 
             controller.waitUntilFinish();
+            System.out.println("started");
 
-            c++;
         }
 
     }

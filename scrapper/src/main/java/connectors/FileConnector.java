@@ -17,6 +17,7 @@ public class FileConnector {
     }
 
     public void write(String msg){
+        System.out.println(msg);
         this.db.println(msg);
     }
 
@@ -36,4 +37,7 @@ public class FileConnector {
         return instance;
     }
 
+    public static FileConnector getInstance(){
+        return instance;
+    }
 }
