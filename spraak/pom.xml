@@ -64,5 +64,11 @@
             <version>3.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.carrotsearch</groupId>
+            <artifactId>langid-java</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
     </dependencies>
 </project>
