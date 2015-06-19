@@ -53,10 +53,10 @@ public class TwitterScrapper {
 
                     //check if retweet
                     if (tweet.startsWith("RT")) {
-                        writer.println("Detta var vist ein retweet");
+                        writer.println("Ditta var vist ein retweet");
                     } else {
                         //Prints every tweet that is not a RT to a file
-                        writer.println(status.getUser().getName() + " : " + status.getText() +" | Blei postet: " + status.getCreatedAt());
+                        writer.println(status.getUser().getName() + " : " + status.getText() +" | Ble postet: " + status.getCreatedAt());
                     }
                 }
 
