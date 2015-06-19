@@ -38,7 +38,7 @@ public class PdfExtractor implements DocumentTextExtractor {
     }
 
     public void setSource(URL url) throws IOException {
-        pddoc = PDDocument.load(url);
+        pddoc = PDDocument.loadNonSeq(url.openStream(), null);
         textStripper = new PDFTextStripper();
     }
 
