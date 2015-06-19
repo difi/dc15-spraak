@@ -45,12 +45,6 @@ public class Navn {
 	    	
 	    	float avg = nn/actual_nn;
 	    	float avg_nb = nb/actual_nb;
-	    	System.out.println("Classified nn: " + nn);
-	    	System.out.println("nn in file: " + actual_nn);
-	    	System.out.println("Classified nb:" + nb);
-	    	System.out.println("nb in file: " + actual_nb);
-	    	System.out.println(((int) (avg*100))+ "%");
-	    	System.out.println(((int) (avg_nb*100))+ "%");
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
 	    	}

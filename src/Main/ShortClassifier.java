@@ -3,8 +3,6 @@ package Main;
 import java.util.ArrayList;
 
 public class ShortClassifier {
-
-
 	//Gå igjennom hvert ord og se om det har en endelse fra regelboka. Gå til neste straks et er funnet.
 	//Returnerer antall ord i regelboka funnet i teksten.
 	public static float check_endings(ArrayList<String> endinger_bm, String[] text){
@@ -62,7 +60,6 @@ public class ShortClassifier {
 	
 	
 	static RuleSet ruleset;
-	
 	//Klassifiserer en gitt tekst basert på et gitt regelverk
 	//Om mer enn 70% av gjenkjente ord er nynorske antar teksten å være nynorsk.
 	//Om teksten ikke har gjenkjente ord antas teksten å være bokmål.
@@ -85,7 +82,6 @@ public class ShortClassifier {
 			return "nn";
 		else
 			return "nb";
-
 	}
 	
 	

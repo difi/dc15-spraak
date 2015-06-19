@@ -103,7 +103,6 @@ public class Classifier {
 		return false;
 	}
 	static RuleSet rule_set;
-	
 	//klassifiserer tekst, bruker 'hjemmesnekra' static-class "ShortClassifier" om teksten er under 300 tegn lang.
 	public static String classify(String str) throws IOException{
 		if(langid == null){
@@ -111,7 +110,7 @@ public class Classifier {
 		}
 		int length = str.length();
 		if(length < 300){
-			return ShortClassifier.classify(str, rule_set);
+			return ShortClassifier.classify(str,rule_set);
 		}
 		else{
 			DetectedLanguage result = langid.classify(str, true);
