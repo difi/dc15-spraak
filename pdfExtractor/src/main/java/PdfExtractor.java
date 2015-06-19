@@ -1,11 +1,11 @@
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
+import sun.util.locale.provider.SPILocaleProviderAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,20 +13,25 @@ import java.util.Arrays;
 /**
  * Created by Camp-AKA on 17.06.2015.
  */
-public class PdfExtractor {
+public class PdfExtractor implements DocumentTextExtractor {
     private PDDocument pddoc;
     private PDFTextStripper textStripper;
 
+    // Constants
+    private static final String SPLIT_STRING = "----//-------S--p--L--i--T--s--T--r--I--n--G--8567465895753097------//--------";
+    private static final int DEFAULT_DROP_THRESHOLD = 3;
+
+    PdfExtractor() {
+        pddoc = null;
+        textStripper = null;
+    }
+
     PdfExtractor(URL url) throws IOException {
-        pddoc = PDDocument.load(url);
-        textStripper = new PDFTextStripper();
+        setSource(url);
     }
 
     PdfExtractor(String filePath) throws IOException {
-        PDFParser parser = new PDFParser(new FileInputStream(new File(filePath)));
-        parser.parse();
-        pddoc = new PDDocument(parser.getDocument());
-        textStripper = new PDFTextStripper();
+        setSource(filePath);
     }
 
     public String getText(int pageFrom, int pageTo) throws IOException {
@@ -34,12 +39,24 @@ public class PdfExtractor {
         return textStripper.getText(pddoc);
     }
 
+    public void setSource(URL url) throws IOException {
+        pddoc = PDDocument.load(url);
+        textStripper = new PDFTextStripper();
+    }
+
+    public void setSource(String filePath) throws IOException {
+        PDFParser parser = new PDFParser(new FileInputStream(new File(filePath)));
+        parser.parse();
+        pddoc = new PDDocument(parser.getDocument());
+        textStripper = new PDFTextStripper();
+    }
+
     // Might fail when pdf is large
     public String getAllText() throws IOException {
         return getText(0,pddoc.getNumberOfPages());
     }
 
-    public int numberOfPages() {
+    public int getNumberOfPages() {
         return pddoc.getNumberOfPages();
     }
 
@@ -49,13 +66,13 @@ public class PdfExtractor {
     }
 
     // Returns an ArrayList of strings, text is split on splitString.
-    public static ArrayList<String> splitString(String text, String splitString) {
-         return new ArrayList<>(Arrays.asList(text.split(splitString)));
+    private static ArrayList<String> splitString(String text, String splitString) {
+         return new ArrayList<String>(Arrays.asList(text.split(splitString)));
     }
 
     // Returns an ArrayList with the paragraphs in the text that are longer than minLength if removeShortParagraphs is true.
     // splitString should be unique enough to not appear in the original PDF.
-    public ArrayList<String> getLongParagraphs(String splitString, int dropThreshold,
+    public ArrayList<String> getParagraphsLongerThan(String splitString, int dropThreshold,
                                                Boolean removeShortParagraphs, int minLength) throws IOException {
         setTextStripperPageBounds(0, pddoc.getNumberOfPages());
         textStripper.setDropThreshold(dropThreshold);
@@ -68,22 +85,29 @@ public class PdfExtractor {
         return paragraphs;
     }
 
+    public ArrayList<String> getParagraphsLongerThan(int minLength) throws IOException {
+        return getParagraphsLongerThan(SPLIT_STRING, DEFAULT_DROP_THRESHOLD, true, minLength);
+    }
+
     // Returns an ArrayList with all paragraphs, regardless of their length.
     // splitString should be unique enough to not appear in the original PDF.
     public ArrayList<String> getAllParagraphs(String splitString, int dropThreshold) throws IOException {
-        return getLongParagraphs(splitString, dropThreshold, false, 0);
+        return getParagraphsLongerThan(splitString, dropThreshold, false, 0);
+    }
+
+    public ArrayList<String> getAllParagraphs() throws IOException {
+        return getAllParagraphs(SPLIT_STRING, DEFAULT_DROP_THRESHOLD);
     }
 
     // Returns an ArrayList with all the pages in the document.
     // splitString should be unique enough to not appear in the original PDF.
-    public ArrayList<String> getAllPages(String splitString) throws IOException {
+    public ArrayList<String> getAllPagesText() throws IOException {
         setTextStripperPageBounds(0, pddoc.getNumberOfPages());
-        textStripper.setPageEnd(splitString);
+        textStripper.setPageEnd(SPLIT_STRING);
         String allText = textStripper.getText(pddoc);
-        ArrayList<String> pages = splitString(allText, splitString);
+        ArrayList<String> pages = splitString(allText, SPLIT_STRING);
         return pages;
     }
-
 }
 
 
