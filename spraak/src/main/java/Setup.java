@@ -8,6 +8,7 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,6 +19,7 @@ public class Setup {
     private final ArrayList<Map> crawlerSettings;
     private final ArrayList<String> fileSettings;
     private final Map oAuthSettings;
+    private HashMap<String, Thread> modules;
 
     public Setup(String filename){
         JSONParser parser = new JSONParser();
@@ -35,13 +37,21 @@ public class Setup {
         this.crawlerSettings = (ArrayList<Map>)jsonObject.get("crawler");
         this.fileSettings = (ArrayList<String>)jsonObject.get("files");
         this.oAuthSettings = (Map)jsonObject.get("oauth");
-
+        
+        
+        this.modules = new HashMap<String, Thread>();
+        if(!this.crawlerSettings.isEmpty())
+            this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
+        /*if(!this.fileSettings.isEmpty())
+            this.modules.put("file", new Scrapper(this.crawlerSettings));
+        if(!this.oAuthSettings.isEmpty())
+            this.modules.put("oauth", new Scrapper(this.crawlerSettings));
+        */
 
     }
 
     public void setupCrawler(){
         System.out.println("Started crawler");
-        Scrapper.start(this.crawlerSettings);
     }
 
     public void setupFileCrawler(){
@@ -64,12 +74,22 @@ public class Setup {
     }
 
     public void start(){
+        // Not used yet
+        for(Thread entry: this.modules.values()){
+            entry.start();
+        }
+    }
 
+    public void stop(){
+        for(Thread entry: this.modules.values()){
+            // Implement this
+            entry.interrupt();
+        }
     }
 
     public static void main(String[] args) {
         Setup s = new Setup("setup.json");
-        s.setup();
+        //s.setup();
         s.start();
     }
 

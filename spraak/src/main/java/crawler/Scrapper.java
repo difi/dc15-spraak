@@ -1,4 +1,5 @@
-package crawler; /**
+package crawler;
+/**
  * Created by camp-mli on 16.06.2015.
  */
 
@@ -13,38 +14,44 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Scrapper {
+public class Scrapper implements Runnable {
 
-    public static void start(ArrayList<Map> settings){
+    private ArrayList<Map> settings;
 
-        if(settings.isEmpty())
+    public Scrapper(ArrayList<Map> settings) {
+        this.settings = settings;
+    }
+
+    public void run () {
+
+        if (this.settings.isEmpty())
             return;
 
         // For handing an ID to the crawler
-        for (Map entry: settings){
+        for (Map entry : this.settings) {
 
 
             // Setup used variables
 
             String domain;
-            String [] crawlerDomains;
+            String[] crawlerDomains;
             String fname;
 
-            if(entry.containsKey("domain")){
+            if (entry.containsKey("domain")) {
                 domain = (String) entry.get("domain");
                 //crawlerDomains = new String[]{domain};
                 //fname = domain.split("/",4)[3];
                 fname = "norge";
                 crawlerDomains = new String[]{domain};
-            }else{
+            } else {
                 System.out.println("Needs a domain!");
                 return;
             }
 
             int threads = 5;
 
-            if(entry.containsKey("threads")){
-                Number n = (Number)entry.get("threads");
+            if (entry.containsKey("threads")) {
+                Number n = (Number) entry.get("threads");
                 threads = n.intValue();
             }
 
@@ -54,7 +61,7 @@ public class Scrapper {
 
             String crawlStorageFolder = "";
 
-            config.setCrawlStorageFolder(crawlStorageFolder + "/"+fname);
+            config.setCrawlStorageFolder(crawlStorageFolder + "/" + fname);
 
             PageFetcher pageFetcher = new PageFetcher(config);
             RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
@@ -71,12 +78,12 @@ public class Scrapper {
 
             controller.addSeed(domain);
 
-            if(entry.containsKey("delay")) {
-                Number n = (Number)entry.get("delay");
+            if (entry.containsKey("delay")) {
+                Number n = (Number) entry.get("delay");
                 config.setPolitenessDelay(n.intValue());
             }
-            if(entry.containsKey("pages")) {
-                Number n = (Number)entry.get("pages ");
+            if (entry.containsKey("pages")) {
+                Number n = (Number) entry.get("pages ");
                 config.setMaxPagesToFetch(n.intValue());
             }
 
