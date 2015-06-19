@@ -1,3 +1,4 @@
+package documentTextExtractor;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -112,6 +113,7 @@ public class PdfExtractor implements DocumentTextExtractor {
         PDAcroForm forms = pddoc.getDocumentCatalog().getAcroForm();
         return forms != null;
     }
+
 }
 
 
