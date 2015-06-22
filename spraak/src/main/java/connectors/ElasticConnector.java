@@ -1,6 +1,5 @@
 package connectors;
 
-import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -11,7 +10,6 @@ import org.json.simple.JSONObject;
 
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by camp-mli on 19.06.2015.
@@ -58,11 +56,29 @@ public class ElasticConnector {
     }
 
     public JSONObject checkFile(JSONObject msg){
+        if(!msg.containsKey("type"))
+            msg.put("type", null);
+        if(!msg.containsKey("name"))
+            msg.put("name", null);
+        if(!msg.containsKey("text"))
+            msg.put("text", null);
+        if(!msg.containsKey("lang"))
+            msg.put("lang", null);
+        if(!msg.containsKey("uuid"))
+            msg.put("uuid", null);
         return msg;
 
     }
 
     public JSONObject checkOAuth(JSONObject msg){
+        if(!msg.containsKey("type"))
+            msg.put("type", null);
+        if(!msg.containsKey("account"))
+            msg.put("account", null);
+        if(!msg.containsKey("text"))
+            msg.put("text", null);
+        if(!msg.containsKey("lang"))
+            msg.put("lang", null);
         return msg;
     }
 
@@ -71,7 +87,7 @@ public class ElasticConnector {
 
         // Append UUID if available
         if(this.uuid != null && this.type.equals("file"))
-            j.put("UUID", this.uuid);
+            j.put("uuid", this.uuid);
 
         if(this.type.equals("crawl"))
             msg = this.checkCrawl(msg);
@@ -87,7 +103,10 @@ public class ElasticConnector {
             msg.put("date", d.toString());
         }
 
-
+        // if(msg.get("lang") == null)
+            // Gjør språk gjennkjenning
+        
+        System.out.println(j);
         // Just for safety
         /*
         IndexResponse respone = this.client.prepareIndex("spraak", this.type)
