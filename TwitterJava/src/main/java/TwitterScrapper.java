@@ -2,11 +2,8 @@
 //Requires twitter4j framework: http://twitter4j.org/en/index.html
 
 import twitter4j.*;
-
 import java.io.PrintWriter;
-
 import java.util.ArrayList;
-
 import java.util.List;
 
 import twitter4j.conf.*;
@@ -15,9 +12,9 @@ import twitter4j.conf.*;
 
 public class TwitterScrapper {
 
+
+
     public static int pageNumber = 1;
-    public static String user = "Nettkvalitet";
-    public static List<Status> statuses = new ArrayList<Status>();
 
     //Set variables to the current year. Then magic happens
     public static String year = "2015";
@@ -25,9 +22,13 @@ public class TwitterScrapper {
 
     public static void main(String[] args) throws Exception {
 
+
+
         //Initialize some stuff
         Twitter twitter = new TwitterFactory().getInstance();
         PrintWriter writer = new PrintWriter(year +".txt", "UTF-8");
+        List<Status> statuses;
+        String user = "Nettkvalitet";
 
         while (true) {
             try {
@@ -43,6 +44,7 @@ public class TwitterScrapper {
                     year = status.getCreatedAt().toString();
                     year = year.substring(year.length()-4, year.length());
 
+
                     //Create new file if the year has changed
                     if (!lastYear.equals(year)) {
                         writer.close();
@@ -54,6 +56,7 @@ public class TwitterScrapper {
                     //check if retweet
                     if (tweet.startsWith("RT")) {
                         writer.println("Ditta var vist ein retweet");
+
                     } else {
                         //Prints every tweet that is not a RT to a file
                         writer.println(status.getUser().getName() + " : " + status.getText() +" | Ble postet: " + status.getCreatedAt());
