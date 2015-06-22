@@ -18,7 +18,7 @@ public class PdfExtractor implements DocumentTextExtractor {
     private PDFTextStripper textStripper;
 
     // Constants
-    private static final String SPLIT_STRING = "----//-------S--p--L--i--T--s--T--r--I--n--G--8567465895753097------//--------";
+    private static final String SPLIT_STRING = "-0-=s-e-p-a-r-a-t-o-r=-0-";
     private static final int DEFAULT_DROP_THRESHOLD = 3;
 
     PdfExtractor() {
@@ -112,6 +112,11 @@ public class PdfExtractor implements DocumentTextExtractor {
     public Boolean containsInputFields() throws IOException {
         PDAcroForm forms = pddoc.getDocumentCatalog().getAcroForm();
         return forms != null;
+    }
+
+    public int getNumberOfWords() throws IOException {
+        String allText = textStripper.getText(pddoc);
+        return allText.split("[\\s]+").length;
     }
 
 }
