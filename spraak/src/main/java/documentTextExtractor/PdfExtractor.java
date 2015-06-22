@@ -119,6 +119,10 @@ public class PdfExtractor implements DocumentTextExtractor {
         return allText.split("[\\s]+").length;
     }
 
+    public void closeDoc() throws IOException {
+        pddoc.close();
+    }
+
 }
 
 
