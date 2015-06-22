@@ -15,6 +15,7 @@ public class Navn {
     public Navn(){
     	long time = System.currentTimeMillis();
     	try{
+			int lowComp = 0, highComp = 0;
     		String FILE = "C:\\Users\\camp-lsa\\Documents\\DIFI_TWITTER.txt";
 	    	
     		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(FILE), "utf-8"));
@@ -30,22 +31,31 @@ public class Navn {
 	    		else if(actualLanguage.equals("NB"))
 	    			actual_nb++;
 	    		else{
-	    			System.out.println(actualLanguage);
 	    			continue;
 	    		}
 	    		
 	    		String toAnalyze = line.substring(2);
-	    		String result = Classifier.classify(toAnalyze);
-	    		if(result.equals("nn") )
+	    		AnalyzedText result = Classifier.classify(toAnalyze);
+	    		if(result.language.equals("nn") )
 	    			nn++;
 	    		else
 	    			nb++;
+				if(result.complexity.LIX < 30){
+					lowComp++;
+					}
+				else{
+					highComp++;
+				}
 	    		}
 	    	br.close();
 	    	
-	    	float avg = nn/actual_nn;
-	    	float avg_nb = nb/actual_nb;
-	    	} catch (Exception e) {
+	    	float avg = 100*nn/actual_nn;
+	    	float avg_nb = 100*nb/actual_nb;
+			System.out.println("AVG nn: " + avg +"%");
+			System.out.println("AVG nb: " + avg_nb +"%");
+			System.out.println("Complex: " + highComp);
+			System.out.println("Not Complex: " + lowComp);
+		} catch (Exception e) {
 	    		e.printStackTrace();
 	    	}
     	long time1 = System.currentTimeMillis();
