@@ -1,4 +1,4 @@
-
+package twitter;
 //Requires twitter4j framework: http://twitter4j.org/en/index.html
 
 import twitter4j.*;
@@ -9,6 +9,7 @@ import java.util.List;
 import twitter4j.conf.*;
 
 //This program requires an OAuth property file for access to the twitter API.
+
 
 public class TwitterScrapper {
 
