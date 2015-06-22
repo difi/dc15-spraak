@@ -68,4 +68,8 @@ public class WordDocExtractor implements DocumentTextExtractor {
         return getAllText().split("[\\s]+").length;
     }
 
+    public void closeDoc() throws IOException {
+        // Do nothing. AutoCloseable.
+    }
+
 }
