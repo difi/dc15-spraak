@@ -6,6 +6,7 @@ package crawler; /**
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import connectors.ElasticConnector;
 import connectors.FileConnector;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,6 +15,7 @@ import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 
+import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,16 +31,15 @@ public class Crawler extends WebCrawler {
     private String prev = null;
     private String[] myCrawlDomains;
     private String myDomain;
-    private FileConnector db;
+    private ElasticConnector db;
 
     @Override
     public void onStart() {
 
         myCrawlDomains = (String[]) myController.getCustomData();
 
-        myDomain = myCrawlDomains[0];
-        FileConnector db = FileConnector.getInstance("Something");
-        System.out.println("Lel");
+        this.myDomain = myCrawlDomains[0];
+        this.db = ElasticConnector.getInstance("crawl");
     }
 
     @Override
@@ -88,9 +89,7 @@ public class Crawler extends WebCrawler {
     @Override
     public void visit(Page page) {
         if (page.getParseData() instanceof HtmlParseData) {
-            System.out.println(this.myDomain);
-            System.out.println(page.getWebURL().getURL());
-            System.out.println("=======");
+            JSONObject j = new JSONObject();
             // Review
             HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
             String text = htmlParseData.getText();
@@ -110,7 +109,11 @@ public class Crawler extends WebCrawler {
                 }
             }
             out = this.clean(out);
-            this.db.write(out);
+
+            // TODO: Fix
+            j.put("text", out);
+            j.put("lang", "nb");
+            this.db.write(j);
         }
     }
 }
