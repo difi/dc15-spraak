@@ -51,7 +51,7 @@ public class WordDocExtractor implements DocumentTextExtractor {
 
     public ArrayList<String> getAllParagraphs() throws IOException {
         List<XWPFParagraph> paragraphs = doc.getParagraphs();
-        ArrayList<String> paragraphText = new ArrayList<>();
+        ArrayList<String> paragraphText = new ArrayList<String>();
         for (XWPFParagraph p : paragraphs) {
             paragraphText.add(p.getText());
         }

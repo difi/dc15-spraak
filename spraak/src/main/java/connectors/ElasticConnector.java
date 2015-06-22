@@ -1,5 +1,6 @@
 package connectors;
 
+import languageClassifier.Classifier;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -8,6 +9,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -83,11 +85,10 @@ public class ElasticConnector {
     }
 
     public void write(JSONObject msg) {
-        JSONObject j = new JSONObject();
 
         // Append UUID if available
         if(this.uuid != null && this.type.equals("file"))
-            j.put("uuid", this.uuid);
+            msg.put("uuid", this.uuid);
 
         if(this.type.equals("crawl"))
             msg = this.checkCrawl(msg);
@@ -103,10 +104,20 @@ public class ElasticConnector {
             msg.put("date", d.toString());
         }
 
-        // if(msg.get("lang") == null)
-            // Gjør språk gjennkjenning
-        
-        System.out.println(j);
+        if(msg.get("lang") == null) {
+            try {
+                String code = Classifier.classify((String) msg.get("text"));
+                msg.put("lang", code);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        System.out.println("------------");
+        System.out.println(msg.get("text"));
+        System.out.println(msg.get("lang"));
+        System.out.println("------------");
         // Just for safety
         /*
         IndexResponse respone = this.client.prepareIndex("spraak", this.type)

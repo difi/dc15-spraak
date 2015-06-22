@@ -109,14 +109,9 @@ public class Crawler extends WebCrawler {
                 }
             }
             out = this.clean(out);
-            System.out.println("------");
-            System.out.println(page.getWebURL().getParentUrl());
-            System.out.println(page.getWebURL());
-            System.out.println("------");
 
             // TODO: Fix
             j.put("text", out);
-            j.put("lang", "nb");
             this.db.write(j);
         }
     }
