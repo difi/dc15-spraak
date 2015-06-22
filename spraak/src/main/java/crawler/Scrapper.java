@@ -155,12 +155,9 @@ public class Scrapper implements Runnable {
             controller.addSeed(domain);
 
 
-            System.out.println("started");
             controller.startNonBlocking(Crawler.class, threads);
 
             controller.waitUntilFinish();
-            System.out.println("started");
-
         }
 
     }
