@@ -16,6 +16,7 @@ public class Utils {
         s = s.trim().replaceAll("\t+", " ");
         s = s.toLowerCase();
 
+        // Remove https and url's
         String urlPattern = "((https?|ftp|gopher|telnet|file|Unsure|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
         Pattern p = Pattern.compile(urlPattern,Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(s);
@@ -24,11 +25,6 @@ public class Utils {
             s = s.replaceAll(m.group(i),"").trim();
             i++;
         }
-
-        // Reduntant removal og special characters
-        // Regex w&W removes ∆ÿ≈ so can't be used
-        s = s.replaceAll("[-+.^;,:?\\(\\)\\[\\]`¥\"]", "");
-
         // Remove hashtag
         s = s.replaceAll("#[A-Za-z]+","");
 
