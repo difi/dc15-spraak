@@ -106,7 +106,7 @@ public class ElasticConnector {
 
         if(msg.get("lang") == null) {
             try {
-                String code = Classifier.classify((String) msg.get("text"));
+                String code = Classifier.classify((String) msg.get("text")).language;
                 msg.put("lang", code);
             } catch (IOException e) {
                 e.printStackTrace();
