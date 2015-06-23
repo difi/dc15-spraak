@@ -44,9 +44,10 @@ public class Setup {
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
 
-        // Wait for the other modules
-        /*if(!this.fileSettings.isEmpty())
-            this.modules.put("file", new Scrapper(this.crawlerSettings));
+        if(!this.fileSettings.isEmpty())
+            this.modules.put("file", new Thread(new TextExtractor(this.fileSettings)));
+
+        /*
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Scrapper(this.crawlerSettings));
         */
