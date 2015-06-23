@@ -64,4 +64,12 @@ public class WordDocExtractor implements DocumentTextExtractor {
         return paragraphs;
     }
 
+    public int getNumberOfWords() throws IOException {
+        return getAllText().split("[\\s]+").length;
+    }
+
+    public void closeDoc() throws IOException {
+        // Do nothing. AutoCloseable.
+    }
+
 }
