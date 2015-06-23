@@ -39,15 +39,12 @@ public class Setup {
         
 
         this.modules = new HashMap<String, Thread>();
-/*
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
 
-*/
-
- /*       if(!this.fileSettings.isEmpty())
+        if(!this.fileSettings.isEmpty())
             this.modules.put("file", new Thread(new TextExtractor(this.fileSettings)));
-*/
+
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings)));
 
@@ -57,13 +54,11 @@ public class Setup {
 
 
     public void setupConnector(){
-
         // Replace with elastic
         FileConnector fconn = FileConnector.getInstance("Something");
     }
 
     public void start(){
-        // Not used yet
         this.setupConnector();
         for(Thread entry: this.modules.values()){
             entry.start();
