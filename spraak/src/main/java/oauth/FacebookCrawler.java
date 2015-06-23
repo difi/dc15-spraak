@@ -42,7 +42,7 @@ public class FacebookCrawler implements Runnable{
         JSONObject facebookPosts = new JSONObject();
         ResponseList<Post> feed = facebook.getPosts(ID, limit.limit(250));
 
-        while (true) {
+
 
 
 
@@ -62,11 +62,8 @@ public class FacebookCrawler implements Runnable{
                     year = year.substring(year.length() - 4, year.length());
                 }
                 //retrieve only post from the last 5 years
-                if (year.equals("2009")) {
-                    break;
-                }
+
         }
-    }
 
     @Override
     public void run() {
