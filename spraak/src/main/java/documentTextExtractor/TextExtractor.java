@@ -1,5 +1,7 @@
 package documentTextExtractor;
 
+import connectors.ElasticConnector;
+import org.json.simple.JSONObject;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,9 +11,11 @@ import java.util.ArrayList;
  */
 public class TextExtractor implements Runnable {
     private ArrayList<String> settings;
+    private ElasticConnector db;
 
     public TextExtractor(ArrayList<String> settings) {
         this.settings = settings;
+        this.db = ElasticConnector.getInstance("file");
     }
 
     @Override
@@ -73,10 +77,15 @@ public class TextExtractor implements Runnable {
                 extractor.setSource(path);
             }
 
-            System.out.println("Reading " + path);
+            JSONObject json = new JSONObject();
 
-            // TODO get text and put it somewhere here
+            json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
+            json.put("type",path.substring(path.lastIndexOf(".") + 1, path.length()));
+            json.put("text",extractor.getAllText());
+            json.put("words",extractor.getNumberOfWords());
             extractor.closeDoc();
+
+            db.write(json);
         }
         catch (Exception e){
             e.printStackTrace();
