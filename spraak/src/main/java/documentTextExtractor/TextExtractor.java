@@ -60,6 +60,9 @@ public class TextExtractor implements Runnable {
         if (path.endsWith(".pdf")) {
             extractor = new PdfExtractor();
         }
+        else if(path.endsWith(".doc")) {
+            extractor = new DocExtractor();
+        }
         else if (path.endsWith(".docx")){
             extractor = new DocxExtractor();
         }
