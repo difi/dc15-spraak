@@ -1,5 +1,6 @@
 package connectors;
 
+import languageClassifier.AnalyzedText;
 import languageClassifier.Classifier;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
@@ -108,8 +109,11 @@ public class ElasticConnector {
 
         if(msg.get("lang") == null) {
             try {
-                String code = Classifier.classify((String) msg.get("text"));
+                AnalyzedText analysis = Classifier.classify((String) msg.get("text"));
+                String code = analysis.language;
+                Float LIX = analysis.complexity.LIX;
                 msg.put("lang", code);
+                msg.put("complexity", LIX);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -118,7 +122,7 @@ public class ElasticConnector {
 
         System.out.println("------------");
         System.out.println(msg.get("text"));
-        System.out.println(msg.get("lang"));
+        System.out.println(msg.get("lang") + " - " + msg.get("complexity"));
         System.out.println("------------");
         // Just for safety
         /*

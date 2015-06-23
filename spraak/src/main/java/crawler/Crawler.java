@@ -2,12 +2,13 @@ package crawler; /**
  * Created by camp-mli on 16.06.2015.
  */
 
-
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import connectors.ElasticConnector;
+import utils.Utils;
+
 import connectors.FileConnector;
+import connectors.ElasticConnector;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -20,13 +21,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
 
 
 public class Crawler extends WebCrawler {
 
-    private static final Pattern FILTERS = Pattern.compile(
-            ".*(\\.(css|js|bmp|gif|jpe?g" + "|png|tiff?|mid|mp2|mp3|mp4" + "|wav|avi|mov|mpeg|ram|m4v|pdf" +
-                    "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
+    private static final Pattern
+            FILTERS = Pattern.compile(".*(\\.(css|js|bmp|gif|jpe?g" + "|png|tiff?|mid|mp2|mp3|mp4" + "|wav|avi|mov|mpeg|ram|m4v" +
+                    "|rm|smil|wmv|swf|wma|zip|rar|gz))$")
+            ,ACCEPTFILTERS = Pattern.compile(".*(\\.(pdf|docx|doc|odf))$");
 
     private String prev = null;
     private String[] myCrawlDomains;
@@ -38,19 +41,25 @@ public class Crawler extends WebCrawler {
 
         myCrawlDomains = (String[]) myController.getCustomData();
 
+        myDomain = myCrawlDomains[0];
+        FileConnector db = FileConnector.getInstance("Something");
         this.myDomain = myCrawlDomains[0];
         this.db = ElasticConnector.getInstance("crawl");
     }
 
     @Override
     public boolean shouldVisit(Page page, WebURL url) {
-        String href = url.getURL().toLowerCase();
+
+        String href = url.getURL().toLowerCase().substring(url.getURL().indexOf("://"));
         if (FILTERS.matcher(href).matches()) {
             return false;
         }
-
+        //TODO: Legg til funksjonalitet som laster ned fil
+        else if(ACCEPTFILTERS.matcher(href).matches()){
+            return true;
+        }
         for (String crawlDomain : myCrawlDomains) {
-            if (href.startsWith(crawlDomain)) {
+            if (href.startsWith(crawlDomain.substring(crawlDomain.indexOf("://")))) {
                 return true;
             }
         }
@@ -62,9 +71,7 @@ public class Crawler extends WebCrawler {
     public String clean(String s){
 
         // Remove multiple spaces and tabs
-        s = s.replace("\n","").replace("\r","");
-        s = s.trim().replaceAll(" +"," ");
-        s = s.trim().replaceAll("\t+", " ");
+        s = Utils.clean(s);
 
         if(this.prev == null) {
             this.prev = s;
@@ -89,6 +96,12 @@ public class Crawler extends WebCrawler {
     @Override
     public void visit(Page page) {
         if (page.getParseData() instanceof HtmlParseData) {
+            //System.out.println(this.myDomain);
+            String str = "";
+            for(int i = 0; i < page.getWebURL().getDepth(); i++)
+                str+="\t";
+            System.out.println(str+page.getWebURL().getURL());
+
             JSONObject j = new JSONObject();
             // Review
             HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -106,6 +119,25 @@ public class Crawler extends WebCrawler {
                         if(!node.isBlank())
                             out = out + " " + node.getWholeText();
                     }
+                }
+            }
+
+            //finds forms.
+            Elements forms = doc.select("body").select("form");
+            System.out.println("Children: " + forms.get(0).childNodes().size());
+            for(Element el : forms){
+                boolean found = true;
+                for(Element b : el.getElementsByTag("input")) {
+                    if(b.toString().contains("search") ||
+                            b.toString().contains("søk") ||
+                            b.toString().contains("sok") ||
+                            b.toString().contains("feedback")){
+                        found = false;
+                        break;
+                    }
+                }
+                if(found){
+                    System.out.println("Valid form at \n"+ page.getWebURL().getURL() + "\nAction:"+el.attr("id")+"\n");
                 }
             }
             out = this.clean(out);

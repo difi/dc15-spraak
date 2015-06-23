@@ -1,8 +1,12 @@
 
 import connectors.FileConnector;
 import crawler.Scrapper;
+<<<<<<< HEAD
 import oauth.RunnableOauth;
 import oauth.TwitterCrawler;
+=======
+import documentTextExtractor.TextExtractor;
+>>>>>>> 09084c96e173bdf1a98717a4c7dbb304001483fe
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -45,9 +49,10 @@ public class Setup {
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
 
-        // Wait for the other modules
-        /*if(!this.fileSettings.isEmpty())
-            this.modules.put("file", new Scrapper(this.crawlerSettings));*/
+
+        if(!this.fileSettings.isEmpty())
+            this.modules.put("file", new Thread(new TextExtractor(this.fileSettings)));
+
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings)));
 
@@ -78,7 +83,7 @@ public class Setup {
     }
 
     public static void main(String[] args) {
-        Setup s = new Setup("setup.json");
+        Setup s = new Setup("spraak/setup.json");
         //s.setup();
         s.start();
     }
