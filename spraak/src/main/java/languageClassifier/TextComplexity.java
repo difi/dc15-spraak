@@ -30,6 +30,7 @@ public class TextComplexity {
 
         }
         LIX = ((wordCount)/(stops)) + ((longWords*100)/wordCount);
+
     }
 
 }

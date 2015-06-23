@@ -12,8 +12,8 @@ import org.json.simple.JSONObject;
 
 public class TwitterCrawler implements Runnable {
 
-    public static int pageNumber = 1;
-    public static String year;
+    private int pageNumber = 1;
+    private String year;
     private Map settings;
     private ElasticConnector db = ElasticConnector.getInstance("oauth");
 
@@ -37,18 +37,17 @@ public class TwitterCrawler implements Runnable {
         //Initialize Twitterfactory
         Twitter twitter = new TwitterFactory(cb.build()).getInstance();
 
-        JSONObject twitterPosts = new JSONObject();
         List<Status> statuses;
         String user = "Nettkvalitet";
 
         while (true) {
             try {
-
                 Paging page = new Paging(pageNumber++, 100);
                 statuses = twitter.getUserTimeline(user, page);
 
                 //iterate and write tweets to jsonObjects
                 for (Status status : statuses) {
+                    JSONObject twitterPosts = new JSONObject();
                     String tweet = status.getText();
 
                     year = status.getCreatedAt().toString();
