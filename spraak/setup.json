@@ -2,17 +2,21 @@
   "crawler": [
     {
       "domain": "http://www.norge.no/nb"
-    },
+    }
   ],
 
   "oauth": {
     "fb": {
-      "secret_token": "asdfasdf",
-      "token": "asfadfsd"
+      "app_id": "952095618154021",
+      "app_secret": "03569a54711da40dddc5dcf05c83ec9b",
+      "access_token":"CAANh7QkcviUBAPrtbosJ2kieHbZAeUzISoUiV7YPjquSUpcZCoyAq8ZB3x6K2ZCWdU59uGyE4cmJvRJh9Ol6Ubbnm5Db7tZC5484Y6Nmgw1F3ueJtHkhhgZBKPWq9bhBAK9nsjIM9JufxrnWl94Q8GRcgMQ23kZBygmKU76ZCioW1G6nrAuszZC31ZCDHvxKCr3gwZD",
+      "permissions":"user_about_me,user_actions.music,user_birthday,user_friends,user_hometown,user_managed_groups,user_relationship_details,user_status,user_website,user_actions.books,,user_actions.news,user_games_activity,user_likes,user_photos,user_relationships,user_tagged_places,user_work_history,user_actions.fitness,user_actions.video,,user_events,user_groups,user_location,user_posts,user_religion_politics,user_videos,publish_actions,manage_pages,manage_notifications,publish_pages"
   },
     "twitter": {
-      "secret_token": "aasdf",
-      "token": "asdffasdf"
+      "consumer_key": "M5yYZrrjpbmj5nK7sSPY4Wpaq",
+      "consumer_secret": "zbSnKkeuaPGQL6vxoIntEjH68yXlL1SkS9BiizknBppCm6Vp1n",
+      "access_token":"3331100338-jaP5xQGCKl5dPysSrY347Qnd1qWivkzyhla70BS",
+      "access_token_secret":"JjM6zTmIEWSzQHvlL9fy3Npen181INoOH85abtBJXUO3e"
     }
   },
 
@@ -27,3 +31,11 @@
     "table": "something"
   }
 }
+
+
+
+
+
+
+
+

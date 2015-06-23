@@ -1,6 +1,8 @@
 
 import connectors.FileConnector;
 import crawler.Scrapper;
+import oauth.RunnableOauth;
+import oauth.TwitterCrawler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -38,19 +40,21 @@ public class Setup {
         this.fileSettings = (ArrayList<String>)jsonObject.get("files");
         this.oAuthSettings = (Map)jsonObject.get("oauth");
         
-        
+
         this.modules = new HashMap<String, Thread>();
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
 
         // Wait for the other modules
         /*if(!this.fileSettings.isEmpty())
-            this.modules.put("file", new Scrapper(this.crawlerSettings));
+            this.modules.put("file", new Scrapper(this.crawlerSettings));*/
         if(!this.oAuthSettings.isEmpty())
-            this.modules.put("oauth", new Scrapper(this.crawlerSettings));
-        */
+            this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings)));
 
     }
+
+
+
 
     public void setupConnector(){
 

@@ -1,3 +1,4 @@
+package oauth;
 
 import facebook4j.Facebook;
 import facebook4j.FacebookFactory;
@@ -36,7 +37,7 @@ public class FacebookCrawler {
 
 
             year = year.substring(year.length()-4, year.length());
-            System.out.println(year);
+            //System.out.println(year);
 
             if (!lastYear.equals(year)) {
                 writer.close();
