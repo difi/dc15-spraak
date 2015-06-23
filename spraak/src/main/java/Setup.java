@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by camp-mli on 18.06.2015.
- */
+
 public class Setup {
 
     private final ArrayList<Map> crawlerSettings;
@@ -41,13 +39,15 @@ public class Setup {
         
 
         this.modules = new HashMap<String, Thread>();
+/*
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
 
+*/
 
-        if(!this.fileSettings.isEmpty())
+ /*       if(!this.fileSettings.isEmpty())
             this.modules.put("file", new Thread(new TextExtractor(this.fileSettings)));
-
+*/
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings)));
 
@@ -78,7 +78,7 @@ public class Setup {
     }
 
     public static void main(String[] args) {
-        Setup s = new Setup("spraak/setup.json");
+        Setup s = new Setup("setup.json");
         //s.setup();
         s.start();
     }
