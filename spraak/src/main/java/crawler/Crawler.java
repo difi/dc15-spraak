@@ -2,12 +2,12 @@ package crawler; /**
  * Created by camp-mli on 16.06.2015.
  */
 
-
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import utils.Utils;
+
 import connectors.ElasticConnector;
-import connectors.FileConnector;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -62,9 +62,7 @@ public class Crawler extends WebCrawler {
     public String clean(String s){
 
         // Remove multiple spaces and tabs
-        s = s.replace("\n","").replace("\r","");
-        s = s.trim().replaceAll(" +"," ");
-        s = s.trim().replaceAll("\t+", " ");
+        s = Utils.clean(s);
 
         if(this.prev == null) {
             this.prev = s;
