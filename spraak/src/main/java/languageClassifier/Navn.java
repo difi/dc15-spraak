@@ -20,7 +20,10 @@ public class Navn {
 	    	
     		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(FILE), "utf-8"));
     		String line;
-    		float nn = 0, nb = 0, actual_nb = 0, actual_nn = 0; 
+    		float 	nn = 0,
+					nb = 0,
+					actual_nb = 0,
+					actual_nn = 0;
     		
 	    	while((line = br.readLine()) != null){
 	    		if(line.length() < 2)
@@ -38,7 +41,7 @@ public class Navn {
 	    		AnalyzedText result = Classifier.classify(toAnalyze);
 	    		if(result.language.equals("nn") )
 	    			nn++;
-	    		else
+	    		else if(result.language.equals("nb"))
 	    			nb++;
 				if(result.complexity.LIX < 30){
 					lowComp++;

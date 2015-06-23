@@ -12,6 +12,8 @@ import java.util.Set;
 
 import com.carrotsearch.labs.langid.DetectedLanguage;
 import com.carrotsearch.labs.langid.LangIdV3;
+import com.carrotsearch.labs.langid.Model;
+
 
 public class Classifier {
 	
@@ -21,12 +23,8 @@ public class Classifier {
 	
 	//Sett modell til å kun lete etter nynorsk og bokmål.
 	private static void init() throws IOException{
-		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb"}));
-		float[] ptc, pc;
-		short[] dsa;
-		int[][] dsaOutput;
-		
-		langid = new LangIdV3();
+		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb","nn"}));
+		langid = new LangIdV3(Model.detectOnly(set));
 		loadConfig();
 		rule_set = dictionaries.get("default");
 	}
