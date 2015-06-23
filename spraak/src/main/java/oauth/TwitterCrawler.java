@@ -28,8 +28,8 @@ public class TwitterCrawler implements Runnable {
         String consumerSecret = this.settings.get("consumer_secret").toString();
         String accessToken = this.settings.get("access_token").toString();
         String accessTokenSecret = this.settings.get("access_token_secret").toString();
-        //System.out.println(consumerKey+"\n" + consumerSecret +"\n"+ accessToken+"\n" + accessTokenSecret);
 
+        //implements the oauth tokens
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true).setOAuthConsumerKey(consumerKey).setOAuthConsumerSecret(consumerSecret)
                 .setOAuthAccessToken(accessToken).setOAuthAccessTokenSecret(accessTokenSecret);
@@ -47,7 +47,7 @@ public class TwitterCrawler implements Runnable {
                 Paging page = new Paging(pageNumber++, 100);
                 statuses = twitter.getUserTimeline(user, page);
 
-                //iterate and write tweets to files
+                //iterate and write tweets to jsonObjects
                 for (Status status : statuses) {
                     String tweet = status.getText();
 
@@ -58,12 +58,12 @@ public class TwitterCrawler implements Runnable {
                         twitterPosts.put("type", "twitter");
                         twitterPosts.put("account", user);
                         twitterPosts.put("text", status.getText());
-                        twitterPosts.put("tweet_year", year);
+                        twitterPosts.put("post_year", year);
                         this.db.write(twitterPosts);
                     }
                 }
 
-                //Breaks the chain after specified year
+                //retrieve only post from the last 5 years
                 if (year.equals("2009"))
                     break;
             }

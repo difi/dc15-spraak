@@ -1,16 +1,12 @@
 
 import connectors.FileConnector;
 import crawler.Scrapper;
-<<<<<<< HEAD
 import oauth.RunnableOauth;
 import oauth.TwitterCrawler;
-=======
 import documentTextExtractor.TextExtractor;
->>>>>>> 09084c96e173bdf1a98717a4c7dbb304001483fe
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;

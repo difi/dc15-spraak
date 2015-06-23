@@ -1,60 +1,83 @@
 package oauth;
 
-import facebook4j.Facebook;
-import facebook4j.FacebookFactory;
-import facebook4j.Post;
-import facebook4j.Reading;
-import facebook4j.ResponseList;
-import java.io.PrintWriter;
-
-
-//facebookuserID: 104824506525824
-//facebookuseID DIFI: 122374377845823
-
-
-public class FacebookCrawler {
-
-    public static Reading limit = new Reading();
-    public static String year = "2015";
-    public static String lastYear = "2015";
-
-
-    public static void main(String[] args) throws Exception {
-
-        Facebook facebook = new FacebookFactory().getInstance();
-
-        PrintWriter writer = new PrintWriter(year + ".txt", "UTF-8");
-
-        ResponseList<Post> feed = facebook.getPosts("122374377845823", limit.limit(250));
+import connectors.ElasticConnector;
+import facebook4j.*;
+import facebook4j.conf.ConfigurationBuilder;
+import org.json.simple.JSONObject;
+import java.util.Map;
 
 
 
-        for (int i = 0; i < feed.size(); i++) {
 
+//This program requires unique OAuth tokens to run.
 
-            Post post = feed.get(i);
-            year = post.getCreatedTime().toString();
+public class FacebookCrawler implements Runnable{
 
+    private static Reading limit = new Reading();
+    private static String year;
+    private Map settings;
+    private ElasticConnector db = ElasticConnector.getInstance("oauth");
 
-            year = year.substring(year.length()-4, year.length());
-            //System.out.println(year);
+    //dificamp facebookID
+    private String ID = "122374377845823";
 
-            if (!lastYear.equals(year)) {
-                writer.close();
-                writer = new PrintWriter(year+".txt", "UTF-8");
-            }
-            lastYear = year;
-            String message = post.getMessage();
-            writer.println(message);
+    public FacebookCrawler(Map settings) {
 
-        }
-
-    writer.close();
+        this.settings = settings;
     }
 
 
+    public void getFacebookPost() throws Exception {
 
+        String appId = this.settings.get("app_id").toString();
+        String appSecret = this.settings.get("app_secret").toString();
+        String accessToken = this.settings.get("access_token").toString();
+        String permissions = this.settings.get("permissions").toString();
+
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setDebugEnabled(true).setOAuthAppId(appId).setOAuthAppSecret(appSecret).
+                setOAuthAccessToken(accessToken).setOAuthPermissions(permissions);
+
+        Facebook facebook = new FacebookFactory(cb.build()).getInstance();
+        JSONObject facebookPosts = new JSONObject();
+        ResponseList<Post> feed = facebook.getPosts(ID, limit.limit(250));
+
+        while (true) {
+
+
+
+                for (int i = 0; i < feed.size(); i++) {
+
+                    Post post = feed.get(i);
+
+                    String message = post.getMessage();
+
+                    facebookPosts.put("type", "fb");
+                    facebookPosts.put("account", ID);
+                    facebookPosts.put("text", message);
+                    facebookPosts.put("post_year", year);
+                    this.db.write(facebookPosts);
+
+                    year = post.getCreatedTime().toString();
+                    year = year.substring(year.length() - 4, year.length());
+                }
+                //retrieve only post from the last 5 years
+                if (year.equals("2009")) {
+                    break;
+                }
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            this.getFacebookPost();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+
 /*
 for (int count = 1999; count < 2100; count++) {
         facebook.postStatusMessage("Lets party like it's "+ count );

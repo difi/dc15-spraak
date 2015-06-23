@@ -82,8 +82,8 @@ public class ElasticConnector {
             msg.put("text", null);
         if(!msg.containsKey("lang"))
             msg.put("lang", null);
-        if(!msg.containsKey("tweet_year"))
-            msg.put("tweet_year", null);
+        if(!msg.containsKey("post_year"))
+            msg.put("post_year", null);
         return msg;
     }
 

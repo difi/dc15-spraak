@@ -2,9 +2,6 @@ package oauth;
 
 import java.util.Map;
 
-/**
- * Created by camp-mth on 22.06.2015.
- */
 public class RunnableOauth implements Runnable{
 
     private Map settings;
@@ -13,17 +10,16 @@ public class RunnableOauth implements Runnable{
         this.settings = settings;
     }
 
-
-
-
     @Override
     public void run() {
 
-        if(!this.settings.isEmpty()) {
-
-            Thread t = new Thread(new TwitterCrawler((Map)this.settings.get("twitter")));
-            t.start();
-
+        if(this.settings.containsKey("twitter")) {
+            Thread tw = new Thread(new TwitterCrawler((Map)this.settings.get("twitter")));
+            tw.start();
+        }
+        if(this.settings.containsKey("fb")) {
+            Thread fb = new Thread(new FacebookCrawler((Map)this.settings.get("fb")));
+            fb.start();
         }
     }
 }
