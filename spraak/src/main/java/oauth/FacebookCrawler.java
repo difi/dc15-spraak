@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class FacebookCrawler implements Runnable{
 
-    private static Reading limit = new Reading();
-    private static String year;
+    private Reading limit = new Reading();
+    private String year;
     private Map settings;
     private ElasticConnector db = ElasticConnector.getInstance("oauth");
 
@@ -39,15 +39,11 @@ public class FacebookCrawler implements Runnable{
                 setOAuthAccessToken(accessToken).setOAuthPermissions(permissions);
 
         Facebook facebook = new FacebookFactory(cb.build()).getInstance();
-        JSONObject facebookPosts = new JSONObject();
+
         ResponseList<Post> feed = facebook.getPosts(ID, limit.limit(250));
 
-
-
-
-
                 for (int i = 0; i < feed.size(); i++) {
-
+                    JSONObject facebookPosts = new JSONObject();
                     Post post = feed.get(i);
 
                     String message = post.getMessage();
