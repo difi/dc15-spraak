@@ -23,15 +23,20 @@ public class ElasticConnector {
     private Client client;
     private String type;
     private String uuid = null;
+    private String owner;
 
 
-    private ElasticConnector(String type) {
+    private ElasticConnector(String owner) {
+        this.owner = owner;
+        this.connect();
+    }
+
+    private void connect(){
         Settings settings = ImmutableSettings.settingsBuilder()
                 .put("client.transport.sniff", true)
                 .put("cluster.name", "elasticsearch.difi.no").build();
         Client client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress("elasticsearch.difi.local", 9300));
-        this.type = type;
         this.client = client;
     }
 
@@ -87,7 +92,7 @@ public class ElasticConnector {
         return msg;
     }
 
-    public void write(JSONObject msg) {
+    public void write(String type, JSONObject msg) {
 
         // Append UUID if available
         if(this.uuid != null && this.type.equals("file"))
@@ -124,9 +129,13 @@ public class ElasticConnector {
         System.out.println(msg.get("text"));
         System.out.println(msg.get("lang") + " - " + msg.get("complexity"));
         System.out.println("------------");
+
+        msg.put("owner", this.owner);
+
+
         // Just for safety
         /*
-        IndexResponse respone = this.client.prepareIndex("spraak", this.type)
+        IndexResponse respone = this.client.prepareIndex("spraak", type)
                 .setSource(j)
                 .execute()
                 .actionGet();
@@ -134,16 +143,15 @@ public class ElasticConnector {
     }
 
 
-
-    public static ElasticConnector getInstance(String type) {
+    public static ElasticConnector getInstance(String owner) {
         if (instance == null)
-            instance = new ElasticConnector(type);
+            instance = new ElasticConnector(owner);
         return instance;
     }
 
-    public static ElasticConnector getInstance() throws Exception {
+    public static ElasticConnector getInstance() {
         if (instance == null)
-            throw new Exception("No instance created!");
+            return null;
         return instance;
     }
 }

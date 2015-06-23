@@ -42,9 +42,8 @@ public class Crawler extends WebCrawler {
         myCrawlDomains = (String[]) myController.getCustomData();
 
         myDomain = myCrawlDomains[0];
-        FileConnector db = FileConnector.getInstance("Something");
         this.myDomain = myCrawlDomains[0];
-        this.db = ElasticConnector.getInstance("crawl");
+        this.db = ElasticConnector.getInstance();
     }
 
     @Override
@@ -144,7 +143,7 @@ public class Crawler extends WebCrawler {
 
             // TODO: Fix
             j.put("text", out);
-            this.db.write(j);
+            this.db.write("crawler", j);
         }
     }
 }
