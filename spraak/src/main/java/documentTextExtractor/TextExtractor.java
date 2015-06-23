@@ -61,7 +61,7 @@ public class TextExtractor implements Runnable {
             extractor = new PdfExtractor();
         }
         else if (path.endsWith(".docx")){
-            extractor = new WordDocExtractor();
+            extractor = new DocxExtractor();
         }
         else {
             System.err.println("File format " + path.substring(path.lastIndexOf("."),path.length()) + " not supported.");
