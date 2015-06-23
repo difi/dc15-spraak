@@ -12,6 +12,8 @@ import java.util.Set;
 
 import com.carrotsearch.labs.langid.DetectedLanguage;
 import com.carrotsearch.labs.langid.LangIdV3;
+import com.carrotsearch.labs.langid.Model;
+
 
 public class Classifier {
 	
@@ -21,19 +23,15 @@ public class Classifier {
 	
 	//Sett modell til å kun lete etter nynorsk og bokmål.
 	private static void init() throws IOException{
-		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb"}));
-		float[] ptc, pc;
-		short[] dsa;
-		int[][] dsaOutput;
-		
-		langid = new LangIdV3();
+		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb","nn"}));
+		langid = new LangIdV3(Model.detectOnly(set));
 		loadConfig();
 		rule_set = dictionaries.get("default");
 	}
 	
 	//Laster default config "config.ini"
 	public static void loadConfig() throws IOException{
-		loadConfig("resources/config.ini","default");
+		loadConfig("spraak/resources/config.ini","default");
 	}
 	
 	//map som inneholder alle regelsett som er lagret.
@@ -76,11 +74,6 @@ public class Classifier {
 				}
 			}
 			br.close();
-			System.out.println(ruleset.hele.size());
-			System.out.println(ruleset.endinger.size());
-			System.out.println(ruleset.hele_bm.size());
-			System.out.println(ruleset.endinger_bm.size());
-			System.out.println(ruleset.exempt.size());
 			dictionaries.put(name, ruleset);
 			
 		}
@@ -104,17 +97,17 @@ public class Classifier {
 	}
 	static RuleSet rule_set;
 	//klassifiserer tekst, bruker 'hjemmesnekra' static-class "ShortClassifier" om teksten er under 300 tegn lang.
-	public static String classify(String str) throws IOException{
+	public static AnalyzedText classify(String str) throws IOException{
 		if(langid == null){
 			init();
 		}
 		int length = str.length();
 		if(length < 300){
-			return ShortClassifier.classify(str,rule_set);
+			return new AnalyzedText( ShortClassifier.classify(str,rule_set), (new TextComplexity(str)));
 		}
 		else{
 			DetectedLanguage result = langid.classify(str, true);
-			return result.getLangCode();
+			return new AnalyzedText(result.getLangCode(),(new TextComplexity(str)));
 		}
 	}
 	
