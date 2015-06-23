@@ -2,7 +2,6 @@
 import connectors.FileConnector;
 import crawler.Scrapper;
 import oauth.RunnableOauth;
-import oauth.TwitterCrawler;
 import documentTextExtractor.TextExtractor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
