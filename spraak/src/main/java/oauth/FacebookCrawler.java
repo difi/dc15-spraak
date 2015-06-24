@@ -16,12 +16,14 @@ public class FacebookCrawler implements Runnable{
     private Reading limit = new Reading();
     private String year;
     private Map settings;
-    private ElasticConnector db = ElasticConnector.getInstance("oauth");
+    private ElasticConnector db;
 
     //dificamp facebookID
     private String ID = "122374377845823";
 
-    public FacebookCrawler(Map settings) {
+    public FacebookCrawler(Map settings, ElasticConnector database) {
+        this.db = database;
+        this.db.setType("oauth");
 
         this.settings = settings;
     }

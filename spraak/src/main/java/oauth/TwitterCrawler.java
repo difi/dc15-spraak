@@ -15,9 +15,11 @@ public class TwitterCrawler implements Runnable {
     private int pageNumber = 1;
     private String year;
     private Map settings;
-    private ElasticConnector db = ElasticConnector.getInstance("oauth");
+    private ElasticConnector db;
 
-    public TwitterCrawler(Map settings) {
+    public TwitterCrawler(Map settings, ElasticConnector db) {
+        this.db = db;
+        this.db.setType("oauth");
         this.settings = settings;
     }
 

@@ -5,6 +5,7 @@ package crawler;
 
 
 
+import connectors.ElasticConnector;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -12,13 +13,16 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Scrapper implements Runnable {
 
     private ArrayList<Map> settings;
+    private ElasticConnector database;
 
-    public Scrapper(ArrayList<Map> settings) {
+    public Scrapper(ArrayList<Map> settings, ElasticConnector database ) {
+        this.database = database;
         this.settings = settings;
     }
 
@@ -69,7 +73,11 @@ public class Scrapper implements Runnable {
 
         String[] crawler1Domains = {domain};
 
-        controller1.setCustomData(crawler1Domains);
+        HashMap<String, Object> settings = new HashMap<>();
+        settings.put("domains", crawler1Domains);
+        settings.put("db", ElasticConnector.class);
+
+        controller1.setCustomData(settings);
 
         controller1.addSeed(domain);
 
@@ -136,6 +144,10 @@ public class Scrapper implements Runnable {
                 e.printStackTrace();
                 return;
             }
+
+            HashMap<String, Object> settings = new HashMap<>();
+            settings.put("domains", crawlerDomains);
+            settings.put("db", this.database);
             controller.setCustomData(crawlerDomains);
 
             controller.addSeed(domain);

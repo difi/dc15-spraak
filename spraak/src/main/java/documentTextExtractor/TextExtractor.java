@@ -13,9 +13,10 @@ public class TextExtractor implements Runnable {
     private ArrayList<String> settings;
     private ElasticConnector db;
 
-    public TextExtractor(ArrayList<String> settings) {
+    public TextExtractor(ArrayList<String> settings, ElasticConnector database) {
         this.settings = settings;
-        this.db = ElasticConnector.getInstance("file");
+        this.db = database;
+        this.db.setType("file");
     }
 
     @Override
