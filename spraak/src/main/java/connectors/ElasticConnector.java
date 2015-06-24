@@ -19,16 +19,13 @@ import java.util.UUID;
  */
 public class ElasticConnector {
 
-    private static ElasticConnector instance;
     private Client client;
-    private String type;
     private String uuid = null;
+    private String type;
     private String owner;
 
-
-    private ElasticConnector(String owner) {
+    public ElasticConnector(String owner){
         this.owner = owner;
-        this.connect();
     }
 
     private void connect(){
@@ -92,7 +89,7 @@ public class ElasticConnector {
         return msg;
     }
 
-    public void write(String type, JSONObject msg) {
+    public void write(JSONObject msg) {
 
         // Append UUID if available
         if(this.uuid != null && this.type.equals("file"))
@@ -135,23 +132,26 @@ public class ElasticConnector {
 
         // Just for safety
         /*
-        IndexResponse respone = this.client.prepareIndex("spraak", type)
+        IndexResponse respone = this.client.prepareIndex("spraak", this.type)
                 .setSource(j)
                 .execute()
                 .actionGet();
         */
     }
 
-
-    public static ElasticConnector getInstance(String owner) {
-        if (instance == null)
-            instance = new ElasticConnector(owner);
-        return instance;
+    public String getType() {
+        return type;
     }
 
-    public static ElasticConnector getInstance() {
-        if (instance == null)
-            return null;
-        return instance;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

@@ -2,6 +2,7 @@ package crawler; /**
  * Created by camp-mli on 16.06.2015.
  */
 
+import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,7 @@ public class Crawler extends WebCrawler {
             ,ACCEPTFILTERS = Pattern.compile(".*(\\.(pdf|docx|doc|odf))$");
 
     private String prev = null;
+    private HashMap<String, Object> settings;
     private String[] myCrawlDomains;
     private String myDomain;
     private ElasticConnector db;
@@ -39,11 +41,14 @@ public class Crawler extends WebCrawler {
     @Override
     public void onStart() {
 
-        myCrawlDomains = (String[]) myController.getCustomData();
+        this.db = (ElasticConnector) this.settings.get("database");
+
+        this.db.setType("crawl");
+
+        myCrawlDomains = (String[]) this.settings.get("domains");
 
         myDomain = myCrawlDomains[0];
         this.myDomain = myCrawlDomains[0];
-        this.db = ElasticConnector.getInstance();
     }
 
     @Override
@@ -122,7 +127,7 @@ public class Crawler extends WebCrawler {
             }
 
             //finds forms.
-            Elements forms = doc.select("body").select("form");
+/*            Elements forms = doc.select("body").select("form");
             System.out.println("Children: " + forms.get(0).childNodes().size());
             for(Element el : forms){
                 boolean found = true;
@@ -138,12 +143,13 @@ public class Crawler extends WebCrawler {
                 if(found){
                     System.out.println("Valid form at \n"+ page.getWebURL().getURL() + "\nAction:"+el.attr("id")+"\n");
                 }
-            }
+            }*/
             out = this.clean(out);
 
             // TODO: Fix
             j.put("text", out);
-            this.db.write("crawler", j);
+            System.out.printf("write");
+            this.db.write(j);
         }
     }
 }
