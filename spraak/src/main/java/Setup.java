@@ -46,6 +46,7 @@ public class Setup {
         
 
         this.modules = new HashMap<String, Thread>();
+        
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings, elastic)));
 

@@ -16,7 +16,7 @@ public class ShortClassifier {
 	            word = text[i];
 	            i++;
 	            if(!ruleset.exempt.contains(word) && word.endsWith(check) && word.length()>check.length()){
-	            	count++;	                
+	            	count++;
 	                break;
 	            }
 	        }
@@ -75,7 +75,7 @@ public class ShortClassifier {
 		float combined_bm = result_bm[0] + ((result_bm[1]*(float)ruleset.hele.size())/(float)ruleset.hele_bm.size());
 		
 		float percent = combined/(combined+combined_bm);
-		
+
 		if(combined + combined_bm == 0f)
 			return "nb";
 		else if(percent > 0.7f)
