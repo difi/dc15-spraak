@@ -66,6 +66,9 @@ public class TextExtractor implements Runnable {
         else if (path.endsWith(".docx")){
             extractor = new DocxExtractor();
         }
+        else if(path.endsWith(".odt")) {
+            extractor = new OdtExtractor();
+        }
         else {
             System.err.println("File format " + path.substring(path.lastIndexOf("."),path.length()) + " not supported.");
             System.err.println("in " + path);
@@ -87,7 +90,7 @@ public class TextExtractor implements Runnable {
             json.put("text",extractor.getAllText());
             json.put("words",extractor.getNumberOfWords());
             extractor.closeDoc();
-
+           
             db.write(json);
         }
         catch (Exception e){
