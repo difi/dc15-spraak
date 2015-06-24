@@ -39,6 +39,7 @@ public class Setup {
         
 
         this.modules = new HashMap<String, Thread>();
+        
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings)));
 
@@ -47,7 +48,6 @@ public class Setup {
 
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings)));
-
     }
 
 
