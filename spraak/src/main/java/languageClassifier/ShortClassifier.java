@@ -73,6 +73,7 @@ public class ShortClassifier {
 		float combined = result[0] + result[1];
 		float combined_bm = result_bm[0] + result_bm[1];
 		
+
 		float percent = combined/(combined+combined_bm);
 
 		if(combined + combined_bm == 0f)
@@ -82,8 +83,8 @@ public class ShortClassifier {
 		else
 			return "nb";
 	}
-	
-	
-	
-	
+
+
+
+
 }

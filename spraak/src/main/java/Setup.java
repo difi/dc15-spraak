@@ -12,16 +12,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.*;
 
 
 public class Setup {
+    //debugmode=engage, or not!
+    private boolean debug = true;
 
     private final ArrayList<Map> crawlerSettings;
     private final ArrayList<String> fileSettings;
     private final Map oAuthSettings;
     private HashMap<String, Thread> modules;
 
-    public Setup(String filename){
+    public Setup(String filename) {
         JSONParser parser = new JSONParser();
 
         Object obj = null;
@@ -36,7 +39,7 @@ public class Setup {
 
         // TODO: Remove hardcode
         JSONObject jsonObject = (JSONObject) obj;
-        jsonObject = (JSONObject)jsonObject.get("difi");
+        jsonObject = (JSONObject) jsonObject.get("difi");
 
         ElasticConnector elastic = new ElasticConnector("difi");
 
@@ -59,6 +62,17 @@ public class Setup {
     }
 
 
+
+/*    public void loggerDebug(boolean debug) {
+        if (debug) {
+
+            //Logger logger = new Logger();
+
+        } else {
+            System.out.println("Debug not active");
+
+        }
+    }*/
 
 
     public void setupConnector(){
