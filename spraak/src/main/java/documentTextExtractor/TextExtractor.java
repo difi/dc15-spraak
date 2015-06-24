@@ -85,7 +85,7 @@ public class TextExtractor implements Runnable {
             json.put("words",extractor.getNumberOfWords());
             extractor.closeDoc();
 
-            db.write(json);
+            db.write("file",json);
         }
         catch (Exception e){
             e.printStackTrace();

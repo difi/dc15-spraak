@@ -58,7 +58,7 @@ public class TwitterCrawler implements Runnable {
                         twitterPosts.put("account", user);
                         twitterPosts.put("text", status.getText());
                         twitterPosts.put("post_year", year);
-                        this.db.write(twitterPosts);
+                        this.db.write("twitter", twitterPosts);
                     }
                 }
 

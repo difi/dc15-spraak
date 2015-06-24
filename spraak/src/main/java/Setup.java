@@ -1,4 +1,5 @@
 
+import connectors.ElasticConnector;
 import connectors.FileConnector;
 import crawler.Scrapper;
 import oauth.RunnableOauth;
@@ -31,7 +32,11 @@ public class Setup {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
+        // TODO: Remove hardcode
         JSONObject jsonObject = (JSONObject) obj;
+        jsonObject = (JSONObject)jsonObject.get("difi");
 
         this.crawlerSettings = (ArrayList<Map>)jsonObject.get("crawler");
         this.fileSettings = (ArrayList<String>)jsonObject.get("files");
@@ -55,7 +60,7 @@ public class Setup {
 
     public void setupConnector(){
         // Replace with elastic
-        FileConnector fconn = FileConnector.getInstance("Something");
+        ElasticConnector elastic = ElasticConnector.getInstance("difi");
     }
 
     public void start(){
