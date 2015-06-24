@@ -9,6 +9,7 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.json.simple.JSONObject;
+import utils.Utils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -120,12 +121,11 @@ public class ElasticConnector {
                 e.printStackTrace();
             }
         }
+        msg.put("text", Utils.clean((String)msg.get("text")));
 
 
         System.out.println("------------");
-        System.out.println(msg.get("text"));
-        System.out.println(msg.get("lang") + " - " + msg.get("complexity"));
-        System.out.println("------------");
+        System.out.println(msg);
 
         msg.put("owner", this.owner);
 

@@ -145,10 +145,10 @@ public class Scrapper implements Runnable {
                 return;
             }
 
-            HashMap<String, Object> settings = new HashMap<>();
-            settings.put("domains", crawlerDomains);
-            settings.put("db", this.database);
-            controller.setCustomData(crawlerDomains);
+            HashMap<String, Object> crawlerSettings = new HashMap<String, Object>();
+            crawlerSettings.put("domains", crawlerDomains);
+            crawlerSettings.put("db", this.database);
+            controller.setCustomData(crawlerSettings);
 
             controller.addSeed(domain);
 
@@ -162,7 +162,6 @@ public class Scrapper implements Runnable {
             }
 
             System.out.println("started");
-            controller.setCustomData(crawlerDomains);
 
             controller.addSeed(domain);
 

@@ -41,7 +41,9 @@ public class Crawler extends WebCrawler {
     @Override
     public void onStart() {
 
-        this.db = (ElasticConnector) this.settings.get("database");
+        this.settings = (HashMap<String, Object>) myController.getCustomData();
+
+        this.db = (ElasticConnector) this.settings.get("db");
 
         this.db.setType("crawl");
 
@@ -104,8 +106,6 @@ public class Crawler extends WebCrawler {
             String str = "";
             for(int i = 0; i < page.getWebURL().getDepth(); i++)
                 str+="\t";
-            System.out.println(str+page.getWebURL().getURL());
-
             JSONObject j = new JSONObject();
             // Review
             HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -147,8 +147,10 @@ public class Crawler extends WebCrawler {
             out = this.clean(out);
 
             // TODO: Fix
+            j.put("domain", myDomain);
+            j.put("type", "web");
+            j.put("site", page.getWebURL().getURL());
             j.put("text", out);
-            System.out.printf("write");
             this.db.write(j);
         }
     }
