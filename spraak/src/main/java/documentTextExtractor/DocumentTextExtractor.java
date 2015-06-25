@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface DocumentTextExtractor {
     public void setSource(URL url) throws IOException;
     public void setSource(String filePath) throws IOException;
-    public int getNumberOfPages();
+    public int getNumberOfPages() throws IOException;
     public String getAllText() throws IOException;
     public ArrayList<String> getAllParagraphs() throws IOException;
     public ArrayList<String> getParagraphsLongerThan(int minLength) throws IOException;

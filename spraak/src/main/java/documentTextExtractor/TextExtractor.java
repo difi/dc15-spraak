@@ -61,8 +61,14 @@ public class TextExtractor implements Runnable {
         if (path.endsWith(".pdf")) {
             extractor = new PdfExtractor();
         }
+        else if(path.endsWith(".doc")) {
+            extractor = new DocExtractor();
+        }
         else if (path.endsWith(".docx")){
-            extractor = new WordDocExtractor();
+            extractor = new DocxExtractor();
+        }
+        else if(path.endsWith(".odt")) {
+            extractor = new OdtExtractor();
         }
         else {
             System.err.println("File format " + path.substring(path.lastIndexOf("."),path.length()) + " not supported.");
@@ -85,7 +91,7 @@ public class TextExtractor implements Runnable {
             json.put("text",extractor.getAllText());
             json.put("words",extractor.getNumberOfWords());
             extractor.closeDoc();
-
+           
             db.write(json);
         }
         catch (Exception e){

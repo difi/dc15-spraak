@@ -65,6 +65,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.odftoolkit</groupId>
+            <artifactId>simple-odf</artifactId>
+            <version>0.8.1-incubating</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.carrotsearch</groupId>
             <artifactId>langid-java</artifactId>
             <version>1.0.0</version>
