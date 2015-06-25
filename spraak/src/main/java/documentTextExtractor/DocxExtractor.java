@@ -17,16 +17,16 @@ public class DocxExtractor implements DocumentTextExtractor {
     XWPFWordExtractor extractor;
     XWPFDocument doc;
 
-    DocxExtractor() {
+    public DocxExtractor() {
         extractor = null;
         doc = null;
     }
 
-    DocxExtractor(URL url) throws IOException {
+    public DocxExtractor(URL url) throws IOException {
         setSource(url);
     }
 
-    DocxExtractor(String filePath) throws IOException {
+    public DocxExtractor(String filePath) throws IOException {
         setSource(filePath);
     }
     public void setSource(URL url) throws IOException {

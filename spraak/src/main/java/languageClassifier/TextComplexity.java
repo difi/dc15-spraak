@@ -20,11 +20,11 @@ public class TextComplexity {
                 curWord = 0;
                 if (("" + c).matches((".*[.,?!:]"))) {
                     stops++;
-                } else {
-                    if (c.isUpperCase(c))
-                        stops++;
                 }
             }else{
+                if (c.isUpperCase(c))
+                    stops++;
+
                 curWord++;
             }
 

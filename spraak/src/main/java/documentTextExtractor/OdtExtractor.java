@@ -18,17 +18,17 @@ public class OdtExtractor implements DocumentTextExtractor {
     TextDocument doc;
     String textContent;
 
-    OdtExtractor() {
+    public OdtExtractor() {
         doc = null;
         textContent = null;
     }
 
-    OdtExtractor(String filePath) throws IOException {
+    public OdtExtractor(String filePath) throws IOException {
         setSource(filePath);
         textContent = null;
     }
 
-    OdtExtractor(URL url) throws IOException {
+    public OdtExtractor(URL url) throws IOException {
         setSource(url);
         textContent = null;
     }

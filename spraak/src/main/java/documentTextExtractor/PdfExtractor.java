@@ -21,16 +21,16 @@ public class PdfExtractor implements DocumentTextExtractor {
     private static final String SPLIT_STRING = "-0-=s-e-p-a-r-a-t-o-r=-0-";
     private static final int DEFAULT_DROP_THRESHOLD = 3;
 
-    PdfExtractor() {
+    public PdfExtractor() {
         pddoc = null;
         textStripper = null;
     }
 
-    PdfExtractor(URL url) throws IOException {
+    public PdfExtractor(URL url) throws IOException {
         setSource(url);
     }
 
-    PdfExtractor(String filePath) throws IOException {
+    public PdfExtractor(String filePath) throws IOException {
         setSource(filePath);
     }
 
