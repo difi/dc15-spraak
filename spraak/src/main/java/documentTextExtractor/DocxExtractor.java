@@ -12,21 +12,21 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 /**
  * Created by camp-aka on 18.06.2015.
  */
-public class WordDocExtractor implements DocumentTextExtractor {
+public class DocxExtractor implements DocumentTextExtractor {
 
     XWPFWordExtractor extractor;
     XWPFDocument doc;
 
-    WordDocExtractor() {
+    DocxExtractor() {
         extractor = null;
         doc = null;
     }
 
-    WordDocExtractor(URL url) throws IOException {
+    DocxExtractor(URL url) throws IOException {
         setSource(url);
     }
 
-    WordDocExtractor(String filePath) throws IOException {
+    DocxExtractor(String filePath) throws IOException {
         setSource(filePath);
     }
     public void setSource(URL url) throws IOException {
