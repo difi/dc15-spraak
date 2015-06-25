@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class Setup {
@@ -38,8 +41,6 @@ public class Setup {
         JSONObject jsonObject = (JSONObject) obj;
         jsonObject = (JSONObject)jsonObject.get("difi");
 
-        ElasticConnector elastic = new ElasticConnector("difi");
-
         this.crawlerSettings = (ArrayList<Map>)jsonObject.get("crawler");
         this.fileSettings = (ArrayList<String>)jsonObject.get("files");
         this.oAuthSettings = (Map)jsonObject.get("oauth");
@@ -48,13 +49,15 @@ public class Setup {
         this.modules = new HashMap<String, Thread>();
 
         if(!this.crawlerSettings.isEmpty())
-            this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings, elastic)));
+            this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings, new ElasticConnector("difi"))));
 
         if(!this.fileSettings.isEmpty())
-            this.modules.put("file", new Thread(new TextExtractor(this.fileSettings, elastic)));
+            this.modules.put("file", new Thread(new TextExtractor(this.fileSettings, new ElasticConnector("difi"))));
+
+
 
         if(!this.oAuthSettings.isEmpty())
-            this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings, elastic)));
+            this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector("difi"))));
 
     }
 
@@ -67,8 +70,9 @@ public class Setup {
 
     public void start(){
         this.setupConnector();
+        ExecutorService exe = Executors.newCachedThreadPool();
         for(Thread entry: this.modules.values()){
-            entry.start();
+            exe.execute(entry);
         }
     }
 

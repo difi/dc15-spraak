@@ -27,6 +27,7 @@ public class ElasticConnector {
 
     public ElasticConnector(String owner){
         this.owner = owner;
+        this.connect();
     }
 
     private void connect(){
@@ -121,22 +122,25 @@ public class ElasticConnector {
                 e.printStackTrace();
             }
         }
-        msg.put("text", Utils.clean((String)msg.get("text")));
 
 
-        System.out.println("------------");
-        System.out.println(msg);
+        if(Float.isInfinite((Float)msg.get("complexity"))){
+            System.out.println(msg);
+            System.out.println(Utils.clean((String)msg.get("text")));
+
+        }
+
+        msg.put("text", Utils.clean((String) msg.get("text")));
+        //System.out.println(msg);
 
         msg.put("owner", this.owner);
 
-
         // Just for safety
-        /*
-        IndexResponse respone = this.client.prepareIndex("spraak", this.type)
-                .setSource(j)
+        /*IndexResponse respone = this.client.prepareIndex("spraak", this.type)
+                .setSource(msg)
                 .execute()
                 .actionGet();
-        */
+                */
     }
 
     public String getType() {

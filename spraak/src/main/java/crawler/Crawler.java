@@ -37,6 +37,7 @@ public class Crawler extends WebCrawler {
     private String[] myCrawlDomains;
     private String myDomain;
     private ElasticConnector db;
+    private String domain;
 
     @Override
     public void onStart() {
@@ -51,6 +52,7 @@ public class Crawler extends WebCrawler {
 
         myDomain = myCrawlDomains[0];
         this.myDomain = myCrawlDomains[0];
+        this.domain = myCrawlDomains[0].split("//",2)[1];
     }
 
     @Override
@@ -147,7 +149,7 @@ public class Crawler extends WebCrawler {
             out = this.clean(out);
 
             // TODO: Fix
-            j.put("domain", myDomain);
+            j.put("domain", this.domain);
             j.put("type", "web");
             j.put("site", page.getWebURL().getURL());
             j.put("text", out);

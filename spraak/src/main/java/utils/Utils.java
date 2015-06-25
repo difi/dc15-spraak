@@ -26,10 +26,10 @@ public class Utils {
             i++;
         }
         // Remove hashtag
-        s = s.replaceAll("#[A-Za-z]+","");
+        s = s.replaceAll("#[A-Za-z0-9]+","");
 
         //Remove twitter @
-        s = s.replaceAll("@[A-Za-z]+","");
+        s = s.replaceAll("@[A-Za-z0-9]+","");
 
         return s;
     }

@@ -118,7 +118,7 @@ public class Scrapper implements Runnable {
                 return;
             }
 
-            int threads = 5;
+            int threads = 1;
 
             if (entry.containsKey("threads")) {
                 Number n = (Number) entry.get("threads");

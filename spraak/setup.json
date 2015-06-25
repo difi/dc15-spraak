@@ -2,7 +2,7 @@
   "difi": {
     "crawler": [
       {
-        "domain": "http://www.norge.no/nb"
+        "domain": "http://www.difi.no"
       }
     ],
     "oauth": {
