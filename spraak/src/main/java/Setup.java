@@ -56,28 +56,7 @@ public class Setup {
 
     }
 
-
-
-
-    public void setupConnector(){
-        // Replace with elastic
-    }
-
-    protected boolean finished;
-    protected final Object waitingLock = new Object();
-    protected boolean shuttingDown = false;
-
-    protected static void sleep(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException ignored) {
-            // Do nothing
-        }
-    }
-
-
     public void start(){
-        this.setupConnector();
         final List<Thread> threads = new ArrayList<>();
 
         for(Thread entry: this.modules.values()){
