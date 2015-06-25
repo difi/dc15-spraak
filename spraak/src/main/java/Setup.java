@@ -1,6 +1,5 @@
 
 import connectors.ElasticConnector;
-import connectors.FileConnector;
 import crawler.Scrapper;
 import oauth.RunnableOauth;
 import documentTextExtractor.TextExtractor;
@@ -11,10 +10,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class Setup {
@@ -54,8 +51,6 @@ public class Setup {
         if(!this.fileSettings.isEmpty())
             this.modules.put("file", new Thread(new TextExtractor(this.fileSettings, new ElasticConnector("difi"))));
 
-
-
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector("difi"))));
 
@@ -68,24 +63,42 @@ public class Setup {
         // Replace with elastic
     }
 
-    public void start(){
-        this.setupConnector();
-        ExecutorService exe = Executors.newCachedThreadPool();
-        for(Thread entry: this.modules.values()){
-            exe.execute(entry);
+    protected boolean finished;
+    protected final Object waitingLock = new Object();
+    protected boolean shuttingDown = false;
+
+    protected static void sleep(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException ignored) {
+            // Do nothing
         }
     }
 
-    public void stop(){
+
+    public void start(){
+        this.setupConnector();
+        final List<Thread> threads = new ArrayList<>();
+
         for(Thread entry: this.modules.values()){
-            // Implement this
-            entry.interrupt();
+            entry.start();
+            threads.add(entry);
         }
+
+        while(true) {
+            boolean alive = false;
+            for (Thread t: threads){
+                if (t.isAlive())
+                    alive = true;
+            }
+            if(!alive)
+                break;
+        }
+        return;
     }
 
     public static void main(String[] args) {
         Setup s = new Setup("setup.json");
-        //s.setup();
         s.start();
     }
 

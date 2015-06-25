@@ -154,6 +154,8 @@ public class Crawler extends WebCrawler {
             j.put("site", page.getWebURL().getURL());
             j.put("text", out);
             this.db.write(j);
+            return;
         }
+        return;
     }
 }

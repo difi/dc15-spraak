@@ -124,14 +124,9 @@ public class ElasticConnector {
         }
 
 
-        if(Float.isInfinite((Float)msg.get("complexity"))){
-            System.out.println(msg);
-            System.out.println(Utils.clean((String)msg.get("text")));
-
-        }
 
         msg.put("text", Utils.clean((String) msg.get("text")));
-        //System.out.println(msg);
+        System.out.println(msg);
 
         msg.put("owner", this.owner);
 

@@ -16,6 +16,7 @@ public class TwitterCrawler implements Runnable {
     private String year;
     private Map settings;
     private ElasticConnector db;
+    public boolean done = false;
 
     public TwitterCrawler(Map settings, ElasticConnector db) {
         this.db = db;
@@ -73,7 +74,9 @@ public class TwitterCrawler implements Runnable {
             catch (TwitterException e) {
                 e.printStackTrace();
             }
+            break;
         }
+        return;
     }
 
     @Override
@@ -83,6 +86,7 @@ public class TwitterCrawler implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return;
     }
 }
 
