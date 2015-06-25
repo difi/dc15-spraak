@@ -17,16 +17,16 @@ public class DocExtractor implements DocumentTextExtractor {
     HWPFDocument doc;
     WordExtractor extractor;
 
-    DocExtractor() {
+    public DocExtractor() {
         doc = null;
         extractor = null;
     }
 
-    DocExtractor(URL url) throws IOException {
+    public DocExtractor(URL url) throws IOException {
         setSource(url);
     }
 
-    DocExtractor(String filePath) throws IOException {
+    public DocExtractor(String filePath) throws IOException {
         setSource(filePath);
     }
 
