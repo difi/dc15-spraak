@@ -170,6 +170,7 @@ public class Scrapper implements Runnable {
 
             controller.waitUntilFinish();
         }
+        return;
 
     }
 }

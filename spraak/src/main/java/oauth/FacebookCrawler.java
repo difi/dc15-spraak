@@ -31,6 +31,7 @@ public class FacebookCrawler implements Runnable{
 
     public void getFacebookPost() throws Exception {
 
+
         String appId = this.settings.get("app_id").toString();
         String appSecret = this.settings.get("app_secret").toString();
         String accessToken = this.settings.get("access_token").toString();
@@ -60,6 +61,7 @@ public class FacebookCrawler implements Runnable{
                     year = year.substring(year.length() - 4, year.length());
                 }
                 //retrieve only post from the last 5 years
+        return;
 
         }
 
@@ -70,6 +72,7 @@ public class FacebookCrawler implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return;
     }
 }
 
