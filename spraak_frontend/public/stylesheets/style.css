@@ -37,8 +37,10 @@ body{
 
 @media (min-width: 768px) {
 
+
   nav > ul > li.active > ul {
     display:block !important;
+
   }
 
   nav > ul {
@@ -70,3 +72,4 @@ body{
     margin-bottom: 2px;
   }
 }
+
