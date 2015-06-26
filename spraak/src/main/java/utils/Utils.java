@@ -14,9 +14,10 @@ public class Utils {
         s = s.replace("\n","").replace("\r","");
         s = s.trim().replaceAll(" +"," ");
         s = s.trim().replaceAll("\t+", " ");
+        s = s.trim().replaceAll("https?://\\S+\\s?", "");
         s = s.toLowerCase();
 
-        // Remove https and url's
+/*        // Remove https and url's
         String urlPattern = "((https?|ftp|gopher|telnet|file|Unsure|http):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
         Pattern p = Pattern.compile(urlPattern,Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(s);
@@ -24,7 +25,7 @@ public class Utils {
         while (m.find()) {
             s = s.replaceAll(m.group(i),"").trim();
             i++;
-        }
+        }*/
         // Remove hashtag
         s = s.replaceAll("#[A-Za-z0-9]+","");
 

@@ -32,6 +32,7 @@ public class TextExtractor implements Runnable {
                 handleFile(filePath);
             }
         }
+        return;
     }
 
     /*
@@ -97,5 +98,6 @@ public class TextExtractor implements Runnable {
         catch (Exception e){
             e.printStackTrace();
         }
+        return;
     }
 }

@@ -17,16 +17,16 @@ public class DocxExtractor implements DocumentTextExtractor {
     XWPFWordExtractor extractor;
     XWPFDocument doc;
 
-    DocxExtractor() {
+    public DocxExtractor() {
         extractor = null;
         doc = null;
     }
 
-    DocxExtractor(URL url) throws IOException {
+    public DocxExtractor(URL url) throws IOException {
         setSource(url);
     }
 
-    DocxExtractor(String filePath) throws IOException {
+    public DocxExtractor(String filePath) throws IOException {
         setSource(filePath);
     }
     public void setSource(URL url) throws IOException {
@@ -46,7 +46,7 @@ public class DocxExtractor implements DocumentTextExtractor {
     }
 
     public String getAllText() throws IOException {
-        return extractor.getText();
+        return extractor.getText().trim();
     }
 
     public ArrayList<String> getAllParagraphs() throws IOException {
@@ -65,7 +65,7 @@ public class DocxExtractor implements DocumentTextExtractor {
     }
 
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[\\s]+").length;
+        return getAllText().split("[.,:;!?\\s]+").length;
     }
 
     public void closeDoc() throws IOException {

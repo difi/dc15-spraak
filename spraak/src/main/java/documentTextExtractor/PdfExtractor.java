@@ -21,22 +21,22 @@ public class PdfExtractor implements DocumentTextExtractor {
     private static final String SPLIT_STRING = "-0-=s-e-p-a-r-a-t-o-r=-0-";
     private static final int DEFAULT_DROP_THRESHOLD = 3;
 
-    PdfExtractor() {
+    public PdfExtractor() {
         pddoc = null;
         textStripper = null;
     }
 
-    PdfExtractor(URL url) throws IOException {
+    public PdfExtractor(URL url) throws IOException {
         setSource(url);
     }
 
-    PdfExtractor(String filePath) throws IOException {
+    public PdfExtractor(String filePath) throws IOException {
         setSource(filePath);
     }
 
     public String getText(int pageFrom, int pageTo) throws IOException {
         setTextStripperPageBounds(pageFrom, pageTo);
-        return textStripper.getText(pddoc);
+        return textStripper.getText(pddoc).replaceAll(SPLIT_STRING, "");
     }
 
     public void setSource(URL url) throws IOException {
@@ -53,7 +53,7 @@ public class PdfExtractor implements DocumentTextExtractor {
 
     // Might fail when pdf is large
     public String getAllText() throws IOException {
-        return getText(0,pddoc.getNumberOfPages());
+        return getText(0,pddoc.getNumberOfPages()).trim().replace(SPLIT_STRING, "");
     }
 
     public int getNumberOfPages() {
@@ -116,7 +116,7 @@ public class PdfExtractor implements DocumentTextExtractor {
 
     public int getNumberOfWords() throws IOException {
         String allText = textStripper.getText(pddoc);
-        return allText.split("[\\s]+").length;
+        return allText.replaceAll(SPLIT_STRING, "").split("[.,:;!?\\s]+").length;
     }
 
     public void closeDoc() throws IOException {

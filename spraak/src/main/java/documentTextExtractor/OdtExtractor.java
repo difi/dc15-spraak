@@ -18,17 +18,17 @@ public class OdtExtractor implements DocumentTextExtractor {
     TextDocument doc;
     String textContent;
 
-    OdtExtractor() {
+    public OdtExtractor() {
         doc = null;
         textContent = null;
     }
 
-    OdtExtractor(String filePath) throws IOException {
+    public OdtExtractor(String filePath) throws IOException {
         setSource(filePath);
         textContent = null;
     }
 
-    OdtExtractor(URL url) throws IOException {
+    public OdtExtractor(URL url) throws IOException {
         setSource(url);
         textContent = null;
     }
@@ -56,7 +56,7 @@ public class OdtExtractor implements DocumentTextExtractor {
     public int getNumberOfPages() throws IOException {
         try {
             // Average number of words per page is 250. It will have to do for now.
-            return getNumberOfWords() / 250;
+            return (int) Math.ceil(getNumberOfWords() / 250.00);
         }
         catch (Exception e) {
             throw new IOException(e.getMessage());
@@ -70,7 +70,7 @@ public class OdtExtractor implements DocumentTextExtractor {
             if (textContent == null) {
                 return doc.getContentRoot().getTextContent();
             }
-            return textContent;
+            return textContent.trim();
         }
         catch (Exception e) {
             throw new IOException(e.getMessage());
@@ -99,7 +99,7 @@ public class OdtExtractor implements DocumentTextExtractor {
 
     @Override
     public int getNumberOfWords() throws IOException {
-        return  getAllText().split("[\\s]+").length;
+        return  getAllText().split("[.,:;!?\\s]+").length;
     }
 
     @Override

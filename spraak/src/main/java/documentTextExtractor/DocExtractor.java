@@ -17,16 +17,16 @@ public class DocExtractor implements DocumentTextExtractor {
     HWPFDocument doc;
     WordExtractor extractor;
 
-    DocExtractor() {
+    public DocExtractor() {
         doc = null;
         extractor = null;
     }
 
-    DocExtractor(URL url) throws IOException {
+    public DocExtractor(URL url) throws IOException {
         setSource(url);
     }
 
-    DocExtractor(String filePath) throws IOException {
+    public DocExtractor(String filePath) throws IOException {
         setSource(filePath);
     }
 
@@ -49,7 +49,7 @@ public class DocExtractor implements DocumentTextExtractor {
 
     @Override
     public String getAllText() throws IOException {
-        return extractor.getText();
+        return extractor.getText().trim();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DocExtractor implements DocumentTextExtractor {
 
     @Override
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[\\s]+").length;
+        return getAllText().split("[.,:;!?\\s]+").length;
     }
 
     @Override
