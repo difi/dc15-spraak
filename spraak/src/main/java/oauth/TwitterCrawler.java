@@ -2,20 +2,26 @@ package oauth;
 //Uses the twitter4j framework: http://twitter4j.org/en/index.html
 
 import connectors.ElasticConnector;
-import twitter4j.*;
 import java.util.List;
 import java.util.Map;
+
+import twitter4j.*;
 import twitter4j.conf.*;
 import org.json.simple.JSONObject;
+import org.apache.log4j.Logger;
 
 //This program requires unique OAuth tokens to run.
 
 public class TwitterCrawler implements Runnable {
 
+    static Logger logger = Logger.getLogger(TwitterCrawler.class);
     private int pageNumber = 1;
     private String year;
     private Map settings;
     private ElasticConnector db;
+
+
+
 
     public TwitterCrawler(Map settings, ElasticConnector db) {
         this.db = db;
@@ -24,6 +30,9 @@ public class TwitterCrawler implements Runnable {
     }
 
     public void getTwitterPost() throws Exception {
+
+
+
 
         //get tokens from setup.json.
         String consumerKey = this.settings.get("consumer_key").toString();
@@ -62,7 +71,11 @@ public class TwitterCrawler implements Runnable {
                         twitterPosts.put("post_year", year);
                         this.db.write(twitterPosts);
                     }
+
+
+
                 }
+
 
                 //retrieve only post from the last 5 years
                 if (year.equals("2009"))
@@ -75,6 +88,7 @@ public class TwitterCrawler implements Runnable {
             }
         }
     }
+
 
     @Override
     public void run() {

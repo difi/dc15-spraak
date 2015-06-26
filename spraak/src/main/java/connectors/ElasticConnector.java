@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
+import org.apache.log4j.Logger;
 
 /**
  * Created by camp-mli on 19.06.2015.
@@ -23,7 +24,7 @@ public class ElasticConnector {
     private String uuid = null;
     private String type;
     private String owner;
-
+    static Logger logger = Logger.getLogger(ElasticConnector.class);
     public ElasticConnector(String owner){
         this.owner = owner;
     }
@@ -122,10 +123,17 @@ public class ElasticConnector {
         }
 
 
-        System.out.println("------------");
+
+        logger.info(msg.get("text"));
+        logger.info(msg.get("lang") + " - " + msg.get("complexity"));
+        logger.debug("HEI PÅ DEG DU");
+        logger.warn("");
+        logger.fatal("");
+
+    /*    System.out.println("------------");
         System.out.println(msg.get("text"));
         System.out.println(msg.get("lang") + " - " + msg.get("complexity"));
-        System.out.println("------------");
+*/
 
         msg.put("owner", this.owner);
 

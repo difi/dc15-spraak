@@ -4,6 +4,8 @@ import connectors.FileConnector;
 import crawler.Scrapper;
 import oauth.RunnableOauth;
 import documentTextExtractor.TextExtractor;
+import oauth.TwitterCrawler;
+import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,17 +14,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.*;
+import org.apache.log4j.Logger;
 
 
 public class Setup {
-    //debugmode=engage, or not!
-    private boolean debug = true;
+
+
+
 
     private final ArrayList<Map> crawlerSettings;
     private final ArrayList<String> fileSettings;
     private final Map oAuthSettings;
     private HashMap<String, Thread> modules;
+
+
 
     public Setup(String filename) {
         JSONParser parser = new JSONParser();
@@ -41,38 +46,32 @@ public class Setup {
         JSONObject jsonObject = (JSONObject) obj;
         jsonObject = (JSONObject) jsonObject.get("difi");
 
-        ElasticConnector elastic = new ElasticConnector("difi");
 
-        this.crawlerSettings = (ArrayList<Map>)jsonObject.get("crawler");
-        this.fileSettings = (ArrayList<String>)jsonObject.get("files");
-        this.oAuthSettings = (Map)jsonObject.get("oauth");
-        
+        this.crawlerSettings = (ArrayList<Map>) jsonObject.get("crawler");
+        this.fileSettings = (ArrayList<String>) jsonObject.get("files");
+        this.oAuthSettings = (Map) jsonObject.get("oauth");
+
 
         this.modules = new HashMap<String, Thread>();
-        
+
+
+        initiateThreads();
+
+    }
+
+    public void initiateThreads() {
+
+        ElasticConnector elastic = new ElasticConnector("difi");
+
         if(!this.crawlerSettings.isEmpty())
             this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings, elastic)));
 
-       if(!this.fileSettings.isEmpty())
+        if(!this.fileSettings.isEmpty())
             this.modules.put("file", new Thread(new TextExtractor(this.fileSettings, elastic)));
 
         if(!this.oAuthSettings.isEmpty())
             this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings, elastic)));
-
     }
-
-
-
-/*    public void loggerDebug(boolean debug) {
-        if (debug) {
-
-            //Logger logger = new Logger();
-
-        } else {
-            System.out.println("Debug not active");
-
-        }
-    }*/
 
 
     public void setupConnector(){
@@ -94,6 +93,11 @@ public class Setup {
     }
 
     public static void main(String[] args) {
+
+        //initialize logger config path
+        String log4jConfPath = "C:\\Users\\camp-mth\\Difi\\dc15-spraak\\spraak\\src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
+        PropertyConfigurator.configure(log4jConfPath);
+
         Setup s = new Setup("setup.json");
         //s.setup();
         s.start();

@@ -14,7 +14,7 @@ public class RunnableOauth implements Runnable{
         this.settings = settings;
     }
 
-    @Override
+
     public void run() {
 
         if(this.settings.containsKey("twitter")) {
