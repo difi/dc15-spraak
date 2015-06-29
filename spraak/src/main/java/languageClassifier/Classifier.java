@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 import com.carrotsearch.labs.langid.DetectedLanguage;
 import com.carrotsearch.labs.langid.LangIdV3;
@@ -17,7 +18,7 @@ import com.carrotsearch.labs.langid.Model;
 
 public class Classifier {
 	
-		
+
 	private static LangIdV3 langid;
 	
 	
@@ -53,7 +54,7 @@ public class Classifier {
 					continue;
 				else if(line.startsWith("_")){
 					current = line.substring(1);
-					System.out.println(current);
+
 					continue;
 				}
 				else{
