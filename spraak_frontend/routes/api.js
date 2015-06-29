@@ -152,9 +152,47 @@ router.get("/v1/all", (function(req, res) {
                             }
                         }
                     }
-                }
-            }
+                },
+                all: {
+                    global: {},
+                    aggs: {
+                        complexity_nb: {
+                            filter: {
+                                term: {
+                                    lang: "nb"
+                                }
+                            },
+                            aggs: {
+                                complexity: {
+                                    stats: {
+                                        field: "complexity"
+                                    }
+                                }
+                            }
+                        },
+                        complexity_nn: {
+                            filter: {
+                                term: {
+                                    lang: "nn"
+                                }
+                            },
+                            aggs: {
+                                complexity: {
+                                    stats: {
+                                        field: "complexity"
+                                    }
+                                }
+                            }
+                        },
+                        lang_terms: {
+                            terms: {
+                                field: "lang"
+                            }
+                        }
+                    }
+                },
 
+            }
         }
     }).then(function (resp) {
         console.log(resp.aggregations);
