@@ -259,4 +259,59 @@ router.get("/v1/all/:type", (function(req, res) {
     });
 }))
 
+router.get("/v1/all/owner/:owner", (function(req, res) {
+    client.search({
+        index: 'spraak',
+        body: {
+            query: {match: {name: req.params.owner}},
+            aggs: {
+                toptags: {
+                    terms: {
+                        field: "type"
+                    },
+                    aggs: {
+                        complexity_nb: {
+                            filter: {
+                                term: {
+                                    lang: "nb"
+                                }
+                            },
+                            aggs: {
+                                complexity: {
+                                    stats: {
+                                        field: "complexity"
+                                    }
+                                }
+                            }
+                        },
+                        complexity_nn: {
+                            filter: {
+                                term: {
+                                    lang: "nn"
+                                }
+                            },
+                            aggs: {
+                                complexity: {
+                                    stats: {
+                                        field: "complexity"
+                                    }
+                                }
+                            }
+                        },
+                        lang_terms: {
+                            terms: {
+                                field: "lang"
+                            }
+                        }
+                    }
+                }
+            }
+        }}).then(function (resp) {
+        console.log(resp.aggregations);
+        var hits = resp.aggregations;
+        res.send(hits);
+    }, function (err) {
+        console.trace(err.message);
+    });
+}))
 module.exports = router;
