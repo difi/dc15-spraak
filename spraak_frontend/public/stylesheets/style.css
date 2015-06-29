@@ -1,5 +1,6 @@
 body{
   font-size: 16px;
+
 }
 
 .branding.sub-portal { /*Padding under logo i topp*/
@@ -71,5 +72,25 @@ body{
   .content-article #content>article ol li {
     margin-bottom: 2px;
   }
+
+  .header-text {
+    opacity: 1;
+    transition: opacity 500ms;
+    -webkit-transition: opacity 500ms;
+
+  }
+
+  .pure-u, .pure-u {
+    border:1px solid;
+    border-color: black;
+  }
+
+  #piechart {
+    min-width: 310px;
+    height: 400px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
 }
 
