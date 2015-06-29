@@ -110,6 +110,4 @@ public class Classifier {
 			return new AnalyzedText(result.getLangCode(),(new TextComplexity(str)));
 		}
 	}
-	
-
 }

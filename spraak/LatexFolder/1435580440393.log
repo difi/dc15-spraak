@@ -1,0 +1,188 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.6.26)  29 JUN 2015 14:20
+entering extended mode
+**\documentclass[pdflatex]{article} \usepackage[latin1]{inputenc} \usepackage[n
+orsk]{babel} \usepackage{changepage} \usepackage{graphicx} \begin{document} \au
+thor{Difi} \title{Sammendrag av spr{\aa}bruk i statlige kilder.} \maketitle \be
+gin{adjustwidth}{0em}{0pt}\section{Sammendrag} \begin{adjustwidth}{1em}{0pt}\te
+xtbf{Mengde Nynorsk}: 13\%\newline \textbf{Mengde Bokm{\aa}l}: 87\%\newline \te
+xtbf{Kompleksitet Nynorsk}: 59 LIX\newline \textbf{Kompleksitet Bokm{\aa}l}: 60
+ LIX\newline \end{adjustwidth}\section{Hjemmesider} \begin{adjustwidth}{1em}{0p
+t}\textbf{Mengde Nynorsk}: 6\%\newline \textbf{Mengde Bokm{\aa}l}: 94\%\newline
+ \textbf{Kompleksitet Nynorsk}: 60 LIX\newline \textbf{Kompleksitet Bokm{\aa}l}
+: 59 LIX\newline \end{adjustwidth}\section{Sosiale Medier} \begin{adjustwidth}{
+1em}{0pt}\subsection{Twitter} \begin{adjustwidth}{2em}{0pt}\textbf{Mengde Nynor
+sk}: 31\%\newline \textbf{Mengde Bokm{\aa}l}: 69\%\newline \textbf{Kompleksitet
+ Nynorsk}: 60 LIX\newline \textbf{Kompleksitet Bokm{\aa}l}: 67 LIX\newline \end
+{adjustwidth}\subsection{Facebook} \begin{adjustwidth}{2em}{0pt}\textbf{Mengde 
+Nynorsk}: 0\%\newline \textbf{Mengde Bokm{\aa}l}: 100\%\newline \textbf{Komplek
+sitet Nynorsk}: 0 LIX\newline \textbf{Kompleksitet Bokm{\aa}l}: 41 LIX\newline 
+\end{adjustwidth}\end{adjustwidth}\section{Filer} \begin{adjustwidth}{1em}{0pt}
+\subsection{docx} \begin{adjustwidth}{2em}{0pt}\textbf{Mengde Nynorsk}: 75\%\ne
+wline \textbf{Mengde Bokm{\aa}l}: 25\%\newline \textbf{Kompleksitet Nynorsk}: 5
+2 LIX\newline \textbf{Kompleksitet Bokm{\aa}l}: 54 LIX\newline \end{adjustwidth
+}\subsection{pdf} \begin{adjustwidth}{2em}{0pt}\textbf{Mengde Nynorsk}: 33\%\ne
+wline \textbf{Mengde Bokm{\aa}l}: 67\%\newline \textbf{Kompleksitet Nynorsk}: 3
+8 LIX\newline \textbf{Kompleksitet Bokm{\aa}l}: 42 LIX\newline \end{adjustwidth
+}\subsection{doc} \begin{adjustwidth}{2em}{0pt}\textbf{Mengde Nynorsk}: 100\%\n
+ewline \textbf{Mengde Bokm{\aa}l}: 0\%\newline \textbf{Kompleksitet Nynorsk}: 4
+4 LIX\newline \textbf{Kompleksitet Bokm{\aa}l}: 0 LIX\newline \end{adjustwidth}
+\subsection{odt} \begin{adjustwidth}{2em}{0pt}\textbf{Mengde Nynorsk}: 100\%\ne
+wline \textbf{Mengde Bokm{\aa}l}: 0\%\newline \textbf{Kompleksitet Nynorsk}: 49
+ LIX\newline \textbf{Kompleksitet Bokm{\aa}l}: 0 LIX\newline \end{adjustwidth}\
+end{adjustwidth}\end{adjustwidth} \end{document}
+("C:\Program Files (x86)\Tex\tex\latex\base\article.cls"
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files (x86)\Tex\tex\latex\base\size10.clo"
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) ("C:\Program Files (x86)\Tex\tex\latex\base\inputenc.sty"
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+("C:\Program Files (x86)\Tex\tex\latex\base\latin1.def"
+File: latin1.def 2008/03/30 v1.1d Input encoding file
+)) ("C:\Program Files (x86)\Tex\tex\generic\babel\babel.sty"
+Package: babel 2008/07/08 v3.8m The Babel package
+*************************************
+* Local config file bblopts.cfg used
+*
+("C:\Program Files (x86)\Tex\tex\latex\00miktex\bblopts.cfg"
+File: bblopts.cfg 2006/07/31 v1.0 MiKTeX 'babel' configuration
+) ("C:\Program Files (x86)\Tex\tex\generic\babel\norsk.ldf"
+Language: norsk 2005/03/30 v2.0h Norsk support from the babel system
+("C:\Program Files (x86)\Tex\tex\generic\babel\babel.def"
+File: babel.def 2008/07/08 v3.8m Babel common definitions
+\babel@savecnt=\count87
+\U@D=\dimen103
+)
+Package babel Info: Making " an active character on input line 113.
+))
+(C:\Users\camp-lsa\IdeaProjects\dc15-spraak\spraak\resources\LatexIncludes\chan
+gepage.sty
+Package: changepage 2009/10/20 v1.0c check page and change page layout
+\c@cp@cntr=\count88
+\cp@tempcnt=\count89
+) ("C:\Program Files (x86)\Tex\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+("C:\Program Files (x86)\Tex\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks16
+) ("C:\Program Files (x86)\Tex\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+("C:\Program Files (x86)\Tex\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+) ("C:\Program Files (x86)\Tex\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+("C:\Program Files (x86)\Tex\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+("C:\Program Files (x86)\Tex\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+) ("C:\Program Files (x86)\Tex\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count90
+))
+\Gin@req@height=\dimen104
+\Gin@req@width=\dimen105
+)
+
+LaTeX Warning: Unused global option(s):
+    [pdflatex].
+
+No file 1435580440393.aux.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 0.
+LaTeX Font Info:    ... okay on input line 0.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 0.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 0.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 0.
+
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+[1
+
+{C:/Users/camp-lsa/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 0
+
+ []
+
+[2]
+(C:\Users\camp-lsa\IdeaProjects\dc15-spraak\spraak\LatexFolder\1435580440393.au
+x) 
+Here is how much of TeX's memory you used:
+ 1274 strings out of 493921
+ 16745 string characters out of 3147674
+ 72100 words of memory out of 3000000
+ 4596 multiletter control sequences out of 15000+200000
+ 7895 words of font info for 28 fonts, out of 3000000 for 9000
+ 841 hyphenation exceptions out of 8191
+ 26i,6n,24p,2544b,347s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files (x86)/Tex/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pro
+gram Files (x86)/Tex/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program File
+s (x86)/Tex/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/Te
+x/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/Tex/fonts/ty
+pe1/public/amsfonts/cm/cmr17.pfb>
+Output written on C:/Users/camp-lsa/IdeaProjects/dc15-spraak/spraak/LatexFolder
+/1435580440393.pdf (2 pages, 63890 bytes).
+PDF statistics:
+ 29 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
