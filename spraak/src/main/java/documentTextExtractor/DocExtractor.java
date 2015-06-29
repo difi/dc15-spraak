@@ -49,7 +49,7 @@ public class DocExtractor implements DocumentTextExtractor {
 
     @Override
     public String getAllText() throws IOException {
-        return extractor.getText();
+        return extractor.getText().trim();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DocExtractor implements DocumentTextExtractor {
 
     @Override
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[\\s]+").length;
+        return getAllText().split("[.,:;!?\\s]+").length;
     }
 
     @Override
