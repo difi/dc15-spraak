@@ -67,7 +67,7 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next){
   res.charset="utf-8";
   next();
-})
+});
 
 
 // error handlers

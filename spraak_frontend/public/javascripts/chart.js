@@ -4,8 +4,11 @@ var nnPercentAll;
 var nbPercentAll;
 var nnComplex = [];
 var nbComplex = [];
+var user = "difi";
+var a = 0;
+var b = 0;
 
-$.getJSON('http://localhost:3002/api/v1/all',function(data) {
+$.getJSON('http://localhost:3002/api/v2/owner/'+user+'/all',function(data) {
 
 
     //Gets total bokmål and nynorsk data.
@@ -19,41 +22,47 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
 
 
     var format = function(v){
-
-
         if (v.complexity_nn.doc_count > 0){
+            if(v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt") {
+                a += parseInt(v.complexity_nn.complexity.avg);
 
-            console.log(v.complexity_nn.complexity.avg);
-            var nn = parseInt(v.complexity_nn.complexity.avg);
-            nnComplex.push(nn);
-
-
+            } else {
+                var nn = parseInt(v.complexity_nn.complexity.avg);
+                nnComplex.push(nn);
+            }
         } else {
-            nnComplex.push(0);
+            if(v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt") {
+                a+= 0;
+            } else {
+                nnComplex.push(0);
+            }
         }
 
         if  (v.complexity_nb.doc_count > 0) {
-            console.log(v.complexity_nb.complexity.avg);
-            var nb = parseInt(v.complexity_nb.complexity.avg)
-            nbComplex.push(nb);
-
-
-        }
-        else {
-            nbComplex.push(0);
-
+            if((v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt")){
+                b += parseInt(v.complexity_nb.complexity.avg);
+            } else {
+                var nb = parseInt(v.complexity_nb.complexity.avg);
+                nbComplex.push(nb);
+            }
+        } else {
+            if(v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt") {
+                b+= 0;
+            }
+            else {
+                nbComplex.push(0);
+            }
         }
     };
 
-
-      $.each(data.toptags.buckets, function () {
-
-
+    $.each(data.toptags.buckets, function () {
           format(this);
-      });
+    });
 
-    console.log(nbComplex);
+    nnComplex.push(a/4);
+    nbComplex.push(b/4);
     console.log(nnComplex);
+    console.log(nbComplex);
 
 
     $('#piechart').highcharts({
@@ -83,7 +92,7 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
             }
         },
         series: [{
-            name: "Brands",
+            name: "Andel",
             colorByPoint: true,
             data: [{
                 name: "Nynorsk",
@@ -123,11 +132,7 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
                     'Web',
                     'Twitter',
                     'Facebook',
-                    'Docx',
-                    'PDF',
-                    'Doc',
-                    'ODT'
-
+                    'Dokumenter'
                 ]
 
             },
@@ -145,7 +150,7 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
             },
             plotOptions: {
                 areaspline: {
-                    fillOpacity: 0.5
+                    fillOpacity: 0.1
                 }
             },
             series: [{
