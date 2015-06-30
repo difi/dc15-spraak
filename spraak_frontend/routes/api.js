@@ -45,40 +45,47 @@ var all = {
     }
 }
 
+
+
+
+var es = function(req,res,next){
+    res.es = function(json,cb) {
+        client.search(json).then(function (resp) {
+            var hits = resp.aggregations;
+            if(cb != null)
+                cb(hits);
+            else
+                res.send(hits);
+        }, function (err) {
+            console.trace(err.message);
+        });
+    }
+    next();
+}
+
+
 router.get("/all", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         body: {
             aggs: all
         }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
     });
 }))
 
 
 router.get("/all/:type", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         type: req.params.type,
         body: {
             aggs: all
         }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
     });
 }))
 
 router.get("/v1/all", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         body: {
             aggs: {
@@ -94,17 +101,11 @@ router.get("/v1/all", (function(req, res) {
                 }
             }
         }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
     });
 }))
 
 router.get("/v1/all/:type", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         type: req.params.type,
         body: {
@@ -117,17 +118,11 @@ router.get("/v1/all/:type", (function(req, res) {
                     }
                 }
             }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
     });
 }))
 
 router.get("/v1/owners", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         body: {
             aggs: {
@@ -145,17 +140,11 @@ router.get("/v1/owners", (function(req, res) {
                 }
             }
         }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
     });
 }))
 
 router.get("/v1/owner/:owner", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         body: {
             aggs: {
@@ -166,22 +155,16 @@ router.get("/v1/owner/:owner", (function(req, res) {
                         }
                     },
                     aggs: all
-                    }
                 }
             }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
+        }
     });
 }))
 
 
 
 router.get("/v2/owner/:owner/all", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         body: {
             query: {
@@ -205,17 +188,11 @@ router.get("/v2/owner/:owner/all", (function(req, res) {
                 }
             }
         }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
     });
 }))
 
 router.get("/v2/owners", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         body: {
             aggs: {
@@ -226,22 +203,20 @@ router.get("/v2/owners", (function(req, res) {
                 }
             }
         }
-    }).then(function (resp) {
-        var hits = resp.aggregations;
-        var d = resp.aggregations.toptags.buckets;
-        var l = [];
-        for(var i in d){
-            console.log(d[i])
-            l.push(d[i].key)
-        }
-        res.send(l);
-    }, function (err) {
-        console.trace(err.message);
-    });
+    }, (function (resp) {
+            var d = resp.toptags.buckets;
+            var l = [];
+            for(var i in d){
+                console.log(d[i])
+                l.push(d[i].key)
+            }
+            res.send(l);
+        })
+    );
 }))
 
 router.get("/v2/owners/lang", (function(req, res) {
-    client.search({
+    res.es({
         index: 'spraak',
         body: {
             aggs: {
@@ -259,13 +234,10 @@ router.get("/v2/owners/lang", (function(req, res) {
                 }
             }
         }
-    }).then(function (resp) {
-        console.log(resp.aggregations);
-        var hits = resp.aggregations;
-        res.send(hits);
-    }, function (err) {
-        console.trace(err.message);
     });
 }))
 
-module.exports = router;
+module.exports = {
+    'router': router,
+    'es': es
+};

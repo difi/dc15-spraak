@@ -26,9 +26,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(api.es);
+
 app.use('/', routes);
 app.use('/users', users);
-app.use('/api', api);
+app.use('/api', api.router);
 
 app.use(function(req, res, next) {
   var oneof = false;
