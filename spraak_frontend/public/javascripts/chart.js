@@ -156,10 +156,72 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
                 data: nbComplex
             }]
         });
-
-
-
 });
+
+$.getJSON('http://localhost:3002/api/v1/owners' ,function(data) {
+    var data_list = [];
+    $.each(data.toptags.buckets, function(index, item) {
+        var nn_percent = -1;
+        $.each(item.lang_terms.buckets, function(index, langitem) {
+            if(langitem.key == "nn") {
+                nn_percent = (langitem.doc_count / item.doc_count) * 100;
+            }
+        });
+        var name = (item.key)[0].toUpperCase() + item.key.substr(1);
+        data_list.push({name: name , y: nn_percent});
+    });
+
+
+    /*
+    A column chart showing the percentage of nynorsk for all "owners"
+     */
+    $('#nnPercentageAllChart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Nynorskandel for hver etat'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: '% nynorsk'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            shared: true,
+            headerFormat: '',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> nynorsk<br/>'
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: 'Andel nynorsk',
+            data: data_list
+        }],
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y:.1f}%',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        }
+    });
+});
+
+
+
 
 
 
