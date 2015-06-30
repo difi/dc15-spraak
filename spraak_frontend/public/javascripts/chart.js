@@ -1,5 +1,32 @@
 
-$(function () {
+var bokmal;
+var nynorsk;
+var nnPercent;
+var nbPercent ;
+
+$.getJSON('http://localhost:3002/api/all',function(data) {
+
+    $.each(data.lang_terms, function() {
+        $.each(this, function(k, v) {
+            if (v.key === "nb") {
+                bokmal = v.doc_count;
+            } else {
+                nynorsk = v.doc_count;
+
+            };
+        });
+    });
+    var nb = parseInt(bokmal);
+    var nn = parseInt(nynorsk);
+    nnPercent = (nn / (nb + nn))*100;
+    nbPercent = (nb / (nb + nn))*100;
+
+
+    console.log(nbPercent);
+    console.log(nnPercent);
+
+
+
     $('#piechart').highcharts({
         chart: {
             plotBackgroundColor: null,
@@ -8,7 +35,7 @@ $(function () {
             type: 'pie'
         },
         title: {
-            text: 'Er stemningen på topp angående sammenslåingen av Skuddleiksveg og Strambreifjord kommune?'
+            text: 'Nynorsk- og bokmålsandelen til Difi:'
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -30,21 +57,19 @@ $(function () {
             name: "Brands",
             colorByPoint: true,
             data: [{
-                name: "Tja",
-                y: 56.33
-            }, {
-                name: "Bare hvis Snirklebotfjorden blir med og!",
-                y: 24.030000000000005,
+                name: "Nynorsk",
+                y: nnPercent,
                 sliced: true,
                 selected: true
+
             }, {
-                name: "Per Sandberg",
-                y: 10.38
-            }, {
-                name: "Hugleik",
-                y: 4.77
+                name: "Bokmål",
+                y: nbPercent
+
 
             }]
         }]
     });
 });
+
+
