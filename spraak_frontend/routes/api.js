@@ -198,6 +198,10 @@ router.get("/v2/owner/:owner/all", (function(req, res) {
                         field: "type"
                     },
                     aggs: all
+                },
+                all: {
+                    global: {},
+                    aggs: all
                 }
             }
         }
