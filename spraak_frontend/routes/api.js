@@ -87,11 +87,11 @@ router.get("/v1/all", (function(req, res) {
                         field: "type"
                     },
                     aggs: all
+                },
+                all: {
+                    global: {},
+                    aggs: all
                 }
-            },
-            all: {
-                global: {},
-                aggs: all
             }
         }
     }).then(function (resp) {
