@@ -29,6 +29,7 @@ $.getJSON('http://localhost:3002/api/v2/owner/'+user+'/all',function(data) {
             } else {
                 var nn = parseInt(v.complexity_nn.complexity.avg);
                 nnComplex.push(nn);
+
             }
         } else {
             if(v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt") {
@@ -61,8 +62,7 @@ $.getJSON('http://localhost:3002/api/v2/owner/'+user+'/all',function(data) {
 
     nnComplex.push(a/4);
     nbComplex.push(b/4);
-    console.log(nnComplex);
-    console.log(nbComplex);
+
 
 
     $('#piechart').highcharts({
