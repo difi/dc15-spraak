@@ -96,12 +96,14 @@ body{
     border: solid 5px rgba(123, 180, 235, .5);
     transition: border 0.3s;
     width: 100%;
+    border-radius: 0;
 
   }
   .style-2 input[type="text"]:focus,
   .style-2 input[type="text"].focus {
     border: solid 5px #7bb4eb !important;
     outline:0 !important;
+    border-radius: 0;
   }
 
 
@@ -116,7 +118,7 @@ body{
     font-family: 'Open Sans', sans-serif !important;
     font-size:18px!important;
     background-color: #7bb4eb!important;
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     width:100% !important;
     height:100% !important;
     padding-top:12px;
@@ -126,7 +128,8 @@ body{
 
   .pure-button:hover {
     color: #ffffff!important;
-    background-color: rgba(123, 180, 235, .8)!important;
+    background-color: rgba(123, 180, 235, .5)!important;
+
   }
 
 }
