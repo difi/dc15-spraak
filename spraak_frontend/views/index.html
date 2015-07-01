@@ -3,11 +3,16 @@
 {% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
 {% block content %}
 
-    <div class="pure-g">
 
-        <div class="pure-u-1-5"></div>
+<div class="pure-g">
 
-        <div class="pure-u-3-5">
+    <div class="pure-u-1-5"></div>
+
+    <div class="pure-u-3-5">
+
+
+
+
             <h2>Og videre kan vi lese om følgende utvikling</h2>
             <p>En mann fra Florø ble observert programmerende på en buss natt i til fredag. Vitner kan medele om
             ville blikk og utydelige variabelnavn. Vi følger saken tett <br/><br/>I andre nyheter har skogseier og
@@ -16,28 +21,25 @@
             Gunfrid Bakbrei venter avkom senere dette året, vi i redaksjonen gratulere Bakbrei samt donor Lysvik
             Slustein. </p>
 
-                <br/><br/>
 
-
-
-
-        </div>
-        <div class="pure-u-1-5"></div>
-
+            {% include 'inputBox.html' %}
     </div>
+    <div class="pure-u-1-5"></div>
 
-        <div id="piechart" ></div>
+</div>
+
+
+
+
+{% include 'charts.html' %}
+
+
 <br/><br/>
 
 
-        <div id="lixChart" ></div>
 
 
 
-
-
-
-    <br/><br/>
 
 
 

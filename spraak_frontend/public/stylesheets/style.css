@@ -80,16 +80,56 @@ body{
 
   }
 
-  .pure-u, .pure-u {
-    border:1px solid;
-    border-color: black;
-  }
+
 
   #piechart {
     min-width: 310px;
     height: 400px;
     max-width: 600px;
     margin: 0 auto;
+  }
+
+
+
+  .style-2 input[type="text"] {
+    padding: 10px;
+    border: solid 5px rgba(123, 180, 235, .5);
+    transition: border 0.3s;
+    width: 100%;
+    border-radius: 0;
+
+  }
+  .style-2 input[type="text"]:focus,
+  .style-2 input[type="text"].focus {
+    border: solid 5px #7bb4eb !important;
+    outline:0 !important;
+    border-radius: 0;
+  }
+
+
+  .buttonSection {
+    text-align: center;
+  }
+
+
+  .pure-button {
+    text-decoration: none !important;
+    color: #fff!important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size:18px!important;
+    background-color: #7bb4eb!important;
+    border-radius: 0 !important;
+    width:100% !important;
+    height:100% !important;
+    padding-top:12px;
+    padding-bottom:12px;
+
+  }
+
+  .pure-button:hover {
+    color: #ffffff!important;
+    background-color: rgba(123, 180, 235, .5)!important;
+
   }
 
 }

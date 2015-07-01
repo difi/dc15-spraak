@@ -4,8 +4,11 @@ var nnPercentAll;
 var nbPercentAll;
 var nnComplex = [];
 var nbComplex = [];
+var user = "difi";
+var a = 0;
+var b = 0;
 
-$.getJSON('http://localhost:3002/api/v1/all',function(data) {
+$.getJSON('http://localhost:3002/api/v2/owner/'+user+'/all',function(data) {
 
 
     //Gets total bokmål and nynorsk data.
@@ -19,41 +22,47 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
 
 
     var format = function(v){
-
-
         if (v.complexity_nn.doc_count > 0){
+            if(v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt") {
+                a += parseInt(v.complexity_nn.complexity.avg);
 
-            console.log(v.complexity_nn.complexity.avg);
-            var nn = parseInt(v.complexity_nn.complexity.avg);
-            nnComplex.push(nn);
+            } else {
+                var nn = parseInt(v.complexity_nn.complexity.avg);
+                nnComplex.push(nn);
 
-
+            }
         } else {
-            nnComplex.push(0);
+            if(v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt") {
+                a+= 0;
+            } else {
+                nnComplex.push(0);
+            }
         }
 
         if  (v.complexity_nb.doc_count > 0) {
-            console.log(v.complexity_nb.complexity.avg);
-            var nb = parseInt(v.complexity_nb.complexity.avg)
-            nbComplex.push(nb);
-
-
-        }
-        else {
-            nbComplex.push(0);
-
+            if((v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt")){
+                b += parseInt(v.complexity_nb.complexity.avg);
+            } else {
+                var nb = parseInt(v.complexity_nb.complexity.avg);
+                nbComplex.push(nb);
+            }
+        } else {
+            if(v.key === "docx" || v.key === "doc" || v.key === "pdf" || v.key === "odt") {
+                b+= 0;
+            }
+            else {
+                nbComplex.push(0);
+            }
         }
     };
 
-
-      $.each(data.toptags.buckets, function () {
-
-
+    $.each(data.toptags.buckets, function () {
           format(this);
-      });
+    });
 
-    console.log(nbComplex);
-    console.log(nnComplex);
+    nnComplex.push(a/4);
+    nbComplex.push(b/4);
+
 
 
     $('#piechart').highcharts({
@@ -83,7 +92,7 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
             }
         },
         series: [{
-            name: "Brands",
+            name: "Andel",
             colorByPoint: true,
             data: [{
                 name: "Nynorsk",
@@ -123,11 +132,7 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
                     'Web',
                     'Twitter',
                     'Facebook',
-                    'Docx',
-                    'PDF',
-                    'Doc',
-                    'ODT'
-
+                    'Dokumenter'
                 ]
 
             },
@@ -145,7 +150,7 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
             },
             plotOptions: {
                 areaspline: {
-                    fillOpacity: 0.5
+                    fillOpacity: 0.1
                 }
             },
             series: [{
@@ -156,10 +161,72 @@ $.getJSON('http://localhost:3002/api/v1/all',function(data) {
                 data: nbComplex
             }]
         });
-
-
-
 });
+
+$.getJSON('http://localhost:3002/api/v1/owners' ,function(data) {
+    var data_list = [];
+    $.each(data.toptags.buckets, function(index, item) {
+        var nn_percent = -1;
+        $.each(item.lang_terms.buckets, function(index, langitem) {
+            if(langitem.key == "nn") {
+                nn_percent = (langitem.doc_count / item.doc_count) * 100;
+            }
+        });
+        var name = (item.key)[0].toUpperCase() + item.key.substr(1);
+        data_list.push({name: name , y: nn_percent});
+    });
+
+
+    /*
+    A column chart showing the percentage of nynorsk for all "owners"
+     */
+    $('#nnPercentageAllChart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Nynorskandel for hver etat'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: '% nynorsk'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            shared: true,
+            headerFormat: '',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> nynorsk<br/>'
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: 'Andel nynorsk',
+            data: data_list
+        }],
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y:.1f}%',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        }
+    });
+});
+
+
+
 
 
 
