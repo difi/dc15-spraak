@@ -200,6 +200,13 @@ $.getJSON('http://localhost:3002/api/v2/owners', function(data) {
 });
 
 function drawAllOwnersChart() {
+
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '<< Tilbake'
+        }
+    });
+
     $('#nnPercentageAllChart').highcharts({
         chart: {
             type: 'column'
