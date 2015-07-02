@@ -98,7 +98,7 @@ h1,h2,h3,h4,p {
     transition: border 0.3s;
     width: 100%;
     border-radius: 0;
-    text-align: center;
+
 
   }
 
@@ -133,6 +133,8 @@ h1,h2,h3,h4,p {
 
   }
 
+
+
   .pure-menu-link {
     text-decoration: none !important;
 
@@ -142,7 +144,7 @@ h1,h2,h3,h4,p {
     background-color: #ceced0;
 
   }
-  .pure-menu-link:focus {
+  .pure-menu-link.active {
     color: #434348 !important;
     background-color: #ceced0;
   }
