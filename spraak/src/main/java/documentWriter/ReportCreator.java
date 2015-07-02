@@ -2,68 +2,104 @@ package documentWriter;
 
 
 import org.json.simple.parser.JSONParser;
-import org.json.simple.JSONArray;
-import org.apache.http.HttpConnection;
-import org.apache.http.HttpConnectionMetrics;
 import org.json.simple.JSONObject;
-import sun.awt.image.ImageWatched;
 
-import java.awt.*;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by camp-lsa on 29.06.2015.
  */
 public class ReportCreator {
-    public static void getReport(){
-
-    }
-    final static String basePath = "http://localhost:3002/api/v1/all";
+    final static String basePath = "http://localhost:3002/api/v3/owners/all";
     public static void main(String... args){
-        LinkedHashMap<String, LinkedHashMap> m = setAll();
-        PDFWriter.setMap(m,0);
-        //File f = new File();
+
+        LatexNode l = setAll();
+        l.print();
+        PDFWriter.createReport(l,0);
+
         try {
             String path  = PDFWriter.getReport();
             System.out.println("cmd /c start \"\" /max C:\\Users\\camp-lsa\\IdeaProjects\\spraak\\" + path);
             Runtime.getRuntime().exec("cmd /c start \"\" /max C:\\Users\\camp-lsa\\IdeaProjects\\dc15-spraak\\spraak\\" + path);
+
         }catch(Exception e){
             e.printStackTrace();
         }
     }
-
-    public static LinkedHashMap setAll(){
-        ImageGrabber.resetValues();
-        LinkedHashMap<String, LinkedHashMap> map = new LinkedHashMap<>();
-        JSONObject content = getData("");
-        JSONArray buckets = (JSONArray) ((JSONObject) content.get("toptags")).get("buckets");
-
-        map.put("Sammendrag", prepareDataMap("Sammendrag", (JSONObject) content.get("all")));
-        map.put("Hjemmesider", prepareDataMap("Hjemmesider", (JSONObject) buckets.get(0)));
-        LinkedHashMap<String, LinkedHashMap> submap = new LinkedHashMap<>();
-        submap.put("Twitter",prepareDataMap("Twitter", (JSONObject) buckets.get(1)));
-        System.out.println(buckets.get(2));
-        submap.put("Facebook",prepareDataMap("Facebook", (JSONObject) buckets.get(2)));
-        map.put("Sosiale Medier",submap);
-
-        submap = new LinkedHashMap<>();
-        submap.put("docx",prepareDataMap("docx", (JSONObject) buckets.get(3)));
-        submap.put("pdf",prepareDataMap("pdf", (JSONObject) buckets.get(4)));
-        submap.put("doc",prepareDataMap("doc", (JSONObject) buckets.get(5)));
-        submap.put("odt",prepareDataMap("odt", (JSONObject) buckets.get(6)));
-        map.put("Filer",submap);
-
-
-
-        return map;
+    public static String getPDFReport(){
+        if(PDFWriter.getTimeSinceWrite() < 60*1000)
+            return "LatexFolder"+ PDFWriter.time + "pdf";
+        //PDFWriter.createReport(setAll(), 0);
+        return PDFWriter.getReport();
     }
 
+    static String regex_socmedia = "twitter|fb";
+    static String regex_file = "pdf|odt|doc|docx";
+    //Henter info fra elasticsearch og lager et map tilpasset pdfwriter.
+    public static LatexNode setAll(){
+        ImageGrabber.resetValues();
+        LatexNode root = new LatexNode("Sammendrag", new float[]{0,0,0,0});
+        JSONObject content = (JSONObject) (getData("")).get("owners");
+
+        for(Object k : content.keySet()){
+            String key = (String) k;
+            JSONObject ministry = (JSONObject) content.get(k);
+            LatexNode newNode = new LatexNode(key.toString(), new float[]{0,0,0,0}),
+                socMediaNode = new LatexNode("Sosiale Medier", new float[]{0,0,0,0}),
+                fileNode = new LatexNode("Filer", new float[]{0,0,0,0});
+
+            for(Object x : ((JSONObject) ministry.get("topterms")).keySet()){
+                JSONObject obj = (JSONObject) ((JSONObject) ministry.get("topterms")).get(x);
+                Number n;
+
+                JSONObject temp = ((JSONObject) obj.get("complexity_nn"));
+                n = ((Number)temp.get("avg"));
+                float a = n== null ? 0f : n.floatValue();
+
+
+                temp = ((JSONObject) obj.get("complexity_nb"));
+                n = ((Number)temp.get("avg"));
+                float b = n== null ? 0f : n.floatValue();
+
+                temp = ((JSONObject) obj.get("lang_terms"));
+                if(temp.get("nn") == null)
+                    n = 0;
+                else
+                    n = ((Number)((JSONObject) temp.get("nn")).get("doc_count"));
+                float c = n== null ? 0f : n.floatValue();
+
+                if(temp.get("nb") == null)
+                    n = 0;
+                else
+                    n = ((Number) ((JSONObject) temp.get("nb")).get("doc_count"));
+                float d = n== null ? 0f : n.floatValue();
+
+                float perNN = 100 * c/(c+d);
+                float perNB = 100-perNN;
+
+                float[] values = {a,b,perNN,perNB};
+                LatexNode child = new LatexNode(x.toString(), values);
+
+                if(x.toString().matches(regex_file))
+                    fileNode.addChild(child);
+                else if(x.toString().matches(regex_socmedia))
+                    socMediaNode.addChild(child);
+                else
+                    newNode.addChild(child);
+            }
+            newNode.addChild(socMediaNode);
+            newNode.addChild(fileNode);
+            root.addChild(newNode);
+        }
+        root.sumChildren();
+        return root;
+    }
+
+    //Henter JSONdata fra elasticsearch.
     public static JSONObject getData(String path){
         try {
             URL url = new URL(basePath+path);
@@ -84,61 +120,26 @@ public class ReportCreator {
         return null;
     }
 
-    public static LinkedHashMap<String, String> prepareDataMap(String type, JSONObject obj){
+    //TAr inn JSONobjects og gjør dem om til hashmaps, samt fyller maps i ImageGrabber for å bruke til å eksportere bilder.
+    public static float[] prepareData(JSONObject obj){
 
         LinkedHashMap<String, String> map = new LinkedHashMap();
 
-        int nn = ((Number) ((JSONObject) (obj.get("complexity_nn"))).get("doc_count")).intValue();
-        int nb = ((Number) ((JSONObject) (obj.get("complexity_nb"))).get("doc_count")).intValue();
-
+        float nn = ((Number) ((JSONObject) (obj.get("complexity_nn"))).get("doc_count")).floatValue();
+        float nb = ((Number) ((JSONObject) (obj.get("complexity_nb"))).get("doc_count")).floatValue();
         float prosNynorsk = (float) (100 * nn / (nn + nb));
-        map.put("Mengde Nynorsk", "" + prosNynorsk +"%");
-        map.put("Mengde Bokmål", "" + (100 - prosNynorsk)+"%");
 
         Number nn_comp = ((Number) ((JSONObject) ((JSONObject) (obj.get("complexity_nn"))).get("complexity")).get("avg"));
         if(nn_comp==null){
-            map.put("Kompleksitet Nynorsk","0 LIX");
             nn_comp = 0;
-        }else{
-            map.put("Kompleksitet Nynorsk",nn_comp.intValue() +" LIX");
         }
 
         Number nb_comp = ((Number) ((JSONObject) ((JSONObject) (obj.get("complexity_nb"))).get("complexity")).get("avg"));
         if(nb_comp==null){
-            map.put("Kompleksitet Bokmål","0 LIX");
             nb_comp = 0;
-        }else{
-            map.put("Kompleksitet Bokmål",nb_comp.intValue() +" LIX");
         }
 
-
-            if(type.matches("docx|doc|pdf|odt")){
-                ImageGrabber.percentagesNN.put(type, prosNynorsk);
-                ImageGrabber.percentagesNB.put(type, 100f - prosNynorsk);
-                ImageGrabber.complexityValuesNN.put(type, nn_comp.floatValue());
-                ImageGrabber.complexityValuesNB.put(type, nb_comp.floatValue());
-                type = "Filer";
-                if(!ImageGrabber.percentagesNN.containsKey(type)){
-                    ImageGrabber.percentagesNN.put(type, prosNynorsk);
-                    ImageGrabber.percentagesNB.put(type, 100f - prosNynorsk);
-                    ImageGrabber.complexityValuesNN.put(type, nn_comp.floatValue());
-                    ImageGrabber.complexityValuesNB.put(type, nb_comp.floatValue());
-                }else
-                {
-                    ImageGrabber.percentagesNN.put(type, ImageGrabber.percentagesNN.get(type)/4+prosNynorsk);
-                    ImageGrabber.percentagesNB.put(type, ImageGrabber.percentagesNB.get(type)/4+ 100f - prosNynorsk);
-                    ImageGrabber.complexityValuesNN.put(type, ImageGrabber.complexityValuesNN.get(type)/4+nn_comp.floatValue());
-                    ImageGrabber.complexityValuesNB.put(type, ImageGrabber.complexityValuesNB.get(type)/4+nb_comp.floatValue());
-                }
-            }
-            else {
-                ImageGrabber.percentagesNN.put(type, prosNynorsk);
-                ImageGrabber.percentagesNB.put(type, 100f - prosNynorsk);
-                ImageGrabber.complexityValuesNN.put(type, nn_comp.floatValue());
-                ImageGrabber.complexityValuesNB.put(type, nb_comp.floatValue());
-            }
-
-        return map;
-
+        //Legg til info funnet til ImageGrabber sine maps.
+        return new float[]{nn_comp.floatValue(), nb_comp.floatValue(), nn,nb};
     }
 }

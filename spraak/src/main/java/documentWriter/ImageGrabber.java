@@ -21,104 +21,74 @@ import java.util.Map;
  */
 public class ImageGrabber {
 
-    private  static String exportURL = "http://export.highcharts.com?options=";
-    private static String text ="{'chart':{'plotBackgroundColor':null,'plotBorderWidth':null,'plotShadow':false,'type':'pie'},'title':{'text':'Nynorsk- og bokmålsandelen til Difi:'},'plotOptions':{'pie':{'dataLabels':{'enabled':true,'format':'<b>{point.name}</b>:{point.percentage:.1f}{point.end}','style':{'color':'black'}}}},'series':[{'name':'Brands','colorByPoint':true,'data':[{'name':'Nynorsk','y':99,'end':'S'},{'name':'B','y':1,'end':'S'}]}]}";
+    private final static String exportURL = "http://export.highcharts.com?options=";
 
+    private static String text = "";
+
+    //Holder info om verdier hentet.
     public static LinkedHashMap<String, Float> complexityValuesNN;
     public static LinkedHashMap<String, Float> complexityValuesNB;
     public static LinkedHashMap<String, Float> percentagesNN;
     public static LinkedHashMap<String, Float> percentagesNB;
 
+    //regex
+    private static final String filtyper = "pdf|odt|doc|docx";
+
+    //Tømmer alle hashmaps
     public static void resetValues(){
         complexityValuesNB = new LinkedHashMap();
         complexityValuesNN = new LinkedHashMap();
-        percentagesNN= new LinkedHashMap();
-        percentagesNB= new LinkedHashMap();
+        percentagesNN = new LinkedHashMap();
+        percentagesNB = new LinkedHashMap();
     }
 
-    public static boolean grabPieChart(String name){
-        if(name.equals("Sammendrag")){
-            LinkedHashMap<String,Float> map = new LinkedHashMap();
-            map.put("Nynorsk",ImageGrabber.percentagesNN.get("Sammendrag"));
-            map.put("Bokmål",ImageGrabber.percentagesNB.get("Sammendrag"));
-            return grabPieChart(map, "Prosentandel nynorsk og bokmål", "piechartSammendrag");
-        }
-        return false;
-    }
 
-    public static boolean grabPieChart(Map<String, Float> values, String title, String name){
+    //Lager en JSONstreng for et piechart-bilde og kaller grabAndPrint, som henter og skriver bilde.
+    public static boolean grabPieChart(LatexNode node, String title, String name){
         try {
-            text = "{'chart':{'height':300,'plotBackgroundColor':'white','plotBorderWidth':null,'plotShadow':false,'type':'pie'},title:{'text':'"+ title +"'},'plotOptions':{'pie':{'dataLabels':{'enabled':true,'format':'<b>{point.name}</b>:{point.percentage:.1f}{point.end}','style':{'color':'black'}}}},'series':[{'name':'Brands','colorByPoint':true,'data':[";
-            int i = 0;
-            for(String key : values.keySet()){
-                System.out.println(key +": " + values.get(key));
-                text += "{'name':'" +key +"','y':"+values.get(key)+",'end':'%'}";
-                if(i++ < values.size()-1)
-                    text+=",";
-            }
+            float num_nn = 0;
+            float num_nb = 0;
+
+            title = "Andel Nynorsk og Bokmål";
+            num_nn = node.getValues()[2];
+            num_nb = node.getValues()[3];
+            text = "{'chart':{'height':300,'plotBackgroundColor':'white','plotBorderWidth':null,'plotShadow':false,'type':'pie'},title:{'text':'"+ title +"'},'plotOptions':{'pie':{'dataLabels':{'enabled':true,'format':'<b>{point.name}</b>:{point.percentage:.2f}{point.end}','style':{'color':'black'}}}},'series':[{'name':'Brands','colorByPoint':true,'data':[";
+            text += "{'name':'" +"Nynorsk" +"','y':"+num_nn+",'end':'%'}";
+            text +=",";
+            text += "{'name':'" +"Bokmål" +"','y':"+num_nb+",'end':'%'}";
             text += "]}]}";
-            System.out.println(text);
-            System.out.println("Calling grabandprint");
-            grabAndPrint(text,name);
+            //Last ned og skriv bilde.
+            grabAndPrint(text,name+"pie");
             return true;
         }catch(Exception e){
             e.printStackTrace();
             return false;
         }
     }
-
-    public static boolean grabSplineChart(String name){
-        ArrayList<float[]> values = new ArrayList();
-        String[] names = null;
-        if(name.equals("Sammendrag")) {
-
-            names = new String[complexityValuesNN.size()-5];
-            int i = 0;
-            for(String s: complexityValuesNN.keySet()) {
-                if(!s.equals("Sammendrag") && !s.matches("pdf|odt|doc|docx")) {
-                    names[i++] = s;
-                    values.add(new float[]{complexityValuesNN.get(s), complexityValuesNB.get(s)});
-                }
-            }
-            return grabSplineChart(names, values, "Variasjon i kompleksitet over medier", "splineChartSammendrag");
-        }
-        else if(name.equals("Filer")){
-            names = new String[4];
-            int i = 0;
-            for(String s: complexityValuesNN.keySet()) {
-                if(s.matches("odt|doc|docx|pdf")) {
-                    names[i++] = s;
-                    values.add(new float[]{complexityValuesNN.get(s), complexityValuesNB.get(s)});
-                }
-            }
-            return grabSplineChart(names, values, "Variasjon i kompleksitet blant filtyper", "splineChartFiler");
-        }
-        return false;
-    }
-
-    public static boolean grabSplineChart(String[] names, ArrayList<float[]> values, String title, String name){
+    //Skriver JSONtekst for et splineChart og kaller grabAndPrint. Returnerer True om bilde kunne hentes/skrives.
+    //TODO: gjør om til noe som jobber med JSONObjects, i stedet?
+    public static boolean grabSplineChart(ArrayList<LatexNode> nodes, String title, String name){
         try {
             text = "{'chart':{'type':'areaspline'},'title':{'text':'" + title + "'},'legend':{'layout':'vertical','align':'left','verticalAlign':'top','x':570,'y':60,'floating':true,'borderWidth':1,'backgroundColor':'white'},'xAxis':{'categories':[";
             String complexity_values_nn = "";
             String complexity_values_nb = "";
-            for(int i = 0; i < names.length;i++){
-                text += "'"+names[i]+"'";
-                complexity_values_nn+=values.get(i)[0];
-                complexity_values_nb+=values.get(i)[1];
-                if(i < names.length-1) {
+            for(int i = 0; i < nodes.size();i++){
+                LatexNode node = nodes.get(i);
+                text +="'"+node.getName()+"'";
+                complexity_values_nn +=node.getValues()[0];
+                complexity_values_nb +=node.getValues()[1];
+                if(i < nodes.size()-1) {
                     text += "," ;
                     complexity_values_nb+=",";
                     complexity_values_nn+=",";
-
                 }
             }
-
             text +="]},'yAxis':{'title':{'text':'LIX-score'}},'plotOptions':{'areaspline':{'fillOpacity':0.1}},'series':[";
             text += "{'name':'Nynorsk','data':["+complexity_values_nn+"]},";
             text += "{'name':'Bokmål','data':["+complexity_values_nb+"]}";
             text += "]}";
-            System.out.println(text);
-            grabAndPrint(text,name);
+
+            grabAndPrint(text,name+"spline");
             return true;
         }catch(Exception e){
             e.printStackTrace();
@@ -127,14 +97,17 @@ public class ImageGrabber {
     }
 
 
+    //Kontakter export.highcharts.com og laster ned bilde rendret der, for så å skrive ut bilde til LatexFolder.
     public static void grabAndPrint(String text, String name) throws IOException{
-        URL url = new URL(exportURL+URLEncoder.encode(text,"utf-8"));
 
+        URL url = new URL(exportURL+URLEncoder.encode(text,"utf-8"));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
         conn.setRequestMethod("POST");
+
         BufferedImage b = ImageIO.read(conn.getInputStream());
-        ImageIO.write(b, "png", new File("spraak\\LatexFolder\\" + name + ".png"));
-        ImageIO.write(b, "png", new File("C:\\users\\camp-lsa\\" + name + ".png"));
+        System.out.println(name);
+        System.out.println(b.getWidth());
+        ImageIO.write(b, "png", new File("LatexFolder\\" + name.replace(" ","") + ".png"));
     }
 }
