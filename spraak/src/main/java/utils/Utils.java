@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
+    public static int getNumberOfWords(String string) {
+        return string.split("[.,:;!?\\s]+").length;
+    }
+
     public static String clean(String s){
 
         // Remove multiple spaces and tabs

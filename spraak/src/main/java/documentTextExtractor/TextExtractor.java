@@ -2,6 +2,8 @@ package documentTextExtractor;
 
 import connectors.ElasticConnector;
 import org.json.simple.JSONObject;
+import utils.Utils;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
  */
 public class TextExtractor implements Runnable {
     private ArrayList<String> settings;
+    private String single_file;
     private ElasticConnector db;
 
     public TextExtractor(ArrayList<String> settings, ElasticConnector database) {
@@ -19,20 +22,23 @@ public class TextExtractor implements Runnable {
         this.db.setType("file");
     }
 
+    public TextExtractor(String url, ElasticConnector db){
+        single_file = url;
+        this.db = db;
+    }
     @Override
     public void run() {
-        if (this.settings.isEmpty()) {
-            System.err.println("No text extractor settings found.");
-            return;
+        if(single_file != null){
+            handleFile(single_file);
         }
-
-        for (String path : this.settings) {
-            ArrayList<String> filesToCheck = walk(path);
-            for (String filePath : filesToCheck) {
-                handleFile(filePath);
+        else if (this.settings != null && !this.settings.isEmpty()) {
+            for (String path : this.settings) {
+                ArrayList<String> filesToCheck = walk(path);
+                for (String filePath : filesToCheck) {
+                    handleFile(filePath);
+                }
             }
         }
-        return;
     }
 
     /*
@@ -55,7 +61,6 @@ public class TextExtractor implements Runnable {
         }
         return filePaths;
     }
-
 
     public void handleFile(String path) {
         DocumentTextExtractor extractor;
@@ -88,19 +93,20 @@ public class TextExtractor implements Runnable {
             JSONObject json = new JSONObject();
             ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
 
-            db.partOf();
+            db.partOfOpen();
 
             for (String paragraph : paragraphs) {
+                json = new JSONObject();
                 json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
                 json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
                 json.put("type", "file");
                 json.put("text",paragraph);
-                json.put("words",getNumberOfWords(paragraph));
+                json.put("words", Utils.getNumberOfWords(paragraph));
+                db.write(json);
             }
 
             db.partOfClose();
             extractor.closeDoc();
-            db.write(json);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -108,7 +114,4 @@ public class TextExtractor implements Runnable {
         return;
     }
 
-    int getNumberOfWords(String string) {
-        return string.split("[.,:;!?\\s]+").length;
-    }
 }
