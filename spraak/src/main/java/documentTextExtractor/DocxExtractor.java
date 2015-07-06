@@ -46,7 +46,7 @@ public class DocxExtractor implements DocumentTextExtractor {
     }
 
     public String getAllText() throws IOException {
-        return extractor.getText();
+        return extractor.getText().trim();
     }
 
     public ArrayList<String> getAllParagraphs() throws IOException {
@@ -65,7 +65,7 @@ public class DocxExtractor implements DocumentTextExtractor {
     }
 
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[\\s]+").length;
+        return getAllText().split("[.,:;!?\\s]+").length;
     }
 
     public void closeDoc() throws IOException {

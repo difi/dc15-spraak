@@ -1,34 +1,37 @@
+
+
 {% extends 'layout.html' %}
 {% block title %}Header/Footer{% endblock %}
-{% block header %} DUST, portalen for glede i ein elles vrien språkleg kvardag. {% endblock %}
+{% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
 {% block content %}
+
 
 <div class="pure-g">
 
-    <div class="pure-u-1-5"></div>
+    <div class="pure-u-1-12"></div>
 
-    <div class="pure-u-3-5">
+    <div class="pure-u-7-12">
 
-        {% include 'inputBox.html' %}
+
+        <h1>Velkommen!</h1>
+
+        <p>Finn din data lett, eller les om dagens nytt</p>
+        <br/>
 
         <h2>Og vidare kan me lese om følgjande utvikling</h2>
+
         <p>Ein mann frå Florø vart observert programmerande på ein buss natt til fredag. Vitner kan meddele om
             ville blikk og utydelege variabelnamn. Vi følgjer saken tett. <br/><br/>I andre nyhende har skogseigar og
-            entrepenør Gunde Vannplask auka bemanninga før årets greinkløpp.  Vannplask lovar lokalbefolkninga at
+            entrepenør Gunde Vannplask auka bemanninga før årets greinkløpp. Vannplask lovar lokalbefolkninga at
             årets hending blir eit syn for både store og små. <br/><br/>Til slutt, dagens gladnyhende. Vår eigen
             Gunfrid Bakbrei ventar avkom seinare dette året, vi i redaksjonen gratulerer Bakbrei samt donor Lysvik
             Slustein. </p>
-
+        {% include 'inputBox.html' %}
     </div>
-
-    <div class="pure-u-1-5"></div>
-
+    <div class="pure-u-1-12"></div>
+    <div class="pure-u-1-6">
+        {% include 'menuNynorsk.html' %}
+    </div>
+    <div class="pure-u-1-12"></div>
 </div>
 
-{% include 'charts.html' %}
-
-
-
-
-
-{% endblock %}

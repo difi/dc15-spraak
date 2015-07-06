@@ -91,7 +91,7 @@ public class Scrapper implements Runnable {
 }
 
 
-
+    @Override
     public void run () {
 
         if (this.settings.isEmpty())
