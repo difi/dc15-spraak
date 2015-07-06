@@ -40,7 +40,7 @@ public class ElasticConnector {
         this.client = client;
     }
 
-    public void partOf(){
+    public void partOfOpen(){
         if(this.uuid == null)
             this.uuid = UUID.randomUUID().toString();
     }
@@ -49,29 +49,31 @@ public class ElasticConnector {
         this.uuid = null;
     }
 
-    public JSONObject checkCrawl(JSONObject msg){
+    public JSONObject check(JSONObject msg){
         if(!msg.containsKey("type"))
             msg.put("type", null);
-        if(!msg.containsKey("domain"))
-            msg.put("domain", null);
         if(!msg.containsKey("text"))
             msg.put("text", null);
-        if(!msg.containsKey("site"))
-            msg.put("site", null);
         if(!msg.containsKey("lang"))
             msg.put("lang", null);
+        if(!msg.containsKey("words"))
+            msg.put("words", 0);
+        return msg;
+    }
+
+    public JSONObject checkCrawl(JSONObject msg){
+        if(!msg.containsKey("domain"))
+            msg.put("domain", null);
+        if(!msg.containsKey("site"))
+            msg.put("site", null);
+        if(!msg.containsKey("uuid"))
+            msg.put("uuid", null);
         return msg;
     }
 
     public JSONObject checkFile(JSONObject msg){
-        if(!msg.containsKey("type"))
-            msg.put("type", null);
         if(!msg.containsKey("name"))
             msg.put("name", null);
-        if(!msg.containsKey("text"))
-            msg.put("text", null);
-        if(!msg.containsKey("lang"))
-            msg.put("lang", null);
         if(!msg.containsKey("uuid"))
             msg.put("uuid", null);
         return msg;
@@ -79,14 +81,8 @@ public class ElasticConnector {
     }
 
     public JSONObject checkOAuth(JSONObject msg){
-        if(!msg.containsKey("type"))
-            msg.put("type", null);
         if(!msg.containsKey("account"))
             msg.put("account", null);
-        if(!msg.containsKey("text"))
-            msg.put("text", null);
-        if(!msg.containsKey("lang"))
-            msg.put("lang", null);
         if(!msg.containsKey("post_year"))
             msg.put("post_year", null);
         return msg;
@@ -95,9 +91,10 @@ public class ElasticConnector {
     public void write(JSONObject msg) {
 
         // Append UUID if available
-        if(this.uuid != null && this.type.equals("file"))
+        if(this.uuid != null)
             msg.put("uuid", this.uuid);
 
+        msg = this.check(msg);
         if(this.type.equals("crawl"))
             msg = this.checkCrawl(msg);
         else if(this.type.equals("file"))
@@ -122,6 +119,8 @@ public class ElasticConnector {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else if(msg.get("lang") == "nn" || msg.get("lang") == "nb"){
+            return;
         }
 
         logger.info(msg.get("text"));
