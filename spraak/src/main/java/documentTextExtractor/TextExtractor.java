@@ -86,7 +86,7 @@ public class TextExtractor implements Runnable {
             }
 
             JSONObject json = new JSONObject();
-            ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(5);
+            ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
 
             db.partOf();
 
