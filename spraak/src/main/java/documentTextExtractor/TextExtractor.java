@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public class TextExtractor implements Runnable {
     private ArrayList<String> settings;
+    private String single_file;
     private ElasticConnector db;
 
     public TextExtractor(ArrayList<String> settings, ElasticConnector database) {
@@ -19,20 +20,23 @@ public class TextExtractor implements Runnable {
         this.db.setType("file");
     }
 
+    public TextExtractor(String url, ElasticConnector db){
+        single_file = url;
+        this.db = db;
+    }
     @Override
     public void run() {
-        if (this.settings.isEmpty()) {
-            System.err.println("No text extractor settings found.");
-            return;
+        if(single_file != null){
+            handleFile(single_file);
         }
-
-        for (String path : this.settings) {
-            ArrayList<String> filesToCheck = walk(path);
-            for (String filePath : filesToCheck) {
-                handleFile(filePath);
+        else if (this.settings != null && !this.settings.isEmpty()) {
+            for (String path : this.settings) {
+                ArrayList<String> filesToCheck = walk(path);
+                for (String filePath : filesToCheck) {
+                    handleFile(filePath);
+                }
             }
         }
-        return;
     }
 
     /*
@@ -55,7 +59,6 @@ public class TextExtractor implements Runnable {
         }
         return filePaths;
     }
-
 
     public void handleFile(String path) {
         DocumentTextExtractor extractor;

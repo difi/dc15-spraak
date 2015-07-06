@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import documentTextExtractor.PdfExtractor;
+import documentTextExtractor.TextExtractor;
 import utils.Utils;
 
 import connectors.FileConnector;
@@ -59,11 +61,14 @@ public class Crawler extends WebCrawler {
     public boolean shouldVisit(Page page, WebURL url) {
 
         String href = url.getURL().toLowerCase().substring(url.getURL().indexOf("://"));
+        System.out.println(href);
         if (FILTERS.matcher(href).matches()) {
             return false;
         }
         //TODO: Legg til funksjonalitet som laster ned fil
         else if(ACCEPTFILTERS.matcher(href).matches()){
+            Thread t = new Thread(new TextExtractor(url.getURL(), this.db));
+            t.start();
             return true;
         }
         for (String crawlDomain : myCrawlDomains) {
