@@ -56,6 +56,8 @@ public class ElasticConnector {
             msg.put("text", null);
         if(!msg.containsKey("lang"))
             msg.put("lang", null);
+        if(!msg.containsKey("words"))
+            msg.put("words", 0);
         return msg;
     }
 
