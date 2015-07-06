@@ -86,18 +86,29 @@ public class TextExtractor implements Runnable {
             }
 
             JSONObject json = new JSONObject();
+            ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(5);
 
-            json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
-            json.put("type",path.substring(path.lastIndexOf(".") + 1, path.length()));
-            json.put("text",extractor.getAllText());
-            json.put("words",extractor.getNumberOfWords());
+            db.partOf();
+
+            for (String paragraph : paragraphs) {
+                json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
+                json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
+                json.put("type", "file");
+                json.put("text",paragraph);
+                json.put("words",getNumberOfWords(paragraph));
+            }
+
+            db.partOfClose();
             extractor.closeDoc();
-           
             db.write(json);
         }
         catch (Exception e){
             e.printStackTrace();
         }
         return;
+    }
+
+    int getNumberOfWords(String string) {
+        return string.split("[.,:;!?\\s]+").length;
     }
 }
