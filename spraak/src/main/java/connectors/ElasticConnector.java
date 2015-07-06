@@ -39,7 +39,7 @@ public class ElasticConnector {
         this.client = client;
     }
 
-    public void partOf(){
+    public void partOfOpen(){
         if(this.uuid == null)
             this.uuid = UUID.randomUUID().toString();
     }
@@ -94,7 +94,7 @@ public class ElasticConnector {
     public void write(JSONObject msg) {
 
         // Append UUID if available
-        if(this.uuid != null && this.type.equals("file"))
+        if(this.uuid != null)
             msg.put("uuid", this.uuid);
 
         if(this.type.equals("crawl"))
