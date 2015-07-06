@@ -12,9 +12,7 @@ import java.util.*;
  * Created by camp-lsa on 26.06.2015.
  */
 public class PDFWriter {
-
-    public final static String includePath = "C:\\Users\\camp-lsa\\latex";
-    public final static String outputPath = "C:\\Users\\camp-lsa\\test";
+    public static DecimalFormat f = new DecimalFormat("##.##");
     public static String report = "";
 
     //Header til latex-koden. Pakker osv.
@@ -25,6 +23,7 @@ public class PDFWriter {
             "\\usepackage{changepage}\n"+
             "\\usepackage{graphicx}\n"+
             "\\begin{document}\n";
+
     //Footer til latex-koden.
     final static String footer = " \\end{document}";
     final static String newLine = "\\newline \n";
@@ -35,30 +34,30 @@ public class PDFWriter {
         String sub = "";
         for(int i = 0; i < depth; i++)
             sub += "sub";
-
         return "\\"+sub+"section{"+title+"}";
     }
 
-    public static DecimalFormat f = new DecimalFormat("##.##");
+
+    //Gjør tekst bold i latex.
     public static String bolden(String s) {
         return "\\textbf{"+s+"}";
     }
+
     //itererer over map hentet fra elasticsearch og legger det til rapporten som latexkode.
     public static void createReport(LatexNode node, int depth) {
-        report +="\\begin{adjustwidth}{"+depth+"em}{0pt}";
-        report += getSectionType(depth,node.getName())+"\n";
 
+        report += getSectionType(depth,node.getName())+"\n";
         report += bolden("Antall bokm{\\aa}l: ") + f.format(node.getValues()[3]) + newLine;
         report += bolden("Antall nynorsk: ")+ f.format(node.getValues()[2]) + newLine;
         report += bolden("Kompleksitet Bokm{\\aa}l: ") + f.format(node.getValues()[1]) + newLine;
         report += bolden("Kompleksitet Nynorsk: ")+ f.format(node.getValues()[0]) + newLine;
         report += node.getImages() + "\n";
+//        report += "\\end{adjustwidth}";
 
         if(node.children.size() > 0)
             for(LatexNode n : node.children)
                 createReport(n,depth+1);
 
-        report +="\\end{adjustwidth}";
     }
 
 
@@ -77,7 +76,8 @@ public class PDFWriter {
             document += title;
             document += report;
             document += footer;
-            System.out.println(report);
+
+            System.out.println(document);
             String command = "cmd.exe /c cd spraak & pdflatex \""+ document + "\" -job-name="+ time + " -disable-installer -quiet -output-directory=LatexFolder -include-directory=resources/LatexIncludes";
 
             Process cmd = Runtime.getRuntime().exec(command);
@@ -90,7 +90,7 @@ public class PDFWriter {
             br.close();
 
             return "LatexFolder\\"+time+".pdf";
-        }catch(Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
