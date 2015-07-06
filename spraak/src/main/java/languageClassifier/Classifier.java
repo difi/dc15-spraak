@@ -35,7 +35,7 @@ public class Classifier {
 	
 	//Laster default config "config.ini"
 	public static void loadConfig() throws IOException{
-		loadConfig("spraak/resources/config.ini","default");
+		loadConfig("resources/config.ini","default");
 	}
 	
 	//map som inneholder alle regelsett som er lagret.

@@ -100,7 +100,7 @@ public class Setup {
     public static void main(String[] args) {
 
         //initialize logger config path
-        String log4jConfPath = "spraak\\src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
+        String log4jConfPath = "src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
         PropertyConfigurator.configure(log4jConfPath);
 
         Setup s = new Setup("setup.json");
