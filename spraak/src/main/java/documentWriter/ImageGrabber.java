@@ -25,38 +25,17 @@ public class ImageGrabber {
 
     private static String text = "";
 
-    //Holder info om verdier hentet.
-    public static LinkedHashMap<String, Float> complexityValuesNN;
-    public static LinkedHashMap<String, Float> complexityValuesNB;
-    public static LinkedHashMap<String, Float> percentagesNN;
-    public static LinkedHashMap<String, Float> percentagesNB;
-
     //regex
     private static final String filtyper = "pdf|odt|doc|docx";
-
-    //Tømmer alle hashmaps
-    public static void resetValues(){
-        complexityValuesNB = new LinkedHashMap();
-        complexityValuesNN = new LinkedHashMap();
-        percentagesNN = new LinkedHashMap();
-        percentagesNB = new LinkedHashMap();
-    }
-
 
     //Lager en JSONstreng for et piechart-bilde og kaller grabAndPrint, som henter og skriver bilde.
     public static boolean grabPieChart(LatexNode node, String title, String name){
         try {
-            float num_nn = 0;
-            float num_nb = 0;
-
-            title = "Andel Nynorsk og Bokmål";
-            num_nn = node.getValues()[2];
-            num_nb = node.getValues()[3];
-            text = "{'chart':{'height':300,'plotBackgroundColor':'white','plotBorderWidth':null,'plotShadow':false,'type':'pie'},title:{'text':'"+ title +"'},'plotOptions':{'pie':{'dataLabels':{'enabled':true,'format':'<b>{point.name}</b>:{point.percentage:.2f}{point.end}','style':{'color':'black'}}}},'series':[{'name':'Brands','colorByPoint':true,'data':[";
-            text += "{'name':'" +"Nynorsk" +"','y':"+num_nn+",'end':'%'}";
-            text +=",";
-            text += "{'name':'" +"Bokmål" +"','y':"+num_nb+",'end':'%'}";
-            text += "]}]}";
+            float num_nn = node.getValues()[2];
+            float num_nb = node.getValues()[3];
+            text = "{'chart':{'height':300,'plotBackgroundColor':'white','plotBorderWidth':null,'plotShadow':false,'type':'pie'},title:{'text':'"+ title +"'},'plotOptions':{'pie':{'dataLabels':{'enabled':true,'format':'<b>{point.name}</b>:{point.percentage:.2f}{point.end}','style':{'color':'black'}}}},'series':[{'name':'Brands','colorByPoint':true,'data':["
+                    + "{'name':'" +"Nynorsk" +"','y':"+num_nn+",'end':'%'}"
+                    + ",{'name':'" +"Bokmål" +"','y':"+num_nb+",'end':'%'}]}]}";
             //Last ned og skriv bilde.
             grabAndPrint(text,name+"pie");
             return true;
@@ -65,10 +44,12 @@ public class ImageGrabber {
             return false;
         }
     }
+
     //Skriver JSONtekst for et splineChart og kaller grabAndPrint. Returnerer True om bilde kunne hentes/skrives.
     //TODO: gjør om til noe som jobber med JSONObjects, i stedet?
     public static boolean grabSplineChart(ArrayList<LatexNode> nodes, String title, String name){
         try {
+            //TODO: Som her. JSONObject i stedet for text, maybe.
             text = "{'chart':{'type':'areaspline'},'title':{'text':'" + title + "'},'legend':{'layout':'vertical','align':'left','verticalAlign':'top','x':570,'y':60,'floating':true,'borderWidth':1,'backgroundColor':'white'},'xAxis':{'categories':[";
             String complexity_values_nn = "";
             String complexity_values_nb = "";
@@ -99,15 +80,12 @@ public class ImageGrabber {
 
     //Kontakter export.highcharts.com og laster ned bilde rendret der, for så å skrive ut bilde til LatexFolder.
     public static void grabAndPrint(String text, String name) throws IOException{
-
         URL url = new URL(exportURL+URLEncoder.encode(text,"utf-8"));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
         conn.setRequestMethod("POST");
 
         BufferedImage b = ImageIO.read(conn.getInputStream());
-        System.out.println(name);
-        System.out.println(b.getWidth());
-        ImageIO.write(b, "png", new File("LatexFolder\\" + name.replace(" ","") + ".png"));
+        ImageIO.write(b, "png", new File("spraak\\LatexFolder\\" + name.replace(" ","") + ".png"));
     }
 }

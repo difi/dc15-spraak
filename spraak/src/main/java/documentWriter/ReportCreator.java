@@ -7,8 +7,6 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.LinkedHashMap;
 
 /**
  * Created by camp-lsa on 29.06.2015.
@@ -16,11 +14,8 @@ import java.util.LinkedHashMap;
 public class ReportCreator {
     final static String basePath = "http://localhost:3002/api/v3/owners/all";
     public static void main(String... args){
-
         LatexNode l = setAll();
-        l.print();
         PDFWriter.createReport(l,0);
-
         try {
             String path  = PDFWriter.getReport();
             System.out.println("cmd /c start \"\" /max C:\\Users\\camp-lsa\\IdeaProjects\\spraak\\" + path);
@@ -30,63 +25,64 @@ public class ReportCreator {
             e.printStackTrace();
         }
     }
+
+    //returnerer path til skrevet pdf-fil.
     public static String getPDFReport(){
         if(PDFWriter.getTimeSinceWrite() < 60*1000)
             return "LatexFolder"+ PDFWriter.time + "pdf";
-        //PDFWriter.createReport(setAll(), 0);
         return PDFWriter.getReport();
     }
 
     static String regex_socmedia = "twitter|fb";
     static String regex_file = "pdf|odt|doc|docx";
-    //Henter info fra elasticsearch og lager et map tilpasset pdfwriter.
+
+    //Henter info fra elasticsearch og lager et tre av LatexNodes som PDFwriter kan bruke.
     public static LatexNode setAll(){
-        ImageGrabber.resetValues();
         LatexNode root = new LatexNode("Sammendrag", new float[]{0,0,0,0});
         JSONObject content = (JSONObject) (getData("")).get("owners");
 
         for(Object k : content.keySet()){
             String key = (String) k;
-            JSONObject ministry = (JSONObject) content.get(k);
-            LatexNode newNode = new LatexNode(key.toString(), new float[]{0,0,0,0}),
-                socMediaNode = new LatexNode("Sosiale Medier", new float[]{0,0,0,0}),
-                fileNode = new LatexNode("Filer", new float[]{0,0,0,0});
 
-            for(Object x : ((JSONObject) ministry.get("topterms")).keySet()){
-                JSONObject obj = (JSONObject) ((JSONObject) ministry.get("topterms")).get(x);
-                Number n;
 
-                JSONObject temp = ((JSONObject) obj.get("complexity_nn"));
+            JSONObject
+                    ministry = (JSONObject) content.get(key),
+                    temp;
+            LatexNode
+                    newNode = new LatexNode(key.toString(), new float[]{0,0,0,0}),
+                    socMediaNode = new LatexNode("Sosiale Medier", new float[]{0,0,0,0}),
+                    fileNode = new LatexNode("Filer", new float[]{0,0,0,0});
+            Number n;
+
+            for(Object term : ((JSONObject) ministry.get("topterms")).keySet()){
+                JSONObject obj = (JSONObject) ((JSONObject) ministry.get("topterms")).get(term);
+
+                temp = ((JSONObject) obj.get("complexity_nn"));
                 n = ((Number)temp.get("avg"));
                 float a = n== null ? 0f : n.floatValue();
-
 
                 temp = ((JSONObject) obj.get("complexity_nb"));
                 n = ((Number)temp.get("avg"));
                 float b = n== null ? 0f : n.floatValue();
 
                 temp = ((JSONObject) obj.get("lang_terms"));
-                if(temp.get("nn") == null)
-                    n = 0;
-                else
-                    n = ((Number)((JSONObject) temp.get("nn")).get("doc_count"));
-                float c = n== null ? 0f : n.floatValue();
 
-                if(temp.get("nb") == null)
-                    n = 0;
-                else
-                    n = ((Number) ((JSONObject) temp.get("nb")).get("doc_count"));
-                float d = n== null ? 0f : n.floatValue();
+                n = temp.get("nn") == null ? 0 : ((Number) ((JSONObject) temp.get("nn")).get("doc_count"));
+                float c = n == null ? 0f : n.floatValue();
 
-                float perNN = 100 * c/(c+d);
-                float perNB = 100-perNN;
+                n = temp.get("nb") == null ? 0 : ((Number) ((JSONObject) temp.get("nb")).get("doc_count"));
+                float d = n == null ? 0f : n.floatValue();
 
-                float[] values = {a,b,perNN,perNB};
-                LatexNode child = new LatexNode(x.toString(), values);
 
-                if(x.toString().matches(regex_file))
+                float percentNN = 100 * c/(c+d);
+                float percentNB = 100-percentNN;
+
+                float[] values = {a,b,percentNN,percentNB};
+                LatexNode child = new LatexNode(term.toString(), values);
+
+                if(term.toString().matches(regex_file))
                     fileNode.addChild(child);
-                else if(x.toString().matches(regex_socmedia))
+                else if(term.toString().matches(regex_socmedia))
                     socMediaNode.addChild(child);
                 else
                     newNode.addChild(child);
@@ -120,26 +116,4 @@ public class ReportCreator {
         return null;
     }
 
-    //TAr inn JSONobjects og gjør dem om til hashmaps, samt fyller maps i ImageGrabber for å bruke til å eksportere bilder.
-    public static float[] prepareData(JSONObject obj){
-
-        LinkedHashMap<String, String> map = new LinkedHashMap();
-
-        float nn = ((Number) ((JSONObject) (obj.get("complexity_nn"))).get("doc_count")).floatValue();
-        float nb = ((Number) ((JSONObject) (obj.get("complexity_nb"))).get("doc_count")).floatValue();
-        float prosNynorsk = (float) (100 * nn / (nn + nb));
-
-        Number nn_comp = ((Number) ((JSONObject) ((JSONObject) (obj.get("complexity_nn"))).get("complexity")).get("avg"));
-        if(nn_comp==null){
-            nn_comp = 0;
-        }
-
-        Number nb_comp = ((Number) ((JSONObject) ((JSONObject) (obj.get("complexity_nb"))).get("complexity")).get("avg"));
-        if(nb_comp==null){
-            nb_comp = 0;
-        }
-
-        //Legg til info funnet til ImageGrabber sine maps.
-        return new float[]{nn_comp.floatValue(), nb_comp.floatValue(), nn,nb};
-    }
 }
