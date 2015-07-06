@@ -63,8 +63,11 @@ var _format_bucket = function(data, input){
 
 var _format_map = function(data, struct, token){
     for (var i in data) {
-        var index = data[i]
-        if (index == null || index["buckets"] == null) {
+        var index = data[i];
+        if(index == null){
+            index = 0;
+        }
+        if (!index.hasOwnProperty("buckets")) {
             if (typeof index == "object") {
                 var b = _format(index, {}, i);
                 if (struct[token] == undefined) {
