@@ -22,7 +22,9 @@ public class Classifier {
 	private static LangIdV3 langid;
 	
 	
-	//Sett modell til å kun lete etter nynorsk og bokmål.
+	/*
+	 * Sett modell til å kun lete etter nynorsk og bokmål.
+	 */
 	private static void init() throws IOException{
 		//Språk som langid skal se etter.
 		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb","nn","en","de","fr"}));
@@ -33,15 +35,21 @@ public class Classifier {
 		rule_set = dictionaries.get("default");
 	}
 	
-	//Laster default config "config.ini"
+	/*
+	 * Laster default config "config.ini"
+	 */
 	public static void loadConfig() throws IOException{
 		loadConfig("resources/config.ini","default");
 	}
 	
-	//map som inneholder alle regelsett som er lagret.
+	/*
+	 * map som inneholder alle regelsett som er lagret.
+	 */
 	static Map<String, RuleSet> dictionaries = new HashMap();
 	
-	//Laster inn en config-fil.
+	/*
+	 * Laster inn en config-fil.
+	 */
 	public static void loadConfig(String path,String name) throws IOException{
 		if(dictionaries.containsKey(name)){
 			return;
@@ -85,12 +93,16 @@ public class Classifier {
 			throw(e);
 		}
 	}
-	//hent mulige regelsett.
+	/*
+	 * hent mulige regelsett.
+	 */
 	public Set<String> getRuleSets(){
 		return dictionaries.keySet();
 	}
 	
-	//Skift regler for nynorsk. Returnerer False om det ikke ble gjort.
+	/*
+	 * Skift regler for nynorsk. Returnerer False om det ikke ble gjort.
+	 */
 	public boolean setRuleSet(String name){
 		if(dictionaries.containsKey(name))
 		{

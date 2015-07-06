@@ -107,7 +107,7 @@ var _format = function(data, struct, token){
 
 var format = function(data){
     // Pivot function
-    var ret = {}
+    var ret = {};
     for (var i in data){
         var index = data[i]
         ret = extend(_format(index, {}, i), ret);
@@ -119,13 +119,9 @@ var format = function(data){
 var es = function(req,res,next){
     res.es = function(json,cb) {
         client.search(json).then(function (resp) {
-            console.log(resp)
-            console.log("nay")
             var hits = resp.aggregations;
             if(cb != null) {
-                console.log(hits)
                 var s = cb(hits);
-                console.log(s)
                 res.send(s);
             }else {
                 res.send(hits);
@@ -281,7 +277,6 @@ router.get("/v2/owners", (function(req, res) {
             var d = resp.toptags.buckets;
             var l = [];
             for(var i in d){
-                console.log(d[i])
                 l.push(d[i].key)
             }
             res.send(l);
@@ -341,11 +336,6 @@ router.get("/v3/owner/:owner/all", (function(req, res) {
         }
     }, format);
 }))
-
-
-
-
-
 
 
 router.get("/v3/owners/all", (function(req, res) {
@@ -409,7 +399,7 @@ router.get("/v3/owners", (function(req, res) {
             var d = resp.toptags.buckets;
             var l = [];
             for(var i in d){
-                console.log(d[i])
+
                 l.push(d[i].key)
             }
             res.send(l);
