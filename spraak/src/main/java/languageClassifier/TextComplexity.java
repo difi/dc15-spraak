@@ -21,7 +21,7 @@ public class TextComplexity {
             if (c == ' ' || ("" + c).matches((".*[.,?!:]"))) {
                 if (curWord > 6)
                     longWords++;
-                else if (curWord > 0)
+                if (curWord > 0)
                     wordCount++;
                 curWord = 0;
                 if(("" + c).matches((".*[.,?!:]")))
@@ -34,7 +34,7 @@ public class TextComplexity {
         }
         if (curWord > 6)
             longWords++;
-        else if (curWord > 0)
+        if (curWord > 0)
             wordCount++;
 
         if (stops != 0)

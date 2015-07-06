@@ -119,6 +119,8 @@ public class ElasticConnector {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else if(msg.get("lang") == "nn" || msg.get("lang") == "nb"){
+            return;
         }
 
         logger.info(msg.get("text"));
