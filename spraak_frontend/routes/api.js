@@ -47,6 +47,12 @@ var all = {
 }
 
 
+
+
+
+
+
+
 // Insert number of wasted times here: 3
 
 var _format_bucket = function(data, input){
@@ -352,10 +358,14 @@ router.get("/v3/owners/all", (function(req, res) {
                         field: "owner"
                     },
                     aggs: {
-                        topterms: {
+                        topterms:{
                             terms: {
                                 field: "type"
                             },
+                            aggs: all
+                        },
+                        all:{
+                            global:{},
                             aggs: all
                         }
                     }
