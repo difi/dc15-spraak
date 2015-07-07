@@ -92,6 +92,7 @@ public class TextExtractor implements Runnable {
 
             JSONObject json = new JSONObject();
             ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
+            extractor.closeDoc();
 
             db.partOfOpen();
 
@@ -106,7 +107,6 @@ public class TextExtractor implements Runnable {
             }
 
             db.partOfClose();
-            extractor.closeDoc();
         }
         catch (Exception e){
             e.printStackTrace();
