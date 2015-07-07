@@ -144,8 +144,12 @@ h1,h2,h3,h4,p {
     background-color: #ceced0;
 
   }
-  .pure-menu-link.active {
+  .pure-menu-link:active {
     color: #434348 !important;
     background-color: #ceced0;
+ }
+  .hidden {
+    display:none;
   }
+
 }
