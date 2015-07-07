@@ -83,7 +83,7 @@ public class TextExtractor implements Runnable {
         }
 
         try {
-            if (path.startsWith("http://")) {
+            if (path.startsWith("http://") || path.startsWith("https://")) {
                 extractor.setSource(new URL(path));
             }
             else {
