@@ -83,7 +83,7 @@ public class TextExtractor implements Runnable {
         }
 
         try {
-            if (path.startsWith("http://")) {
+            if (path.startsWith("http://") || path.startsWith("https://")) {
                 extractor.setSource(new URL(path));
             }
             else {
@@ -91,7 +91,7 @@ public class TextExtractor implements Runnable {
             }
 
             JSONObject json = new JSONObject();
-            ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(5);
+            ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
 
             db.partOfOpen();
 

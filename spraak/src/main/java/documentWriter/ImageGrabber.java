@@ -1,5 +1,7 @@
 package documentWriter;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import javax.imageio.ImageIO;
@@ -23,21 +25,45 @@ public class ImageGrabber {
 
     private final static String exportURL = "http://export.highcharts.com?options=";
 
-    private static String text = "";
-
-    //regex
-    private static final String filtyper = "pdf|odt|doc|docx";
-
     //Lager en JSONstreng for et piechart-bilde og kaller grabAndPrint, som henter og skriver bilde.
     public static boolean grabPieChart(LatexNode node, String title, String name){
         try {
+            JSONObject obj = getJSONObject("pie", title),
+                    nn = new JSONObject(),
+                    nb = new JSONObject(),
+                    options = new JSONObject(),
+                    pie = new JSONObject(),
+                    dataLabel = new JSONObject();
+            JSONArray series = new JSONArray();
+
             float num_nn = node.getValues()[2];
             float num_nb = node.getValues()[3];
-            text = "{'chart':{'height':300,'plotBackgroundColor':'white','plotBorderWidth':null,'plotShadow':false,'type':'pie'},title:{'text':'"+ title +"'},'plotOptions':{'pie':{'dataLabels':{'enabled':true,'format':'<b>{point.name}</b>:{point.percentage:.2f}{point.end}','style':{'color':'black'}}}},'series':[{'name':'Brands','colorByPoint':true,'data':["
-                    + "{'name':'" +"Nynorsk" +"','y':"+num_nn+",'end':'%'}"
-                    + ",{'name':'" +"Bokmål" +"','y':"+num_nb+",'end':'%'}]}]}";
+
+            dataLabel.put("format", "<b>{point.name}</b>:{point.percentage:.2f}{point.end}");
+            pie.put("dataLabels",dataLabel);
+            options.put("pie",pie);
+            obj.put("plotOptions",options);
+
+            nn.put("name","Nynorsk");
+            nn.put("y",num_nn);
+            nn.put("end","%");
+
+            nb.put("name", "Bokmål");
+            nb.put("y",num_nb);
+            nb.put("end","%");
+
+            JSONArray data = new JSONArray();
+            data.add(nn);
+            data.add(nb);
+            JSONObject serie = new JSONObject();
+                serie.put("data",data);
+                serie.put("name","Brands");
+                serie.put("colorByPoint",true);
+            series.add(serie);
+            obj.put("series",series);
+
             //Last ned og skriv bilde.
-            grabAndPrint(text,name+"pie");
+            grabAndPrint(obj.toJSONString(),name+"pie");
             return true;
         }catch(Exception e){
             e.printStackTrace();
@@ -45,36 +71,60 @@ public class ImageGrabber {
         }
     }
 
+    public static JSONObject getJSONObject(String type, String title){
+        JSONObject job = new JSONObject();
+            JSONObject chart = new JSONObject();
+            chart.put("type",type);
+            chart.put("plotBackgroundColor","white");
+            chart.put("height",300);
+        job.put("chart",chart);
+            JSONObject _title = new JSONObject();
+            _title.put("text", title);
+        job.put("title", _title);
+        return job;
+    }
     //Skriver JSONtekst for et splineChart og kaller grabAndPrint. Returnerer True om bilde kunne hentes/skrives.
     //TODO: gjør om til noe som jobber med JSONObjects, i stedet?
     public static boolean grabSplineChart(ArrayList<LatexNode> nodes, String title, String name){
         try {
-            //TODO: Som her. JSONObject i stedet for text, maybe.
-            text = "{'chart':{'type':'areaspline'},'title':{'text':'" + title + "'},'legend':{'layout':'vertical','align':'left','verticalAlign':'top','x':570,'y':60,'floating':true,'borderWidth':1,'backgroundColor':'white'},'xAxis':{'categories':[";
-            String complexity_values_nn = "";
-            String complexity_values_nb = "";
-            for(int i = 0; i < nodes.size();i++){
-                LatexNode node = nodes.get(i);
-                text +="'"+node.getName()+"'";
-                complexity_values_nn +=node.getValues()[0];
-                complexity_values_nb +=node.getValues()[1];
-                if(i < nodes.size()-1) {
-                    text += "," ;
-                    complexity_values_nb+=",";
-                    complexity_values_nn+=",";
-                }
-            }
-            text +="]},'yAxis':{'title':{'text':'LIX-score'}},'plotOptions':{'areaspline':{'fillOpacity':0.1}},'series':[";
-            text += "{'name':'Nynorsk','data':["+complexity_values_nn+"]},";
-            text += "{'name':'Bokmål','data':["+complexity_values_nb+"]}";
-            text += "]}";
+            JSONObject obj = getJSONObject("areaspline", title),
+                    xAxis = new JSONObject(),
+                    nn = new JSONObject(),
+                    nb = new JSONObject(),
+                    options = new JSONObject();
 
-            grabAndPrint(text,name+"spline");
-            return true;
+            JSONArray names_list = new JSONArray(),
+                    nn_list = new JSONArray(),
+                    nb_list = new JSONArray(),
+                    series = new JSONArray();
+            for(LatexNode node : nodes){
+                names_list.add(node.getName());
+                nn_list.add(node.getValues()[0]);
+                nb_list.add(node.getValues()[1]);
+            }
+
+            xAxis.put("categories",names_list);
+            obj.put("xAxis",xAxis);
+
+            nn.put("name","Nynorsk");
+            nn.put("data",nn_list);
+            series.add(nn);
+
+            nb.put("name","Bokmål");
+            nb.put("data",nb_list);
+            series.add(nb);
+
+            JSONObject areaspline = new JSONObject();
+            areaspline.put("fillOpacity",0.1);
+            options.put("areaspline",areaspline);
+            obj.put("plotOptions",options);
+            obj.put("series",series);
+            grabAndPrint(obj.toJSONString(),name+"spline");
         }catch(Exception e){
             e.printStackTrace();
             return false;
         }
+        return true;
     }
 
 
@@ -86,6 +136,6 @@ public class ImageGrabber {
         conn.setRequestMethod("POST");
 
         BufferedImage b = ImageIO.read(conn.getInputStream());
-        ImageIO.write(b, "png", new File("spraak\\LatexFolder\\" + name.replace(" ","") + ".png"));
+        ImageIO.write(b, "png", new File("LatexFolder\\" + name.replace(" ","") + ".png"));
     }
 }
