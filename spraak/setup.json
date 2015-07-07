@@ -1,36 +1,208 @@
 {
-  "difi": {
-    "crawler": [
-      {
-        "domain": "http://www.difi.no"
-      }
-    ],
-    "oauth": {
-      "fb": {
-        "app_id": "952095618154021",
-        "app_secret": "03569a54711da40dddc5dcf05c83ec9b",
-        "access_token": "CAANh7QkcviUBAPrtbosJ2kieHbZAeUzISoUiV7YPjquSUpcZCoyAq8ZB3x6K2ZCWdU59uGyE4cmJvRJh9Ol6Ubbnm5Db7tZC5484Y6Nmgw1F3ueJtHkhhgZBKPWq9bhBAK9nsjIM9JufxrnWl94Q8GRcgMQ23kZBygmKU76ZCioW1G6nrAuszZC31ZCDHvxKCr3gwZD",
-        "permissions": "user_about_me,user_actions.music,user_birthday,user_friends,user_hometown,user_managed_groups,user_relationship_details,user_status,user_website,user_actions.books,,user_actions.news,user_games_activity,user_likes,user_photos,user_relationships,user_tagged_places,user_work_history,user_actions.fitness,user_actions.video,,user_events,user_groups,user_location,user_posts,user_religion_politics,user_videos,publish_actions,manage_pages,manage_notifications,publish_pages"
+  "targets": {
+    "difi": {
+      "crawler": [
+        "http://anskaffelser.no",
+        "http://doffin.no",
+        "http://ehandel.no",
+        "http://openpeppol.no",
+        "http://glassbjørnen.no",
+        "http://digitalpostkasse.no",
+        "http://glassbjornen.no",
+        "http://id-porten.no",
+        "http://klarsprak.no",
+        "http://lysningsbladet.no",
+        "http://meldingsboks.no",
+        "http://norfaktura.no",
+        "http://peppol.no",
+        "http://siami.no",
+        "http://sidami.no",
+        "http://elsak.no",
+        "http://kunnskapsnettverk.no",
+        "http://mobilitet.no",
+        "http://rnef.no",
+        "http://statens-standardavtaler.no",
+        "http://apps4norge.no",
+        "http://difi.no",
+        "http://digitalisernorge.no",
+        "http://gronnstat.no",
+        "http://hack4.no",
+        "http://idporten.no",
+        "http://livsit.no",
+        "http://lysingsblad.no",
+      ],
+      "oauth": {
+        "fb": {
+          "app_id": "952095618154021",
+          "app_secret": "03569a54711da40dddc5dcf05c83ec9b",
+          "access_token": "CAANh7QkcviUBAPrtbosJ2kieHbZAeUzISoUiV7YPjquSUpcZCoyAq8ZB3x6K2ZCWdU59uGyE4cmJvRJh9Ol6Ubbnm5Db7tZC5484Y6Nmgw1F3ueJtHkhhgZBKPWq9bhBAK9nsjIM9JufxrnWl94Q8GRcgMQ23kZBygmKU76ZCioW1G6nrAuszZC31ZCDHvxKCr3gwZD",
+          "permissions": "user_about_me,user_actions.music,user_birthday,user_friends,user_hometown,user_managed_groups,user_relationship_details,user_status,user_website,user_actions.books,,user_actions.news,user_games_activity,user_likes,user_photos,user_relationships,user_tagged_places,user_work_history,user_actions.fitness,user_actions.video,,user_events,user_groups,user_location,user_posts,user_religion_politics,user_videos,publish_actions,manage_pages,manage_notifications,publish_pages"
+        },
+        "twitter": {
+          "consumer_key": "M5yYZrrjpbmj5nK7sSPY4Wpaq",
+          "consumer_secret": "zbSnKkeuaPGQL6vxoIntEjH68yXlL1SkS9BiizknBppCm6Vp1n",
+          "access_token": "3331100338-jaP5xQGCKl5dPysSrY347Qnd1qWivkzyhla70BS",
+          "access_token_secret": "JjM6zTmIEWSzQHvlL9fy3Npen181INoOH85abtBJXUO3e"
+        }
       },
-      "twitter": {
-        "consumer_key": "M5yYZrrjpbmj5nK7sSPY4Wpaq",
-        "consumer_secret": "zbSnKkeuaPGQL6vxoIntEjH68yXlL1SkS9BiizknBppCm6Vp1n",
-        "access_token": "3331100338-jaP5xQGCKl5dPysSrY347Qnd1qWivkzyhla70BS",
-        "access_token_secret": "JjM6zTmIEWSzQHvlL9fy3Npen181INoOH85abtBJXUO3e"
-      }
     },
-    "files": [
-      "textDocs/"
-    ]
+    "nav": {
+      "crawler": [
+        "http://adeo.no",
+        "http://deterdinpensjon.no",
+        "http://devillo.no",
+        "http://jobbforhelsa.no",
+        "http://nav.no",
+        "http://nyuforetrygd.no",
+        "http://oera.no",
+        "http://seniorraad.no",
+        "http://trygdeetaten.no",
+        "http://nyuføretrygd.no"
+      ]
+    },
+    "regjeringen": {
+  "crawler": [
+  "http://regjeringen.no",
+  "http://samarbeidforarbeid.no"
+  ]
   },
-
+  "UDI": {
+  "crawler": [
+  "http://asylmottak.no",
+  "http://landdatabase.no",
+  "http://landinfo.no",
+  "http://snakkenorsk.no",
+  "http://udi.no",
+  "http://utlendingsforvaltningen.no"
+  ]
+  },
+  "udir": {
+  "crawler": [
+  "http://barnehagefakta.no",
+  "http://fagligerad.no",
+  "http://skoleporten.no",
+  "http://udir.no",
+  "http://nasjonaleprøver.no"
+  ]
+  },
+  "vegvesenet": {
+  "crawler": [
+  "http://vegvesenet.no"
+  ]
+  },
+  "husbanken": {
+  "crawler": [
+  "http://bofilm.no",
+  "http://husbanken.no",
+  "http://boinorden.no"
+  ]
+  },
+  "politiet": {
+  "crawler": [
+  "http://politi.no"
+  ]
+  },
+  "arbeidstilsynet": {
+  "crawler": [
+  "http://arbeidstilsynet.no"
+  ]
+  },
+  "NAV": {
+  "crawler": [
+  "http://nav.no",
+  "http://www.deterdinpensjon.no/"
+  ]
+  },
+  "BarneOgUngdomsDirektoratet": {
+  "crawler": [
+  "http://www.bufdir.no",
+  "http://barnevernet.no",
+  "http://www.familienettet.no/"
+  ]
+  },
+  "imdi": {
+  "crawler": [
+  "http://www.imdi.no/",
+  "http://www.nyinorge.no/"
+  ]
+  },
+  "Forbrukerrådet": {
+  "crawler": [
+  "http://forbrukerrådet.no",
+  "http://forbrukereuropa.no"
+  ]
+  },
+  "dsb": {
+  "crawler": [
+  "http://dsb.no",
+  "http://kriseinfo.no",
+  "http://www.sivilforsvaret.no/",
+  "http://sikkerhverdag.no"
+  ]
+  },
+  "iktsenteret": {
+  "crawler": [
+  "http://iktsenteret.no/",
+  "http://www.minstemme.no/",
+  "http://utdanning.no/",
+  "http://standard.iktsenteret.no",
+  "http://personvernskolen.no/"
+  ]
+  },
+  "lånekassen": {
+  "crawler": [
+  "https://www.lanekassen.no/"
+  ]
+  },
+  "Kartverket": {
+  "crawler": [
+  "https://www.kartverket.no/"
+  ]
+  },
+  "domstoleneINorge": {
+  "crawler": [
+  "https://www.domstol.no/"
+  ]
+  },
+  "helsedirektoratet": {
+  "crawler": [
+  "https://helsedirektoratet.no/",
+  "https://sites.helsedirektoratet.no/",
+  "http://helsenorge.no"
+  ]
+  },
+  "nkom": {
+  "crawler": [
+  "http://www.nettvett.no",
+  "http://www.nkom.no"
+  ]
+  },
+  "datatilsynet": {
+  "crawler": [
+  "https://datatilsynet.no"
+  ]
+  },
+  "sismo": {
+  "crawler": [
+  "https://www.sismo.no/no/pub/"
+  ]
+  },
+  "lottstift": {
+  "crawler": [
+  "https://lottstift.no/",
+  "http://hjelpelinjen.no",
+  "http://klagesaker.no/"
+  ]
+  }
+  },
   "database": {
-      "host": "127.0.0.1",
-      "password": "",
-      "port": 3306,
-      "table": "something"
+    "host": "127.0.0.1",
+    "password": "",
+    "port": 3306,
+    "table": "something"
   }
 }
+
 
 
 

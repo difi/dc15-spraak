@@ -10,10 +10,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 
 
@@ -22,10 +20,11 @@ public class Setup {
 
 
 
-    private final ArrayList<Map> crawlerSettings;
-    private final ArrayList<String> fileSettings;
-    private final Map oAuthSettings;
-    private HashMap<String, Thread> modules;
+    private ArrayList<String> crawlerSettings;
+    private ArrayList<String> fileSettings;
+    private Map oAuthSettings;
+    private ArrayList<Thread> modules;
+    private JSONObject targets;
 
 
 
@@ -44,14 +43,11 @@ public class Setup {
 
         // TODO: Remove hardcode
         JSONObject jsonObject = (JSONObject) obj;
-        jsonObject = (JSONObject) jsonObject.get("difi");
-
-        this.crawlerSettings = (ArrayList<Map>) jsonObject.get("crawler");
-        this.fileSettings = (ArrayList<String>) jsonObject.get("files");
-        this.oAuthSettings = (Map) jsonObject.get("oauth");
+        this.targets = (JSONObject) jsonObject.get("targets");
 
 
-        this.modules = new HashMap<String, Thread>();
+
+        this.modules = new ArrayList<Thread>();
 
 
         initiateThreads();
@@ -61,15 +57,25 @@ public class Setup {
     public void initiateThreads() {
 
         ElasticConnector elastic = new ElasticConnector("difi");
+        Iterator<JSONObject> iterator = this.targets.values().iterator();
 
-        if(!this.crawlerSettings.isEmpty())
-            this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings, new ElasticConnector("difi"))));
+        while(iterator.hasNext()){
+            JSONObject entry = iterator.next();
+            System.out.println(entry.toString());
+            this.crawlerSettings = (ArrayList<String>) entry.get("crawler");
+            this.fileSettings = (ArrayList<String>) entry.get("files");
+            this.oAuthSettings = (Map) entry.get("oauth");
+            System.out.println(this.oAuthSettings);
+            if(this.crawlerSettings != null )//|| !this.crawlerSettings.isEmpty())
+                this.modules.add(new Thread(new Scrapper(this.crawlerSettings, new ElasticConnector("difi"))));
 
-        if(!this.fileSettings.isEmpty())
-            this.modules.put("file", new Thread(new TextExtractor(this.fileSettings, new ElasticConnector("difi"))));
+//            if(this.fileSettings != null )//|| !this.fileSettings.isEmpty())
+//                this.modules.add(new Thread(new TextExtractor(this.fileSettings, new ElasticConnector("difi"))));
+//
+//            if(this.oAuthSettings != null )//|| !this.oAuthSettings.isEmpty())
+//                this.modules.add(new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector("difi"))));
+        }
 
-        if(!this.oAuthSettings.isEmpty())
-            this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector("difi"))));
     }
 
 
@@ -80,7 +86,7 @@ public class Setup {
     public void start(){
         final List<Thread> threads = new ArrayList<>();
 
-        for(Thread entry: this.modules.values()){
+        for(Thread entry: this.modules){
             entry.start();
             threads.add(entry);
         }

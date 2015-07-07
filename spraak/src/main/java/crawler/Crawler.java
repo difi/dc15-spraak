@@ -61,14 +61,16 @@ public class Crawler extends WebCrawler {
     public boolean shouldVisit(Page page, WebURL url) {
 
         String href = url.getURL().toLowerCase().substring(url.getURL().indexOf("://"));
-        System.out.println(href);
         if (FILTERS.matcher(href).matches()) {
             return false;
         }
         //TODO: Legg til funksjonalitet som laster ned fil
         else if(ACCEPTFILTERS.matcher(href).matches()){
+            System.out.println(href);
+            this.db.setType("file");
             Thread t = new Thread(new TextExtractor(url.getURL(), this.db));
             t.start();
+            this.db.setType("crawler");
             return true;
         }
         for (String crawlDomain : myCrawlDomains) {
@@ -158,6 +160,7 @@ public class Crawler extends WebCrawler {
             j.put("type", "web");
             j.put("site", page.getWebURL().getURL());
             j.put("text", out);
+            j.put("words", Utils.getNumberOfWords(out));
             this.db.write(j);
             return;
         }

@@ -18,10 +18,10 @@ import java.util.Map;
 
 public class Scrapper implements Runnable {
 
-    private ArrayList<Map> settings;
+    private ArrayList<String> settings;
     private ElasticConnector database;
 
-    public Scrapper(ArrayList<Map> settings, ElasticConnector database ) {
+    public Scrapper(ArrayList<String> settings, ElasticConnector database ) {
         this.database = database;
         this.settings = settings;
     }
@@ -98,7 +98,7 @@ public class Scrapper implements Runnable {
             return;
 
         // For handing an ID to the crawler
-        for (Map entry : this.settings) {
+        for (String entry : this.settings) {
 
 
             // Setup used variables
@@ -107,24 +107,13 @@ public class Scrapper implements Runnable {
             String[] crawlerDomains;
             String fname;
 
-            if (entry.containsKey("domain")) {
-                domain = (String) entry.get("domain");
-                //crawlerDomains = new String[]{domain};
-                //fname = domain.split("/",4)[3];
-                fname = "norge";
-                crawlerDomains = new String[]{domain};
-            } else {
-                System.out.println("Needs a domain!");
-                return;
-            }
+            domain = (String) entry;
+            //crawlerDomains = new String[]{domain};
+            //fname = domain.split("/",4)[3];
+            fname = "norge";
+            crawlerDomains = new String[]{domain};
 
             int threads = 1;
-
-            if (entry.containsKey("threads")) {
-                Number n = (Number) entry.get("threads");
-                threads = n.intValue();
-            }
-
 
             // Setup config
             CrawlConfig config = new CrawlConfig();
@@ -151,15 +140,6 @@ public class Scrapper implements Runnable {
             controller.setCustomData(crawlerSettings);
 
             controller.addSeed(domain);
-
-            if (entry.containsKey("delay")) {
-                Number n = (Number) entry.get("delay");
-                config.setPolitenessDelay(n.intValue());
-            }
-            if (entry.containsKey("pages")) {
-                Number n = (Number) entry.get("pages ");
-                config.setMaxPagesToFetch(n.intValue());
-            }
 
             System.out.println("started");
 

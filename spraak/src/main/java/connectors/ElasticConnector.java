@@ -130,10 +130,10 @@ public class ElasticConnector {
         logger.fatal("");
 
         msg.put("text", Utils.clean((String) msg.get("text")));
-        System.out.println(msg);
 
         msg.put("owner", this.owner);
 
+        System.out.println(msg);
         // Just for safety
         /*IndexResponse respone = this.client.prepareIndex("spraak", this.type)
                 .setSource(msg)
