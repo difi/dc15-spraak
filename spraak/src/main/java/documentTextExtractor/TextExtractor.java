@@ -2,6 +2,8 @@ package documentTextExtractor;
 
 import connectors.ElasticConnector;
 import org.json.simple.JSONObject;
+import utils.Utils;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -86,18 +88,27 @@ public class TextExtractor implements Runnable {
             }
 
             JSONObject json = new JSONObject();
+            ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(5);
 
-            json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
-            json.put("type",path.substring(path.lastIndexOf(".") + 1, path.length()));
-            json.put("text",extractor.getAllText());
-            json.put("words",extractor.getNumberOfWords());
+            db.partOfOpen();
+
+            for (String paragraph : paragraphs) {
+                json = new JSONObject();
+                json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
+                json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
+                json.put("type", "file");
+                json.put("text",paragraph);
+                json.put("words", Utils.getNumberOfWords(paragraph));
+                db.write(json);
+            }
+
+            db.partOfClose();
             extractor.closeDoc();
-           
-            db.write(json);
         }
         catch (Exception e){
             e.printStackTrace();
         }
         return;
     }
+
 }

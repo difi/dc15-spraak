@@ -24,9 +24,12 @@ public class Classifier {
 	
 	//Sett modell til å kun lete etter nynorsk og bokmål.
 	private static void init() throws IOException{
-		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb","nn"}));
+		//Språk som langid skal se etter.
+		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb","nn","en","de","fr"}));
 		langid = new LangIdV3(Model.detectOnly(set));
+
 		loadConfig();
+
 		rule_set = dictionaries.get("default");
 	}
 	
@@ -97,6 +100,9 @@ public class Classifier {
 		return false;
 	}
 	static RuleSet rule_set;
+
+
+
 	//klassifiserer tekst, bruker 'hjemmesnekra' static-class "ShortClassifier" om teksten er under 300 tegn lang.
 	public static AnalyzedText classify(String str) throws IOException{
 		if(langid == null){
@@ -104,11 +110,15 @@ public class Classifier {
 		}
 		int length = str.length();
 		if(length < 300){
-			return new AnalyzedText( ShortClassifier.classify(str,rule_set), (new TextComplexity(str)));
+			return new AnalyzedText( ShortClassifier.classify(str,rule_set), (new TextComplexity(str)), 1);
 		}
 		else{
 			DetectedLanguage result = langid.classify(str, true);
-			return new AnalyzedText(result.getLangCode(),(new TextComplexity(str)));
+
+			if(!result.langCode.matches("nn|nb"))
+				return new AnalyzedText("annet", new TextComplexity(),result.confidence);
+
+			return new AnalyzedText(result.getLangCode(), new TextComplexity(str), result.confidence);
 		}
 	}
 }

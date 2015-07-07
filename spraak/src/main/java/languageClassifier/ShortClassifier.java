@@ -47,14 +47,12 @@ public class ShortClassifier {
 	
 	//Sjekker endinger og helord, for så å returnere ratioen mellom antall ord ikke gjenkjent og totalt antall ord.
 	public static float[] check_text(ArrayList<String> endinger_bm, ArrayList<String> hele_bm, String[] text){
-		float[] values = {0.0f,0.0f}; 
+		float[] values = {0.0f,0.0f};
 		float li = endinger_bm.size() - check_endings(endinger_bm, text);
-		float lis = hele_bm.size() - check_words(hele_bm, text);
-		if(li == 0)
-			values[0] = 0;
-		else
-			values[0] = ((float) endinger_bm.size() - li)/(float) endinger_bm.size();
+        float lis = hele_bm.size() - check_words(hele_bm, text);
+        values[0] = li == 0 ? 0f : ((float) endinger_bm.size() - li)/(float) endinger_bm.size();
 		values[1] = ((float) hele_bm.size() - lis)/(float) hele_bm.size();
+
 		return values;
 	}
 	
@@ -72,8 +70,6 @@ public class ShortClassifier {
 
 		float combined = result[0] + result[1];
 		float combined_bm = result_bm[0] + result_bm[1];
-		
-
 		float percent = combined/(combined+combined_bm);
 
 		if(combined + combined_bm == 0f)
