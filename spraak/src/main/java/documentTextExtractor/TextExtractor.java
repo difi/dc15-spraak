@@ -6,6 +6,7 @@ import utils.Utils;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 /**
@@ -84,7 +85,16 @@ public class TextExtractor implements Runnable {
 
         try {
             if (path.startsWith("http://") || path.startsWith("https://")) {
-                extractor.setSource(new URL(path));
+                URLConnection urlConn = new URL(path).openConnection();
+                // Some paths link to corrupted files, or are redirected to html-documents.
+                if (urlConn.getContentType() != null && ! urlConn.getContentType().contains("text/html")) {
+                    System.out.println(urlConn.getContentType());
+                    extractor.setSource(new URL(path));
+                }
+                else {
+                    System.err.println("File " + path + " is not a readable file.");
+                    return;
+                }
             }
             else {
                 extractor.setSource(path);
