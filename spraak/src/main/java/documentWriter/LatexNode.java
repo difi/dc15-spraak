@@ -12,8 +12,8 @@ import java.util.Set;
 public class LatexNode {
 
     static Set<String> not_pie_applicable = new HashSet<String>(Arrays.asList());
-    static Set<String> spline_applicable = new HashSet<String>(Arrays.asList("Filer","Sosiale Medier"));
-
+    static Set<String> spline_applicable = new HashSet<String>(Arrays.asList("Sosiale Medier"));
+    public LatexNode parent;
     public ArrayList<LatexNode> children = new ArrayList();
     private float
             complexity_nn=0f,
@@ -40,9 +40,12 @@ public class LatexNode {
     }
 
     public void addChild(LatexNode node){
-        children.add(node);
+        children.add(node); node.parent = this;
     }
 
+    public String toString(){
+        return complexity_nn + " - " + complexity_nn + " | " + percent_nn + " - " + percent_nb;
+    }
     public void sumChildren(){
         complexity_nb   = 0;
         complexity_nn   = 0;
@@ -66,20 +69,39 @@ public class LatexNode {
     public String getName(){
         if(this.name.equals("fb"))
             return "facebook";
+        else if(this.name.equals("web"))
+            return "Nettsider";
+        else if(this.name.equals("file"))
+            return "Filer";
         else
             return this.name;
     }
 
+    //Mulig dette ikke funker andre steder...
+    public String getImageName(){
+        String name = "";
+        LatexNode n = this;
+        while(n!= null){
+            name = n.getName()+name;
+            n = n.parent;
+        }
+        return name.replaceAll("\u00E5|\u00E6|\u00F8","");
+    }
+
+
     public String getImages(){
         String LatexImages = "";
-        if(!not_pie_applicable.contains(this.name)){
-            if(ImageGrabber.grabPieChart(this,"Andel bokmål og nynorsk",this.getName().replace(" ","")))
-                LatexImages+="\\centerline{\\includegraphics{"+this.getName().replace(" ","")+"pie"+ ".png}}\n";
-        }
+        if(!not_pie_applicable.contains(this.name))
+            if(ImageGrabber.grabPieChart(this,"Andel bokmål og nynorsk",this.getImageName()))
+                LatexImages+="\\centerline{\\includegraphics[scale=0.5]{"+this.getImageName()+"pie"+ "}}";
+
         if(spline_applicable.contains(this.name)){
-            if(ImageGrabber.grabSplineChart(this.children,"Variasjon i Kompleksitet",this.getName().replace(" ","")))
-                LatexImages+="\\centerline{\\includegraphics[scale=0.5]{"+this.getName().replace(" ","")+"spline"+ ".png}}\n";
+            if(!LatexImages.equals(""))
+                LatexImages+="\n";
+            if(ImageGrabber.grabSplineChart(this.children, "Variasjon i Kompleksitet", this.getImageName()))
+                LatexImages+="{\\centerline{\\includegraphics{LatexFolder/"+this.getImageName()+"spline" + ".png}}}";
         }
+
         return LatexImages;
     }
 }

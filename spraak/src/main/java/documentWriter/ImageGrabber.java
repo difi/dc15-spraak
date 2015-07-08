@@ -5,18 +5,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by camp-lsa on 30.06.2015.
@@ -76,15 +75,15 @@ public class ImageGrabber {
             JSONObject chart = new JSONObject();
             chart.put("type",type);
             chart.put("plotBackgroundColor","white");
-            chart.put("height",300);
+            //chart.put("width",300);
         job.put("chart",chart);
             JSONObject _title = new JSONObject();
             _title.put("text", title);
         job.put("title", _title);
         return job;
     }
+
     //Skriver JSONtekst for et splineChart og kaller grabAndPrint. Returnerer True om bilde kunne hentes/skrives.
-    //TODO: gjør om til noe som jobber med JSONObjects, i stedet?
     public static boolean grabSplineChart(ArrayList<LatexNode> nodes, String title, String name){
         try {
             JSONObject obj = getJSONObject("areaspline", title),
@@ -136,6 +135,11 @@ public class ImageGrabber {
         conn.setRequestMethod("POST");
 
         BufferedImage b = ImageIO.read(conn.getInputStream());
-        ImageIO.write(b, "png", new File("LatexFolder\\" + name.replace(" ","") + ".png"));
+
+        String file = "spraak\\LatexFolder\\" + name + ".png";
+        OutputStream out = Files.newOutputStream(Paths.get(file));
+            ImageIO.write(b,"png",out);
+        out.close();
+
     }
 }
