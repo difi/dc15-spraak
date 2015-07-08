@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import utils.Utils;
 
 /**
  * Created by camp-aka on 18.06.2015.
@@ -65,7 +66,7 @@ public class DocxExtractor implements DocumentTextExtractor {
     }
 
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[.,:;!?\\s]+").length;
+        return Utils.getNumberOfWords(getAllText());
     }
 
     public void closeDoc() throws IOException {
