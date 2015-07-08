@@ -2,6 +2,7 @@ package documentTextExtractor;
 
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.text.Paragraph;
+import utils.Utils;
 
 import javax.swing.text.html.HTMLDocument;
 import java.io.IOException;
@@ -99,7 +100,7 @@ public class OdtExtractor implements DocumentTextExtractor {
 
     @Override
     public int getNumberOfWords() throws IOException {
-        return  getAllText().split("[.,:;!?\\s]+").length;
+        return  Utils.getNumberOfWords(getAllText());
     }
 
     @Override
