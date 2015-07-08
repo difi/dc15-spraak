@@ -19,27 +19,28 @@ import com.carrotsearch.labs.langid.Model;
 public class Classifier {
 	
 
-	private static LangIdV3 langid;
-	
+	private LangIdV3 langid;
+	private ShortClassifier shortClassifier = new ShortClassifier();
+	private static Model model;
 	
 	/*
 	 * Sett modell til å kun lete etter nynorsk og bokmål.
 	 */
-	private static void init() throws IOException{
+	private void init() throws IOException{
 		//Språk som langid skal se etter.
-		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb","nn","en","de","fr"}));
-		langid = new LangIdV3(Model.detectOnly(set));
-
+		Set<String> set = new HashSet(Arrays.asList(new String[] {"nb","nn","en","de","fr"}));
+		if(model==null)
+			model = Model.detectOnly(set);
+		langid = new LangIdV3(model);
 		loadConfig();
-
 		rule_set = dictionaries.get("default");
 	}
 	
 	/*
 	 * Laster default config "config.ini"
 	 */
-	public static void loadConfig() throws IOException{
-		loadConfig("resources/config.ini","default");
+	public void loadConfig() throws IOException{
+		loadConfig("spraak/resources/config.ini","default");
 	}
 	
 	/*
@@ -50,7 +51,7 @@ public class Classifier {
 	/*
 	 * Laster inn en config-fil.
 	 */
-	public static void loadConfig(String path,String name) throws IOException{
+	public void loadConfig(String path,String name) throws IOException{
 		if(dictionaries.containsKey(name)){
 			return;
 		}
@@ -115,16 +116,14 @@ public class Classifier {
 
 
 
+	public Classifier() throws IOException {
+		init();
+	}
 	//klassifiserer tekst, bruker 'hjemmesnekra' static-class "ShortClassifier" om teksten er under 300 tegn lang.
-	public static AnalyzedText classify(String str) throws IOException{
-		if(langid == null){
-			init();
-		}else {
-			langid.reset();
-		}
+	public AnalyzedText classify(String str) throws IOException{
 		int length = str.length();
 		if(length < 300){
-			return new AnalyzedText( ShortClassifier.classify(str,rule_set), (new TextComplexity(str)), 1);
+			return new AnalyzedText( shortClassifier.classify(str,rule_set), (new TextComplexity(str)), 1);
 		}
 		else{
 			DetectedLanguage result = langid.classify(str, true);

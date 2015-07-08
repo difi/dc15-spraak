@@ -26,7 +26,14 @@ public class ElasticConnector {
     private String type;
     private String owner;
     static Logger logger = Logger.getLogger(ElasticConnector.class);
+    private Classifier classifier;
     public ElasticConnector(String owner){
+        try {
+            this.classifier = new Classifier();
+        }catch(Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
         this.owner = owner;
         this.connect();
     }
@@ -111,7 +118,7 @@ public class ElasticConnector {
 
         if(msg.get("lang") == null) {
             try {
-                AnalyzedText analysis = Classifier.classify((String) msg.get("text"));
+                AnalyzedText analysis = classifier.classify((String) msg.get("text"));
                 String code = analysis.language;
                 Float LIX = analysis.complexity.LIX;
                 Float confidence = analysis.confidence;
