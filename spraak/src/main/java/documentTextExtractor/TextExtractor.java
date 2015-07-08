@@ -88,7 +88,6 @@ public class TextExtractor implements Runnable {
                 URLConnection urlConn = new URL(path).openConnection();
                 // Some paths link to corrupted files, or are redirected to html-documents.
                 if (urlConn.getContentType() != null && ! urlConn.getContentType().contains("text/html")) {
-                    System.out.println(urlConn.getContentType());
                     extractor.setSource(new URL(path));
                 }
                 else {
