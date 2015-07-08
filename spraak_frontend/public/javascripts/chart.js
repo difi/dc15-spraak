@@ -5,12 +5,10 @@ var nbPercentAll;
 var nnComplex = [];
 var nbComplex = [];
 var user = "difi";
-var drilldown_series = [];
-var data_list = [];
 var toptags = [];
 
-
-
+var a = 0;
+var b = 0;
 
 $.getJSON('http://localhost:3002/api/v3/owner/'+user+'/all',function(data) {
 
@@ -162,118 +160,40 @@ $.getJSON('http://localhost:3002/api/v3/owner/'+user+'/all',function(data) {
         });
 });
 
-$.getJSON('http://localhost:3002/api/v2/owners', function(data) {
-    ownerList = data;
-    var completedCalls = 0;
-    $.each(ownerList, function(k, owner) {
-        var drilldown_data = [];
-        $.getJSON('http://localhost:3002/api/v2/owner/' + owner + '/all', function(data) {
-            $.each(data.all.lang_terms.buckets, function() {
-                if(this.key == "nn") {
-                    data_list.push({name: capitalize(owner), y: (this.doc_count / data.all.doc_count) * 100, drilldown: owner});
-                }
-            });
-            $.each(data.toptags.buckets, function(k, langitem) {
-                $.each(langitem.lang_terms.buckets, function() {
-                    if(this.key == "nn") {
-                        drilldown_data.push([capitalize(langitem.key), (this.doc_count / langitem.doc_count) * 100 ]);
-                    }
-                });
-            });
-        })
-            .done(function() {
-                //Inner API call done.
-                completedCalls++;
-                if(completedCalls == ownerList.length) {
-                    // All API calls done
-                    // Chart can now be drawn
+$.getJSON('http://localhost:3002/api/v3/owners/lang', function(data) {
+    var drilldown_series = [];
+    var data_list = [];
 
-                    drawAllOwnersChart();
+
+    $.each(data.toptags, function(owner, ownerData) {
+        var percentNN = (ownerData.lang_terms.nn.doc_count / ownerData.doc_count) * 100;
+        data_list.push({name: capitalize(owner), y: percentNN, drilldown: owner});
+        var drilldown_data = [];
+        $.getJSON('http://localhost:3002/api/v3/owner/' + owner + "/all", function(data) {
+            $.each(data.toptags, function(source, sourceData) {
+                if (sourceData.lang_terms.nn != undefined) {
+                    drilldown_data.push([capitalize(source), (sourceData.lang_terms.nn.doc_count / sourceData.doc_count) * 100]);
+                }
+                else {
+                    drilldown_data.push([capitalize(source), 0]);
                 }
             });
+        });
         drilldown_series.push({id: owner, data: drilldown_data});
     });
-});
 
-function drawAllOwnersChart() {
+    console.log(drilldown_series);
+    /*
+     A column chart showing the percentage of nynorsk for all "owners"
+     And more information if column is clicked
+     */
 
     Highcharts.setOptions({
         lang: {
             drillUpText: '<< Tilbake'
         }
     });
-
-    $('#nnPercentageAllChart').highcharts({
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Nynorskandel for hver etat'
-        },
-        xAxis: {
-            type: 'category'
-        },
-        yAxis: {
-            title: {
-                text: '% nynorsk'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            shared: true,
-            headerFormat: '',
-            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> nynorsk<br/>'
-        },
-        credits: {
-            enabled: false
-        },
-        series: [{
-            name: 'Andel nynorsk',
-            data: data_list
-        }],
-        drilldown: {
-            series: drilldown_series
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.1f}%',
-                    style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
-                }
-            }
-        }
-    });
-}
-
-
-// This is the version that will work with v3/owners/all eventually
-/*
-$.getJSON('http://localhost:3002/api/v3/owners/all', function(data) {
-    var drilldown_series = [];
-    var data_list = [];
-
-    $.each(data.owners, function(owner, ownerData) {
-        var percentNN = (ownerData.lang_terms.nn.doc_count / ownerData.doc_count) * 100;
-        data_list.push({name: capitalize(owner), y: percentNN, drilldown: owner});
-
-        var drilldown_data = [];
-        $.each(ownerData.topterms, function(term, termData) {
-            drilldown_data.push([capitalize(term), (termData.lang_terms.nn.doc_count / termData.doc_count) * 100]);
-        });
-
-        drilldown_series.push({id: owner, data: drilldown_data});
-    });
-
-    //
-     A column chart showing the percentage of nynorsk for all "owners"
-     And more information if column is clicked
-     //
+    
     $('#nnPercentageAllChart').highcharts({
         chart: {
             type: 'column'
@@ -321,7 +241,7 @@ $.getJSON('http://localhost:3002/api/v3/owners/all', function(data) {
         }
     });
 });
- */
+
 
 /*
 Returns the string with first letter in uppercase
