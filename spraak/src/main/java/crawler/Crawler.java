@@ -37,7 +37,6 @@ public class Crawler extends WebCrawler {
     private String prev = null;
     private HashMap<String, Object> settings;
     private String[] myCrawlDomains;
-    private String myDomain;
     private ElasticConnector db;
     private String domain;
 
@@ -52,9 +51,7 @@ public class Crawler extends WebCrawler {
 
         myCrawlDomains = (String[]) this.settings.get("domains");
 
-        myDomain = myCrawlDomains[0];
-        this.myDomain = myCrawlDomains[0];
-        this.domain = myCrawlDomains[0].split("//",2)[1];
+        this.domain = myCrawlDomains[0];
     }
 
     @Override
@@ -66,12 +63,11 @@ public class Crawler extends WebCrawler {
         }
         //TODO: Legg til funksjonalitet som laster ned fil
         else if(ACCEPTFILTERS.matcher(href).matches()){
-            System.out.println(href);
             this.db.setType("file");
-            Thread t = new Thread(new TextExtractor(url.getURL(), this.db));
-            t.start();
+            TextExtractor t = new TextExtractor(url.getURL(), this.db);
+            t.run();
             this.db.setType("crawler");
-            return true;
+            return false;
         }
         for (String crawlDomain : myCrawlDomains) {
             if (href.startsWith(crawlDomain.substring(crawlDomain.indexOf("://")))) {
@@ -156,6 +152,7 @@ public class Crawler extends WebCrawler {
             out = this.clean(out);
 
             // TODO: Fix
+
             j.put("domain", this.domain);
             j.put("type", "web");
             j.put("site", page.getWebURL().getURL());

@@ -10,6 +10,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.*;
 
 import org.apache.log4j.Logger;
@@ -56,24 +57,22 @@ public class Setup {
 
     public void initiateThreads() {
 
-        ElasticConnector elastic = new ElasticConnector("difi");
-        Iterator<JSONObject> iterator = this.targets.values().iterator();
+        Iterator<String> iterator = this.targets.keySet().iterator();
 
         while(iterator.hasNext()){
-            JSONObject entry = iterator.next();
-            System.out.println(entry.toString());
+            String key = iterator.next();
+            JSONObject entry = (JSONObject) this.targets.get(key);
             this.crawlerSettings = (ArrayList<String>) entry.get("crawler");
             this.fileSettings = (ArrayList<String>) entry.get("files");
             this.oAuthSettings = (Map) entry.get("oauth");
-            System.out.println(this.oAuthSettings);
             if(this.crawlerSettings != null )//|| !this.crawlerSettings.isEmpty())
-                this.modules.add(new Thread(new Scrapper(this.crawlerSettings, new ElasticConnector("difi"))));
+                this.modules.add(new Thread(new Scrapper(this.crawlerSettings, new ElasticConnector(key))));
 
 //            if(this.fileSettings != null )//|| !this.fileSettings.isEmpty())
 //                this.modules.add(new Thread(new TextExtractor(this.fileSettings, new ElasticConnector("difi"))));
 //
-//            if(this.oAuthSettings != null )//|| !this.oAuthSettings.isEmpty())
-//                this.modules.add(new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector("difi"))));
+            if(this.oAuthSettings != null )//|| !this.oAuthSettings.isEmpty())
+                this.modules.add(new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector(key))));
         }
 
     }
@@ -97,8 +96,17 @@ public class Setup {
                 if (t.isAlive())
                     alive = true;
             }
-            if(!alive)
+            if(!alive) {
+                System.out.println("Quitted");
                 break;
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //System.out.println("Checking threads");
         }
         return;
     }

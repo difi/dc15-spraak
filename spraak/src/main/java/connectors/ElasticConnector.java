@@ -114,10 +114,15 @@ public class ElasticConnector {
                 AnalyzedText analysis = Classifier.classify((String) msg.get("text"));
                 String code = analysis.language;
                 Float LIX = analysis.complexity.LIX;
+                Float confidence = analysis.confidence;
                 msg.put("lang", code);
                 msg.put("complexity", LIX);
+                msg.put("confidence", confidence);
             } catch (IOException e) {
                 e.printStackTrace();
+            }catch(java.nio.BufferUnderflowException e){
+                System.out.println("Buffer underflow");
+                System.out.println(msg);
             }
         }else if(msg.get("lang") == "nn" || msg.get("lang") == "nb"){
             return;
@@ -133,13 +138,11 @@ public class ElasticConnector {
 
         msg.put("owner", this.owner);
 
-        System.out.println(msg);
         // Just for safety
-        /*IndexResponse respone = this.client.prepareIndex("spraak", this.type)
-                .setSource(msg)
-                .execute()
-                .actionGet();
-                */
+//        IndexResponse respone = this.client.prepareIndex("spraak", this.type)
+//                .setSource(msg)
+//                .execute()
+//                .actionGet();
     }
 
     public String getType() {

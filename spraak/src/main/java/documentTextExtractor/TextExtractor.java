@@ -84,14 +84,32 @@ public class TextExtractor implements Runnable {
 
         try {
             if (path.startsWith("http://") || path.startsWith("https://")) {
-                extractor.setSource(new URL(path));
+                try {
+                    extractor.setSource(new URL(path));
+                }catch(javax.net.ssl.SSLHandshakeException e){
+                    return;
+                }catch(IndexOutOfBoundsException e){
+                    System.out.println("Index out of bounds");
+                    System.out.println(path);
+                    return;
+                }catch(java.io.IOException e){
+                    System.out.println("IOException");
+                    System.out.println(path);
+                    return;
+                }
             }
             else {
-                extractor.setSource(path);
+                try {
+                    extractor.setSource(path);
+                }catch(java.io.IOException e){
+                    return;
+                }
             }
 
             JSONObject json = new JSONObject();
             ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
+
+            extractor.closeDoc();
 
             db.partOfOpen();
 
@@ -106,7 +124,6 @@ public class TextExtractor implements Runnable {
             }
 
             db.partOfClose();
-            extractor.closeDoc();
         }
         catch (Exception e){
             e.printStackTrace();

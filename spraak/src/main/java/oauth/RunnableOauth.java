@@ -38,7 +38,6 @@ public class RunnableOauth implements Runnable {
                     alive = true;
             }
             if(!alive) {
-                System.out.println("All dead");
                 break;
             }
             try {

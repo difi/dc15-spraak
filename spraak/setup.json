@@ -4,32 +4,10 @@
       "crawler": [
         "http://anskaffelser.no",
         "http://doffin.no",
-        "http://ehandel.no",
-        "http://openpeppol.no",
-        "http://glassbjørnen.no",
-        "http://digitalpostkasse.no",
-        "http://glassbjornen.no",
-        "http://id-porten.no",
-        "http://klarsprak.no",
-        "http://lysningsbladet.no",
-        "http://meldingsboks.no",
-        "http://norfaktura.no",
-        "http://peppol.no",
-        "http://siami.no",
-        "http://sidami.no",
-        "http://elsak.no",
-        "http://kunnskapsnettverk.no",
-        "http://mobilitet.no",
-        "http://rnef.no",
         "http://statens-standardavtaler.no",
         "http://apps4norge.no",
         "http://difi.no",
-        "http://digitalisernorge.no",
-        "http://gronnstat.no",
-        "http://hack4.no",
-        "http://idporten.no",
-        "http://livsit.no",
-        "http://lysingsblad.no",
+
       ],
       "oauth": {
         "fb": {
@@ -48,16 +26,7 @@
     },
     "nav": {
       "crawler": [
-        "http://adeo.no",
-        "http://deterdinpensjon.no",
-        "http://devillo.no",
-        "http://jobbforhelsa.no",
         "http://nav.no",
-        "http://nyuforetrygd.no",
-        "http://oera.no",
-        "http://seniorraad.no",
-        "http://trygdeetaten.no",
-        "http://nyuføretrygd.no"
       ]
     },
     "regjeringen": {
@@ -68,19 +37,12 @@
   },
   "UDI": {
   "crawler": [
-  "http://asylmottak.no",
-  "http://landdatabase.no",
   "http://landinfo.no",
-  "http://snakkenorsk.no",
   "http://udi.no",
-  "http://utlendingsforvaltningen.no"
   ]
   },
   "udir": {
   "crawler": [
-  "http://barnehagefakta.no",
-  "http://fagligerad.no",
-  "http://skoleporten.no",
   "http://udir.no",
   "http://nasjonaleprøver.no"
   ]
@@ -145,8 +107,6 @@
   "http://iktsenteret.no/",
   "http://www.minstemme.no/",
   "http://utdanning.no/",
-  "http://standard.iktsenteret.no",
-  "http://personvernskolen.no/"
   ]
   },
   "lånekassen": {

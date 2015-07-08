@@ -42,6 +42,13 @@ var all = {
     lang_terms: {
         terms: {
             field: "lang"
+        },
+        aggs: {
+            count: {
+                stats: {
+                    field: "words"
+                }
+            }
         }
     }
 }
@@ -279,7 +286,7 @@ router.get("/v2/owners", (function(req, res) {
             for(var i in d){
                 l.push(d[i].key)
             }
-            res.send(l);
+            return l;
         })
     );
 }))
@@ -353,10 +360,6 @@ router.get("/v3/owners/all", (function(req, res) {
                                 field: "type"
                             },
                             aggs: all
-                        },
-                        all:{
-                            global:{},
-                            aggs: all
                         }
                     }
                 }
@@ -394,7 +397,9 @@ router.get("/v3/owners", (function(req, res) {
                         },
                     }
                 }
-            }
+            },
+            searchType: "scan",
+            scroll: "10m"
         }, (function (resp) {
             var d = resp.toptags.buckets;
             var l = [];
@@ -402,7 +407,7 @@ router.get("/v3/owners", (function(req, res) {
 
                 l.push(d[i].key)
             }
-            res.send(l);
+            return l;
         })
     );
 }))
@@ -429,6 +434,19 @@ router.get("/v3/owners/lang", (function(req, res) {
     }, format);
 }))
 
+
+router.get("/v3/owners/confidence", function(req, res){
+    res.es({
+        index: "spraak",
+        body: {
+            aggs: {
+                confidence: {
+                    stats: {field: "confidence"}
+                }
+            }
+        }
+    })
+})
 
 
 

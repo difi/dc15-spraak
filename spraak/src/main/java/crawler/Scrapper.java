@@ -15,6 +15,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Scrapper implements Runnable {
 
@@ -110,7 +111,8 @@ public class Scrapper implements Runnable {
             domain = (String) entry;
             //crawlerDomains = new String[]{domain};
             //fname = domain.split("/",4)[3];
-            fname = "norge";
+
+            fname = UUID.randomUUID().toString();
             crawlerDomains = new String[]{domain};
 
             int threads = 1;
@@ -118,7 +120,7 @@ public class Scrapper implements Runnable {
             // Setup config
             CrawlConfig config = new CrawlConfig();
 
-            String crawlStorageFolder = "";
+            String crawlStorageFolder = "./cache";
 
             config.setCrawlStorageFolder(crawlStorageFolder + "/" + fname);
 
@@ -139,7 +141,6 @@ public class Scrapper implements Runnable {
             crawlerSettings.put("db", this.database);
             controller.setCustomData(crawlerSettings);
 
-            controller.addSeed(domain);
 
             System.out.println("started");
 
