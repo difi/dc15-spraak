@@ -65,7 +65,12 @@ public class Crawler extends WebCrawler {
         else if(ACCEPTFILTERS.matcher(href).matches()){
             this.db.setType("file");
             TextExtractor t = new TextExtractor(url.getURL(), this.db);
-            t.run();
+            try{
+                t.run();
+            }catch(OutOfMemoryError e){
+                System.out.println("Out of memory");
+                System.out.println(url.getURL());
+            }
             this.db.setType("crawler");
             return false;
         }

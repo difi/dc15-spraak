@@ -123,6 +123,9 @@ public class ElasticConnector {
             }catch(java.nio.BufferUnderflowException e){
                 System.out.println("Buffer underflow");
                 System.out.println(msg);
+            }catch(java.nio.BufferOverflowException e){
+                System.out.println("Buffer overflow");
+                System.out.println(msg);
             }
         }else if(msg.get("lang") == "nn" || msg.get("lang") == "nb"){
             return;

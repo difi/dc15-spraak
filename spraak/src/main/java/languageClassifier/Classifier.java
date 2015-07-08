@@ -119,6 +119,8 @@ public class Classifier {
 	public static AnalyzedText classify(String str) throws IOException{
 		if(langid == null){
 			init();
+		}else {
+			langid.reset();
 		}
 		int length = str.length();
 		if(length < 300){
