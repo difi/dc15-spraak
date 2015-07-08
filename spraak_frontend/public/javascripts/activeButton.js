@@ -1,93 +1,44 @@
 /*
 
-$(document).ready(function(){
+$("#home").on('click', function () {
+    $("#difi").removeClass("active");
+    $("#complex").removeClass("active");
+    $("#agency").removeClass("active");
+
+    $(document).ready(function() {
 
 
-    $("#difi").click(function(){
-        $("#main").hide();
-        $("#total").show();
-    });
-    $("#home").click(function(){
-        $("#main").show();
-        $("#total").hide();
+
     });
 });
 
 
+$("#difi").on('click', function () {
+    $("#home").removeClass("active");
+    $("#complex").removeClass("active");
+    $("#agency").removeClass("active");
 
-*/
+    $(document).ready(function() {
 
-/*
+        $("#difi").addClass("active");
 
-$('#difi').click( function() {
-$.ajax({ url: 'localhost:3002/total.html'
-    , type: 'GET'
-    , dataType: 'html'
-})
-    .done(function(data) {
-        $('#container').html(data);
-        piechart();
-
-    })
-    .fail(function() {
-        console.log("Something went wrong!");
     });
-
-    return false; } );
-
+});*/
 
 
-$('#complex').click( function() {
-    $.ajax({ url: 'html/complex.html'
-        , type: 'GET'
-        , dataType: 'html'
-    })
-        .done(function(data) {
-            $('#container').html(data);
-        })
-        .fail(function() {
-            console.log("Something went wrong!");
-        });
+var url = window.location.href;
 
-    return false; } );
-
-
-
-$('#agency').click( function() {
-    $.ajax({ url: 'html/agency.html'
-        , type: 'GET'
-        , dataType: 'html'
-    })
-        .done(function(data) {
-            $('#container').html(data);
-        })
-        .fail(function() {
-            console.log("Something went wrong!");
-        });
-
-    return false; } );
-
-$('#home').click( function() {
-
-    $.ajax({ url: 'html/index.html'
-        , type: 'GET'
-        , dataType: 'html'
-    })
-        .done(function(data) {
-            $('#container').html(data);
-        })
-        .fail(function() {
-            console.log("Something went wrong!");
-        });
-
-    return false; } );
-
-
-*/
-
-
-
-
+$(document).ready(function() {
+    if(url === "http://localhost:3002/") {
+        $("#home").addClass("active");
+    } else if (url === "http://localhost:3002/total") {
+        $("#difi").addClass("active");
+    } else if (url === "http://localhost:3002/complex") {
+        $("#complex").addClass("active");
+    } else if (url === "http://localhost:3002/agency") {
+        $("#agency").addClass("active");
+    }
+});
 
 
 
