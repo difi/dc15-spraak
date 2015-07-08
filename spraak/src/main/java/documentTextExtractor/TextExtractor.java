@@ -65,6 +65,7 @@ public class TextExtractor implements Runnable {
 
     public void handleFile(String path) {
         DocumentTextExtractor extractor;
+        path = path.toLowerCase();
         if (path.endsWith(".pdf")) {
             extractor = new PdfExtractor();
         }
