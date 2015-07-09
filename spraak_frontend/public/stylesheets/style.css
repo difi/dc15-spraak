@@ -92,7 +92,7 @@ h1,h2,h3,h4,p {
     margin: 0 auto;
   }
 
-  .style-2 input[type="text"] {
+ /* .style-2 select[type="text"] {
     padding: 10px;
     border: solid 5px rgba(123, 180, 235, .5);
     transition: border 0.3s;
@@ -100,14 +100,22 @@ h1,h2,h3,h4,p {
     border-radius: 0;
 
 
-  }
+  }*/
 
-  .style-2 input[type="text"]:focus,
-  .style-2 input[type="text"].focus {
+  /*select, option {*/
+    /*padding: 10px;*/
+    /*border: solid 5px rgba(123, 180, 235, .5);*/
+    /*transition: border 0.3s;*/
+    /*width: 100%;*/
+    /*border-radius: 0;*/
+  /*}*/
+
+/*  .style-2 select[type="text"]:focus,
+  .style-2 select[type="text"].focus {
     border: solid 5px #7bb4eb !important;
     outline: 0 !important;
     border-radius: 0;
-  }
+  }*/
 
   .buttonSection {
     text-align: center;
