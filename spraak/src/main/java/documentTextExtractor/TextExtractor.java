@@ -89,12 +89,12 @@ public class TextExtractor implements Runnable {
                 }catch(javax.net.ssl.SSLHandshakeException e){
                     return;
                 }catch(IndexOutOfBoundsException e){
-                    System.out.println("Index out of bounds");
-                    System.out.println(path);
+                    //System.out.println("Index out of bounds");
+                    //System.out.println(path);
                     return;
                 }catch(java.io.IOException e){
-                    System.out.println("IOException");
-                    System.out.println(path);
+                    //System.out.println("IOException");
+                    //System.out.println(path);
                     return;
                 }
             }

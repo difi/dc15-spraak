@@ -40,7 +40,7 @@ public class Classifier {
 	 * Laster default config "config.ini"
 	 */
 	public void loadConfig() throws IOException{
-		loadConfig("spraak/resources/config.ini","default");
+		loadConfig("resources/config.ini","default");
 	}
 	
 	/*

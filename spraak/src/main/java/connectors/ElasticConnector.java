@@ -2,7 +2,9 @@ package connectors;
 
 import languageClassifier.AnalyzedText;
 import languageClassifier.Classifier;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -14,6 +16,8 @@ import utils.Utils;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -40,7 +44,6 @@ public class ElasticConnector {
 
     private void connect(){
         Settings settings = ImmutableSettings.settingsBuilder()
-                .put("client.transport.sniff", true)
                 .put("cluster.name", "elasticsearch.difi.no").build();
         Client client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress("elasticsearch.difi.local", 9300));
@@ -149,10 +152,27 @@ public class ElasticConnector {
         msg.put("owner", this.owner);
 
         // Just for safety
-//        IndexResponse respone = this.client.prepareIndex("spraak", this.type)
-//                .setSource(msg)
-//                .execute()
-//                .actionGet();
+        // Retry the insert if it does not work
+        int i = 0;
+        while(i != 5) {
+            try {
+                IndexResponse respone = this.client.prepareIndex("spraak", this.type)
+                        .setSource(msg)
+                        .execute()
+                        .actionGet();
+                System.out.println(msg);
+                break;
+            }catch(Exception e){
+                i += 1;
+                try {
+                    System.out.println("Retry thread");
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                    return;
+                }
+            }
+        }
     }
 
     public String getType() {
