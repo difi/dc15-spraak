@@ -2,6 +2,7 @@ package documentTextExtractor;
 
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
+import utils.Utils;
 
 import javax.print.Doc;
 import java.io.FileInputStream;
@@ -66,7 +67,7 @@ public class DocExtractor implements DocumentTextExtractor {
 
     @Override
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[.,:;!?\\s]+").length;
+        return Utils.getNumberOfWords(getAllText());
     }
 
     @Override

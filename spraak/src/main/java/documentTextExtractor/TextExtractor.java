@@ -6,6 +6,7 @@ import utils.Utils;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 /**
@@ -64,6 +65,7 @@ public class TextExtractor implements Runnable {
 
     public void handleFile(String path) {
         DocumentTextExtractor extractor;
+        path = path.toLowerCase();
         if (path.endsWith(".pdf")) {
             extractor = new PdfExtractor();
         }
@@ -84,17 +86,25 @@ public class TextExtractor implements Runnable {
 
         try {
             if (path.startsWith("http://") || path.startsWith("https://")) {
-                try {
-                    extractor.setSource(new URL(path));
-                }catch(javax.net.ssl.SSLHandshakeException e){
-                    return;
-                }catch(IndexOutOfBoundsException e){
-                    //System.out.println("Index out of bounds");
-                    //System.out.println(path);
-                    return;
-                }catch(java.io.IOException e){
-                    //System.out.println("IOException");
-                    //System.out.println(path);
+                URLConnection urlConn = new URL(path).openConnection();
+                // Some paths link to corrupted files, or are redirected to html-documents.
+                if (urlConn.getContentType() != null && ! urlConn.getContentType().contains("text/html")) {
+                    try {
+                        extractor.setSource(new URL(path));
+                    }catch(javax.net.ssl.SSLHandshakeException e){
+                        return;
+                    }catch(IndexOutOfBoundsException e){
+                        //System.out.println("Index out of bounds");
+                        //System.out.println(path);
+                        return;
+                    }catch(java.io.IOException e) {
+                        //System.out.println("IOException");
+                        //System.out.println(path);
+                        return;
+                    }
+                }
+                else {
+                    System.err.println("File " + path + " is not a readable file.");
                     return;
                 }
             }

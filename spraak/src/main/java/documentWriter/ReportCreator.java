@@ -15,22 +15,14 @@ public class ReportCreator {
     final static String basePath = "http://localhost:3002/api/v3/owners/all";
     public static void main(String... args){
         LatexNode l = setAll();
-        PDFWriter.createReport(l,0);
-        try {
-            String path  = PDFWriter.getReport();
-            System.out.println("cmd /c start \"\" /max C:\\Users\\camp-lsa\\IdeaProjects\\spraak\\" + path);
-            Runtime.getRuntime().exec("cmd /c start \"\" /max C:\\Users\\camp-lsa\\IdeaProjects\\dc15-spraak\\spraak\\" + path);
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        PDFWriter.getReport(l);
     }
 
     //returnerer path til skrevet pdf-fil.
     public static String getPDFReport(){
         if(PDFWriter.getTimeSinceWrite() < 60*1000)
             return "LatexFolder"+ PDFWriter.time + "pdf";
-        return PDFWriter.getReport();
+        return PDFWriter.getReport(setAll());
     }
 
     static String regex_socmedia = "twitter|fb";
@@ -40,20 +32,20 @@ public class ReportCreator {
     public static LatexNode setAll(){
         LatexNode root = new LatexNode("Sammendrag", new float[]{0,0,0,0});
         JSONObject content = (JSONObject) (getData("")).get("owners");
+        System.out.println(content.toJSONString());
 
         for(Object k : content.keySet()){
             String key = (String) k;
 
-
-            JSONObject
-                    ministry = (JSONObject) content.get(key),
+            JSONObject ministry = (JSONObject) content.get(key),
                     temp;
-            LatexNode
-                    newNode = new LatexNode(key.toString(), new float[]{0,0,0,0}),
-                    socMediaNode = new LatexNode("Sosiale Medier", new float[]{0,0,0,0}),
-                    fileNode = new LatexNode("Filer", new float[]{0,0,0,0});
-            Number n;
 
+            LatexNode newNode = new LatexNode(key.toString(), new float[]{0,0,0,0}),
+                    socMediaNode = new LatexNode("Sosiale Medier", new float[]{0,0,0,0}),
+                    filer= new LatexNode("Sosiale Medier", new float[]{0,0,0,0});
+
+            Number n;
+            System.out.println(key);
             for(Object term : ((JSONObject) ministry.get("topterms")).keySet()){
                 JSONObject obj = (JSONObject) ((JSONObject) ministry.get("topterms")).get(term);
 
@@ -80,17 +72,22 @@ public class ReportCreator {
                 float[] values = {a,b,percentNN,percentNB};
                 LatexNode child = new LatexNode(term.toString(), values);
 
-                if(term.toString().matches(regex_file))
-                    fileNode.addChild(child);
-                else if(term.toString().matches(regex_socmedia))
+
+                if(term.toString().matches(regex_socmedia))
                     socMediaNode.addChild(child);
+                else if(term.toString().matches(regex_file))
+                    filer.addChild(child);
                 else
                     newNode.addChild(child);
             }
-            newNode.addChild(socMediaNode);
-            newNode.addChild(fileNode);
+
+            if(socMediaNode.children.size() > 0)
+                newNode.addChild(socMediaNode);
+            if(filer.children.size() > 0)
+                newNode.addChild(newNode);
             root.addChild(newNode);
         }
+
         root.sumChildren();
         return root;
     }
@@ -103,9 +100,9 @@ public class ReportCreator {
             conn.setRequestMethod("GET");
             conn.connect();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF8"));
             String content = br.readLine();
-
+            System.out.println(content);
             JSONParser parser = new JSONParser();
 
             br.close();

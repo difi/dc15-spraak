@@ -3,6 +3,8 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.util.PDFTextStripper;
+import utils.Utils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -116,7 +118,7 @@ public class PdfExtractor implements DocumentTextExtractor {
 
     public int getNumberOfWords() throws IOException {
         String allText = textStripper.getText(pddoc);
-        return allText.replaceAll(SPLIT_STRING, "").split("[.,:;!?\\s]+").length;
+        return Utils.getNumberOfWords(allText.replaceAll(SPLIT_STRING, ""));
     }
 
     public void closeDoc() throws IOException {
