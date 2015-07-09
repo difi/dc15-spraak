@@ -5,8 +5,6 @@ var nbPercentAll;
 var nnComplex = [];
 var nbComplex = [];
 var user = "difi";
-var drilldown_series = [];
-var data_list = [];
 var toptags = [];
 var url = window.location.href;
 
@@ -32,7 +30,6 @@ if (url === "http://localhost:3002/total" || url === "http://localhost:3002/comp
                 nnComplex.push(0);
             }
             if (v.complexity_nb.doc_count > 0) {
-
                 var nb = parseInt(v.complexity_nb.avg);
                 nbComplex.push(nb);
             } else {
@@ -40,7 +37,6 @@ if (url === "http://localhost:3002/total" || url === "http://localhost:3002/comp
             }
 
         };
-
 
         $.each(data.toptags, function (key) {
             format(this);
@@ -160,41 +156,36 @@ if (url === "http://localhost:3002/total" || url === "http://localhost:3002/comp
 }
 
 
-if (url === "http://localhost:3002/agency") {
-$.getJSON('http://localhost:3002/api/v2/owners', function(data) {
-    ownerList = data;
-    var completedCalls = 0;
-    $.each(ownerList, function(k, owner) {
-        var drilldown_data = [];
-        $.getJSON('http://localhost:3002/api/v2/owner/' + owner + '/all', function(data) {
-            $.each(data.all.lang_terms.buckets, function() {
-                if(this.key == "nn") {
-                    data_list.push({name: capitalize(owner), y: (this.doc_count / data.all.doc_count) * 100, drilldown: owner});
-                }
-            });
-            $.each(data.toptags.buckets, function(k, langitem) {
-                $.each(langitem.lang_terms.buckets, function() {
-                    if(this.key == "nn") {
-                        drilldown_data.push([capitalize(langitem.key), (this.doc_count / langitem.doc_count) * 100 ]);
-                    }
-                });
-            });
-        })
-            .done(function() {
-                //Inner API call done.
-                completedCalls++;
-                if(completedCalls == ownerList.length) {
-                    // All API calls done
-                    // Chart can now be drawn
 
-                    drawAllOwnersChart();
+if (url === "http://localhost:3002/agency") {
+
+$.getJSON('http://localhost:3002/api/v3/owners/lang', function(data) {
+    var drilldown_series = [];
+    var data_list = [];
+
+
+    $.each(data.toptags, function(owner, ownerData) {
+        var percentNN = (ownerData.lang_terms.nn.doc_count / ownerData.doc_count) * 100;
+        data_list.push({name: capitalize(owner), y: percentNN, drilldown: owner});
+        var drilldown_data = [];
+        $.getJSON('http://localhost:3002/api/v3/owner/' + owner + "/all", function(data) {
+            $.each(data.toptags, function(source, sourceData) {
+                if (sourceData.lang_terms.nn != undefined) {
+                    drilldown_data.push([capitalize(source), (sourceData.lang_terms.nn.doc_count / sourceData.doc_count) * 100]);
+                }
+                else {
+                    drilldown_data.push([capitalize(source), 0]);
                 }
             });
+        });
         drilldown_series.push({id: owner, data: drilldown_data});
     });
-});
 
-function drawAllOwnersChart() {
+    console.log(drilldown_series);
+    /*
+     A column chart showing the percentage of nynorsk for all "owners"
+     And more information if column is clicked
+     */
 
     Highcharts.setOptions({
         lang: {
@@ -248,7 +239,7 @@ function drawAllOwnersChart() {
             }
         }
     });
-}
+})
 }
 
 
@@ -275,6 +266,9 @@ $.getJSON('http://localhost:3002/api/v3/owners/all', function(data) {
      A column chart showing the percentage of nynorsk for all "owners"
      And more information if column is clicked
      //
+=======
+    
+>>>>>>> 94cf8d8afca522cab7e7086b488ead8c41b2f1d7
     $('#nnPercentageAllChart').highcharts({
         chart: {
             type: 'column'
@@ -322,7 +316,7 @@ $.getJSON('http://localhost:3002/api/v3/owners/all', function(data) {
         }
     });
 });
- */
+
 
 /*
 Returns the string with first letter in uppercase
