@@ -1,6 +1,6 @@
 package languageClassifier;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class ShortClassifier {
 	/*
@@ -68,22 +68,42 @@ public class ShortClassifier {
 	* Om mer enn 70% av gjenkjente ord er nynorske antar teksten å være nynorsk.
 	* Om teksten ikke har gjenkjente ord antas teksten å være bokmål.
 	*/
-	public String classify(String text, RuleSet ruleset){
+    Set<String> strings = new HashSet<String>(Arrays.asList("the", "a", "was", "where", "why", "when", "which", "there", "their", "je", "ich", "ne", "pas", "tu", "vous", "à", "pour", "une", "bin", "mit", "das", "ist", "nicht", "die", "sie", "n'est", "ou", "partie"));
+    private boolean containsForeign(String[] check){
+        List<String> x = Arrays.asList(check);
+        for(String word : x){
+            if(strings.contains(word)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static float percent;
+    public String classify(String text, RuleSet ruleset) throws Exception {
 		this.ruleset = ruleset;
 		String[] text_array = text.toLowerCase().split(" ");
+        if(containsForeign(text_array)){
+            throw new Exception("No elements recognized");
+        }
 
 		float[] result = check_text(ruleset.endinger, ruleset.hele, text_array);	
 		float[] result_bm = check_text(ruleset.endinger_bm, ruleset.hele_bm, text_array);
+        if(result[0] == 0f && result[1] == 0f && result_bm[0] == 0f && result_bm[1] == 0f){
+            return "unknown";
+        }
 
 		float combined = result[0] + result[1];
 		float combined_bm = result_bm[0] + result_bm[1];
-		float percent = combined/(combined+combined_bm);
+		percent = combined/(combined+combined_bm);
 
-		if(combined + combined_bm == 0f)
+        if(combined + combined_bm == 0f)
 			return "nb";
 		else if(percent > 0.7f)
-			return "nn";
-		else
-			return "nb";
+            return "nn";
+		else {
+            percent = 1f - percent;
+            return "nb";
+        }
 	}
 }

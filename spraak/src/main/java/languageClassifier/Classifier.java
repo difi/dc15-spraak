@@ -4,11 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 
 import com.carrotsearch.labs.langid.DetectedLanguage;
@@ -40,7 +37,7 @@ public class Classifier {
 	 * Laster default config "config.ini"
 	 */
 	public void loadConfig() throws IOException{
-		loadConfig("resources/config.ini","default");
+		loadConfig("spraak/resources/config.ini","default");
 	}
 	
 	/*
@@ -119,19 +116,20 @@ public class Classifier {
 	public Classifier() throws IOException {
 		init();
 	}
+
+
 	//klassifiserer tekst, bruker 'hjemmesnekra' static-class "ShortClassifier" om teksten er under 300 tegn lang.
 	public AnalyzedText classify(String str) throws IOException{
 		int length = str.length();
 		if(length < 300){
-			return new AnalyzedText( shortClassifier.classify(str,rule_set), (new TextComplexity(str)), 1);
+			try{
+				return new AnalyzedText( shortClassifier.classify(str,rule_set), (new TextComplexity(str)), shortClassifier.percent);
+			}catch(Exception e){
+				//"Dette var ikke norsk tekst, nei," sa guten og lot strengen gå.
+			}
 		}
-		else{
-			DetectedLanguage result = langid.classify(str, true);
+		DetectedLanguage result = langid.classify(str, true);
+		return new AnalyzedText(result.getLangCode(), new TextComplexity(str), result.confidence);
 
-			if(!result.langCode.matches("nn|nb"))
-				return new AnalyzedText("annet", new TextComplexity(),result.confidence);
-
-			return new AnalyzedText(result.getLangCode(), new TextComplexity(str), result.confidence);
-		}
 	}
 }

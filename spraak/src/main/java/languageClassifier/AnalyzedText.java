@@ -14,4 +14,9 @@ public class AnalyzedText {
         complexity = Score;
         this.confidence = confidence;
     }
+
+    @Override
+    public String toString(){
+        return language + ": " + complexity + " - " + confidence;
+    }
 }
