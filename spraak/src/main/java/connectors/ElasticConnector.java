@@ -7,6 +7,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.joda.time.DateTime;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -93,8 +94,6 @@ public class ElasticConnector {
     public JSONObject checkOAuth(JSONObject msg){
         if(!msg.containsKey("account"))
             msg.put("account", null);
-        if(!msg.containsKey("post_year"))
-            msg.put("post_year", null);
         return msg;
     }
 
@@ -105,12 +104,21 @@ public class ElasticConnector {
             msg.put("uuid", this.uuid);
 
         msg = this.check(msg);
-        if(this.type.equals("crawl"))
+
+        //bør byttes ut.
+        if(!msg.containsKey("post_year"))
+            msg.put("post_year", DateTime.now().year().get());
+
+        if(this.type.equals("crawl")) {
             msg = this.checkCrawl(msg);
-        else if(this.type.equals("file"))
+        }
+        else if(this.type.equals("file")) {
             msg = this.checkFile(msg);
-        else if(this.type.equals("oauth"))
+        }
+        else if(this.type.equals("oauth")) {
             msg = this.checkOAuth(msg);
+
+        }
 
 
 
@@ -150,7 +158,7 @@ public class ElasticConnector {
         msg.put("text", Utils.clean((String) msg.get("text")));
 
         msg.put("owner", this.owner);
-
+        System.out.println(msg);
         // Just for safety
         // Retry the insert if it does not work
         int i = 0;
