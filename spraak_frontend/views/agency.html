@@ -1,33 +1,45 @@
-{% extends 'layout.html' %}
-{% block title %}Agency{% endblock %}
-{% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
-{% block content %}
+
+
+        {% extends 'layout.html' %}
+
+        {% block title %}Header/Footer{% endblock %}
+        {% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
+        {% block content %}
+
+
+        <div class="pure-g">
+
+            <div class="pure-u-1-12"></div>
+
+            <div class="pure-u-7-12">
+
+
+                <h2>Og det her?</h2>
+
+                <p>Ja, det får en si. Det var en flott graf. </p>
+
+
+                <div id="nnPercentageAllChart"></div>
+
+
+                <br/><br/>
+
+
+            </div>
+            <div class="pure-u-1-12"></div>
+            <div class="pure-u-1-6">
+
+
+                {% include 'menuBokmal.html' %}
+
+            </div>
+            <div class="pure-u-1-12"></div>
+        </div>
 
 
 
-<div class="pure-g">
-
-    <div class="pure-u-1-12"></div>
-    <div class="pure-u-7-12">
 
 
-        <h2>Og det her?</h2>
-
-        <p>Ja, det får en si. Det var en flott graf. </p>
-
-            <br/><br/>
-
-        <div id="nnPercentageAllChart"></div>
-
-    </div>
-    <div class="pure-u-1-12"></div>
-
-    <div class="pure-u-1-6">
-        {% include 'menuBokmal.html' %}
-    </div>
-    <div class="pure-u-1-12"></div>
-</div>
+        {% endblock %}
 
 
-
-{% endblock %}

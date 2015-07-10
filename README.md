@@ -1,3 +1,3 @@
 # dc15-spraak
 
-Simple webcrawler using the Twitter API. Sorts the posts and retweeets by a given user by year, and post them to an empty file.
+An awesome application that crawles the web, and beyond, to find text.  The program then proceeds to analyze whether the language at hand is the powerfull new norwegian, or the mighty book goal. Statistical fun will ensue! Enjoy travelers, and behold the mightyness of the norwegian language!

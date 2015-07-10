@@ -14,8 +14,8 @@ router.get('/complex', function(req, res, next) {
   res.render('complex', { title: 'Express' });
 });
 
-router.get('/total', function(req, res, next) {
-  res.render('total', { title: 'Express' });
+router.get('/total', function (req, res, next) {
+  res.render('total', {title: 'Express'});
 });
 
 router.get('/agency', function(req, res, next) {
@@ -36,3 +36,5 @@ router.get('/agency_nn', function(req, res, next) {
 
 
 module.exports = router;
+
+
