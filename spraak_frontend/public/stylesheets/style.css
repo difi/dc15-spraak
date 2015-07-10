@@ -189,4 +189,8 @@ h1,h2,h3,h4,p {
   .chosen-choices:hover{
     background-color: #eef6ec !important;
   }
+
+  .buttonText {
+    font-size: 1.3em;
+  }
 }
