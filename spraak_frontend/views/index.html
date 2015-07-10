@@ -2,6 +2,8 @@
 
 {% block title %}Header/Footer{% endblock %}
 {% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
+{% block menu %} {% include 'menuBokmal.html' %}{% endblock %}
+
 {% block content %}
 
 
@@ -29,16 +31,8 @@
         {% include 'inputBox.html' %}
 
         </div>
-
-
     </div>
     <div class="pure-u-1-12"></div>
-    <div class="pure-u-1-6">
-
-
-        {% include 'menuBokmal.html' %}
-
-    </div>
     <div class="pure-u-1-12"></div>
 </div>
 
