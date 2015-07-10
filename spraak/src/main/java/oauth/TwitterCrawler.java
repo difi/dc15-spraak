@@ -86,10 +86,9 @@ public class TwitterCrawler implements Runnable {
             //catches exception if twitter is down
             catch (TwitterException e) {
                 e.printStackTrace();
+                break;
             }
-            break;
         }
-        return;
     }
 
 
