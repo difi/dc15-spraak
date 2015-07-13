@@ -15,6 +15,11 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 
 public class Setup {
 
@@ -111,12 +116,42 @@ public class Setup {
         return;
     }
 
+    public void initiateTrustManager() {
+        /*
+        Trust everything!
+         */
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+                    public void checkClientTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+
+        // Activate the new trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
 
         String log4jConfPath = "src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
         PropertyConfigurator.configure(log4jConfPath);
 
         Setup s = new Setup("setup.json");
+
+        s.initiateTrustManager();
 
         s.start();
     }
