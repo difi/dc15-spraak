@@ -127,7 +127,11 @@ public class PdfExtractor implements DocumentTextExtractor {
     }
 
     public int getCreationYear() throws IOException {
-        return pddoc.getDocumentInformation().getCreationDate().get(Calendar.YEAR);
+        Calendar date = pddoc.getDocumentInformation().getCreationDate();
+        if (date != null) {
+            return date.get(Calendar.YEAR);
+        }
+        return 0;
     }
 }
 
