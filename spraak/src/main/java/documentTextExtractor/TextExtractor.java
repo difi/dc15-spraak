@@ -118,6 +118,7 @@ public class TextExtractor implements Runnable {
 
             JSONObject json = new JSONObject();
             ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
+            int creationYear = extractor.getCreationYear();
             extractor.closeDoc();
 
             extractor.closeDoc();
@@ -131,6 +132,7 @@ public class TextExtractor implements Runnable {
                 json.put("type", "file");
                 json.put("text",paragraph);
                 json.put("words", Utils.getNumberOfWords(paragraph));
+                json.put("postYear", creationYear);
                 db.write(json);
             }
 

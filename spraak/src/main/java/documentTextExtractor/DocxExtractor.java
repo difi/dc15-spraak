@@ -3,6 +3,7 @@ package documentTextExtractor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -73,4 +74,8 @@ public class DocxExtractor implements DocumentTextExtractor {
         // Do nothing. AutoCloseable.
     }
 
+    public int getCreationYear() throws IOException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+        return Integer.parseInt(dateFormat.format(doc.getProperties().getCoreProperties().getCreated()));
+    }
 }

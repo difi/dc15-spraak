@@ -4,10 +4,10 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import utils.Utils;
 
-import javax.print.Doc;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -73,5 +73,10 @@ public class DocExtractor implements DocumentTextExtractor {
     @Override
     public void closeDoc() throws IOException {
         extractor.close();
+    }
+
+    public int getCreationYear() throws IOException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+        return Integer.parseInt(dateFormat.format(doc.getSummaryInformation().getCreateDateTime()));
     }
 }
