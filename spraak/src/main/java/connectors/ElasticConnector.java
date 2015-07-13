@@ -26,6 +26,9 @@ import org.apache.log4j.Logger;
  */
 public class ElasticConnector {
 
+    //Bare noe lars la til for å se hvor mye som er gjort.
+    private static int count;
+
     private Client client;
     private String uuid = null;
     private String type;
@@ -69,6 +72,9 @@ public class ElasticConnector {
             msg.put("lang", null);
         if(!msg.containsKey("words"))
             msg.put("words", 0);
+        if(!msg.containsKey("post_year"))
+            msg.put("post_year", DateTime.now().year().get());
+
         return msg;
     }
 
@@ -106,8 +112,6 @@ public class ElasticConnector {
         msg = this.check(msg);
 
         //bør byttes ut.
-        if(!msg.containsKey("post_year"))
-            msg.put("post_year", DateTime.now().year().get());
 
         if(this.type.equals("crawl")) {
             msg = this.checkCrawl(msg);
@@ -127,6 +131,7 @@ public class ElasticConnector {
             msg.put("date", d.toString());
         }
 
+        System.out.println(this.type + " : " + msg.get("post_year"));
         if(msg.get("lang") == null) {
             try {
                 AnalyzedText analysis = classifier.classify((String) msg.get("text"));
@@ -145,20 +150,18 @@ public class ElasticConnector {
                 System.out.println("Buffer overflow");
                 System.out.println(msg);
             }
-        }else if(msg.get("lang") == "nn" || msg.get("lang") == "nb"){
+        }else if(msg.get("lang").equals("nn") || msg.get("lang").equals("nb")){
             return;
         }
 
         logger.info(msg.get("text"));
         logger.info(msg.get("lang") + " - " + msg.get("complexity"));
-        logger.debug("HEI PÅ DEG DU");
-        logger.warn("");
-        logger.fatal("");
 
         msg.put("text", Utils.clean((String) msg.get("text")));
-
         msg.put("owner", this.owner);
-        System.out.println(msg);
+
+        if(count++ % 10000 == 0)
+            System.out.println(count);
         // Just for safety
         // Retry the insert if it does not work
         int i = 0;
@@ -168,7 +171,6 @@ public class ElasticConnector {
                         .setSource(msg)
                         .execute()
                         .actionGet();
-                System.out.println(msg);
                 break;
             }catch(Exception e){
                 i += 1;
