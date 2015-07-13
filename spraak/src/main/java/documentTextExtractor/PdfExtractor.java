@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 
 /**
  * Created by Camp-AKA on 17.06.2015.
@@ -125,6 +126,9 @@ public class PdfExtractor implements DocumentTextExtractor {
         pddoc.close();
     }
 
+    public int getCreationYear() throws IOException {
+        return pddoc.getDocumentInformation().getCreationDate().get(Calendar.YEAR);
+    }
 }
 
 

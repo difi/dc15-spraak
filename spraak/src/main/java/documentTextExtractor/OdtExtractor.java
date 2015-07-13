@@ -4,11 +4,10 @@ import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.text.Paragraph;
 import utils.Utils;
 
-import javax.swing.text.html.HTMLDocument;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 
@@ -106,5 +105,9 @@ public class OdtExtractor implements DocumentTextExtractor {
     @Override
     public void closeDoc() throws IOException {
         doc.close();
+    }
+
+    public int getCreationYear() throws IOException {
+        return doc.getOfficeMetadata().getCreationDate().get(Calendar.YEAR);
     }
 }

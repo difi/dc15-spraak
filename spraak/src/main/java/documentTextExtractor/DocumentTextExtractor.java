@@ -15,4 +15,5 @@ public interface DocumentTextExtractor {
     public ArrayList<String> getParagraphsLongerThan(int minLength) throws IOException;
     public int getNumberOfWords() throws IOException;
     public void closeDoc() throws IOException;
+    public int getCreationYear() throws IOException;
 }
