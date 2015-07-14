@@ -132,7 +132,7 @@ public class TextExtractor implements Runnable {
                 json.put("type", type);
                 json.put("text",paragraph);
                 json.put("words", docNumberOfWords);
-                json.put("postYear", creationYear);
+                json.put("post_year", creationYear);
                 db.write(json);
             }
 
