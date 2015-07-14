@@ -120,10 +120,10 @@ public class TextExtractor implements Runnable {
             ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
             int creationYear = extractor.getCreationYear();
             String type = extractor.isForm() ? "form" : "file";
+            int docNumberOfWords = Utils.getNumberOfWords(extractor.getAllText());
             extractor.closeDoc();
 
             db.partOfOpen();
-
 
             for (String paragraph : paragraphs) {
                 json = new JSONObject();
@@ -131,17 +131,17 @@ public class TextExtractor implements Runnable {
                 json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
                 json.put("type", type);
                 json.put("text",paragraph);
-                json.put("words", Utils.getNumberOfWords(paragraph));
+                json.put("words", docNumberOfWords);
                 json.put("postYear", creationYear);
                 db.write(json);
             }
 
             db.partOfClose();
+
         }
         catch (Exception e){
             e.printStackTrace();
         }
         return;
     }
-
 }
