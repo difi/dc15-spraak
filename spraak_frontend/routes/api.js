@@ -527,7 +527,7 @@ router.get("/v4/owners/all/yearfortype/:date/:type", (function(req, res) {
             }
         }
     }, format);
-}))
+}));
 
 
 router.get("/v4/owners/all/fortype/:type", (function(req, res) {
