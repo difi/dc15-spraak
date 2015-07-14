@@ -37,7 +37,7 @@ public class Classifier {
 	 * Laster default config "config.ini"
 	 */
 	public void loadConfig() throws IOException{
-		loadConfig("spraak/resources/config.ini","default");
+		loadConfig("resources/config.ini","default");
 	}
 	
 	/*
@@ -125,7 +125,7 @@ public class Classifier {
 			try{
 				return new AnalyzedText( shortClassifier.classify(str,rule_set), (new TextComplexity(str)), shortClassifier.percent);
 			}catch(Exception e){
-				//"Dette var ikke norsk tekst, nei," sa guten og lot strengen gå.
+				//Dette var ikke norsk tekst
 			}
 		}
 		DetectedLanguage result = langid.classify(str, true);

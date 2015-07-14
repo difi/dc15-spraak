@@ -70,6 +70,8 @@ public class Crawler extends WebCrawler {
             }catch(OutOfMemoryError e){
                 System.out.println("Out of memory");
                 System.out.println(url.getURL());
+            }catch(Exception e){
+                System.out.println("Failed to grab pdf...");
             }
             this.db.setType("crawler");
             return false;

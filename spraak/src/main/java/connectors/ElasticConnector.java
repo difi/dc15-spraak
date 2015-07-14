@@ -27,8 +27,6 @@ import org.apache.log4j.Logger;
 public class ElasticConnector {
 
     //Bare noe lars la til for å se hvor mye som er gjort.
-    private static int count;
-
     private Client client;
     private String uuid = null;
     private String type;
@@ -74,7 +72,6 @@ public class ElasticConnector {
             msg.put("words", 0);
         if(!msg.containsKey("post_year"))
             msg.put("post_year", DateTime.now().year().get());
-
         return msg;
     }
 
@@ -121,6 +118,7 @@ public class ElasticConnector {
         }
         else if(this.type.equals("oauth")) {
             msg = this.checkOAuth(msg);
+            System.out.println(msg);
 
         }
 
@@ -131,7 +129,6 @@ public class ElasticConnector {
             msg.put("date", d.toString());
         }
 
-        System.out.println(this.type + " : " + msg.get("post_year"));
         if(msg.get("lang") == null) {
             try {
                 AnalyzedText analysis = classifier.classify((String) msg.get("text"));
@@ -160,8 +157,6 @@ public class ElasticConnector {
         msg.put("text", Utils.clean((String) msg.get("text")));
         msg.put("owner", this.owner);
 
-        if(count++ % 10000 == 0)
-            System.out.println(count);
         // Just for safety
         // Retry the insert if it does not work
         int i = 0;
