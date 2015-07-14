@@ -4,6 +4,9 @@ var extend = require('util')._extend
 
 var elasticsearch = require('elasticsearch');
 
+
+//Alt: docker01.difi.local.8080',
+
 var client = new elasticsearch.Client({
     host: 'elasticsearch.difi.local:8080',
     log: 'trace'
@@ -117,13 +120,12 @@ var format = function(data){
 var es = function(req,res,next){
     res.es = function(json,cb) {
         client.search(json).then(function (resp) {
-            console.log(resp)
-            console.log("nay")
+            //console.log(resp)
             var hits = resp.aggregations;
+            for(a in hits)
+                console.log((""+a).length);
             if(cb != null) {
-                console.log(hits)
                 var s = cb(hits);
-                console.log(s)
                 res.send(s);
             }else {
                 res.send(hits);
@@ -341,11 +343,6 @@ router.get("/v3/owner/:owner/all", (function(req, res) {
 }))
 
 
-
-
-
-
-
 router.get("/v3/owners/all", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -353,6 +350,7 @@ router.get("/v3/owners/all", (function(req, res) {
             aggs: {
                 owners: {
                     terms: {
+                        size: 50,
                         field: "owner"
                     },
                     aggs: {
@@ -368,6 +366,8 @@ router.get("/v3/owners/all", (function(req, res) {
         }
     }, format);
 }))
+
+
 
 
 router.get("/v3/all", (function(req, res) {
@@ -446,8 +446,129 @@ router.get("/v3/owners/confidence", function(req, res){
                 }
             }
         }
-    })
+    },format)
 })
+
+
+
+
+
+router.get("/v4/owners/all/foryear/:date", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body: {
+            query: {
+                filtered: {
+                    filter:{
+
+                    }
+                }
+            },
+            aggs: {
+                owners: {
+                    terms: {
+                        field: "owner"
+                    },
+                    aggs: {
+                        topterms: {
+                            terms: {
+                                field: "type"
+                            },
+                            aggs: all
+                        }
+                    }
+                }
+            },
+            sort:{
+                "lang": {
+                    order:"asc",
+                    mode:"avg"
+                }
+            }
+        }
+    }, format);
+}))
+
+router.get("/v4/owners/all/yearfortype/:date/:type", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body: {
+            query: {
+                filtered: {
+                    filter:{
+                        bool:{
+                            must:[
+                                {
+                                    term: {type:        req.params.type}
+                                },
+                                {
+                                    term: {post_year:   req.params.date}
+                                }
+
+                            ]
+                        }
+                    }
+                }
+            },
+            aggs: {
+                owners: {
+                    terms: {
+                        field: "owner"
+                    },
+                    aggs: {
+                        topterms: {
+                            terms: {
+                                field: "type"
+                            },
+                            aggs: all
+                        }
+                    }
+                }
+            }
+        }
+    }, format);
+}))
+
+
+router.get("/v4/owners/all/fortype/:type", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body: {
+            query: {
+                filtered: {
+                    filter:{
+                        bool:{
+                            must:[
+                                {term: {type: req.params.type}}
+                            ]
+                        }
+                    }
+                }
+            },
+            aggs: {
+                owners: {
+                    terms: {
+                        field: "owner"
+                    },
+                    aggs: {
+                        topterms: {
+                            terms: {
+                                field: "type"
+                            },
+                            aggs: all
+                        }
+                    }
+                }
+            },
+            sort:{
+                owner: {
+                    order:"asc",
+                    mode:"avg"
+                }
+            }
+        }
+    }, format);
+}))
 
 
 
