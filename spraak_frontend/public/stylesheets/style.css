@@ -160,4 +160,33 @@ h1,h2,h3,h4,p {
     display:none;
   }
 
+  #button {
+    transition: all 0.3s ease;
+    padding: 12px 12px 12px 12px;
+    border-radius: 7px;
+    background-color: #303132;
+    color: #fff;
+    border: 0;
+
+    text-align: center;
+  }
+
+  #button:hover {
+    background-color: #818283;
+
+  }
+  .chosen-choices{
+    border:0;
+    border-radius:7px;
+
+
+  }
+  .chosen-container {
+    width:80% !important;
+    padding: 8px 12px 8px 12px;
+  }
+
+  .chosen-choices:hover{
+    background-color: #eef6ec !important;
+  }
 }
