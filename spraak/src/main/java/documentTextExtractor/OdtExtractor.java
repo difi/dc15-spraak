@@ -110,4 +110,11 @@ public class OdtExtractor implements DocumentTextExtractor {
     public int getCreationYear() throws IOException {
         return doc.getOfficeMetadata().getCreationDate().get(Calendar.YEAR);
     }
+
+    /*
+   Everything except PDF without input fields is considered to be a form.
+    */
+    public boolean isForm() throws IOException {
+        return true;
+    }
 }

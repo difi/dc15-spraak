@@ -78,4 +78,11 @@ public class DocxExtractor implements DocumentTextExtractor {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
         return Integer.parseInt(dateFormat.format(doc.getProperties().getCoreProperties().getCreated()));
     }
+
+    /*
+   Everything except PDF without input fields is considered to be a form.
+    */
+    public boolean isForm() throws IOException {
+        return true;
+    }
 }

@@ -112,7 +112,7 @@ public class PdfExtractor implements DocumentTextExtractor {
         return pages;
     }
 
-    public Boolean containsInputFields() throws IOException {
+    public boolean isForm() throws IOException {
         PDAcroForm forms = pddoc.getDocumentCatalog().getAcroForm();
         return forms != null;
     }
