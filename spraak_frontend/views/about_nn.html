@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block title %}Header/Footer{% endblock %}
+{% block header %}Om prosjektet{% endblock %}
+{% block menu %} {% include 'menuNynorsk.html' %}{% endblock %}
+{% block content %}
+
+<div class="pure-g">
+    <div class="pure-u-1-12"></div>
+    <div class="pure-u-20-24">
+        <h1>Motivasjon</h1>
+        <p>Prosjektet har som mål å vise at analysen av målbruk i offentleg sektor kan vere meir effektiv enn det den er i dag.
+        I dag blir denne sett på som ein av mange tidstjuvar, men mykje av det manuelle arbeidet kan automatiserast.</p>
+        <h1>Metode</h1>
+        <p>Tilnærminga som blir brukt er basert på "big-data". Me samlar inn store mengder tekst frå det statlege sine nettsider, offentlege dokument og aktivitet på sosiale media.
+            For å finne domene som er knytta til ein etat, nyttar me Norid si oversikt.
+            Deretter kan me bruke ei løysnning som identifiserer kva språk teksten er skriven på.
+            Denne informasjonen blir lagra, og kan nyttast til å analysere og presentere klare data om blant anna målform.</p>
+        <h1>Rom for feil</h1>
+        <p>Som dei fleste andre løysningar, er ikkje denne heilt feilfri.</p>
+        <h3>Me har ingen garantiar for at...</h3>
+        <ul>
+            <li>Me har fått med oss informasjon frå alle offentlege kjelder som er knytta til ein etat.</li>
+            <li>Språkanalysen er 100% korrekt.</li>
+            <li>Nettsider og dokument held det formatet me forventar</li>
+            <ul>
+                <li>Mange stader blir det nytta utdaterte metodar, eller metodar som er utanfor standarden. Det er ikkje alltid enkelt å ta hensyn til alle dei ulike løysningane.</li>
+                <li>Mange nettstader har ei mengd utdaterte lenkjer, noko som gjer at me ikkje kjem til all informasjonen som ligg der.</li>
+            </ul>
+        </ul>
+        <h1>Vegen vidare</h1>
+        <p>Kva kan me bruke dette til? Draumen er at denne løysninga til slutt kan erstatte den manuelle rapporteringa som blir gjort i dag.
+        I det minste håpar me at den kan gi inspirere språkrådet til å prøve ut alternative løysningar.</p>
+    </div>
+</div>

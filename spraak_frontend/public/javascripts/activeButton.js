@@ -14,6 +14,8 @@ $(document).ready(function() {
         $("#agency").addClass("active-trail active");
     } else if (url === "http://localhost:3002/nynorsk_o_meter") {
         $("#nynorsk_o_meter").addClass("active-trail active");
+    } else if (url === "http://localhost:3002/about") {
+        $("#about").addClass("active-trail active");
     }
 
     //Same for nynorsk
@@ -27,6 +29,8 @@ $(document).ready(function() {
         $("#agency").addClass("active-trail active");
     } else if (url === "http://localhost:3002/nynorsk_o_meter_nn") {
         $("#nynorsk_o_meter").addClass("active-trail active");
+    } else if (url === "http://localhost:3002/about_nn") {
+        $("#about").addClass("active-trail active");
     }
 });
 
