@@ -33,7 +33,12 @@ router.get('/total_nn', function(req, res, next) {
 router.get('/agency_nn', function(req, res, next) {
   res.render('agency_nn', { title: 'Express' });
 });
-
+router.get('/nynorsk_o_meter', function(req, res, next) {
+  res.render('nynorsk_o_meter', { title: 'Express' });
+});
+router.get('/nynorsk_o_meter_nn', function(req, res, next) {
+  res.render('nynorsk_o_meter_nn', { title: 'Express' });
+});
 
 module.exports = router;
 
