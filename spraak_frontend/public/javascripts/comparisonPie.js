@@ -1,4 +1,6 @@
 
+
+
 $('.piechartDifi').highcharts({
     chart: {
         plotBackgroundColor: null,
@@ -43,8 +45,8 @@ $('.piechartDifi').highcharts({
     }]
 });
 
-
 $('.piechartFjas').highcharts({
+
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
