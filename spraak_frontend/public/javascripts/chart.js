@@ -242,82 +242,6 @@ $.getJSON('http://localhost:3002/api/v3/owners/lang', function(data) {
 })
 }
 
-
-
-// This is the version that will work with v3/owners/all eventually
-/*
-$.getJSON('http://localhost:3002/api/v3/owners/all', function(data) {
-    var drilldown_series = [];
-    var data_list = [];
-
-    $.each(data.owners, function(owner, ownerData) {
-        var percentNN = (ownerData.lang_terms.nn.doc_count / ownerData.doc_count) * 100;
-        data_list.push({name: capitalize(owner), y: percentNN, drilldown: owner});
-
-        var drilldown_data = [];
-        $.each(ownerData.topterms, function(term, termData) {
-            drilldown_data.push([capitalize(term), (termData.lang_terms.nn.doc_count / termData.doc_count) * 100]);
-        });
-
-        drilldown_series.push({id: owner, data: drilldown_data});
-    });
-
-    //
-     A column chart showing the percentage of nynorsk for all "owners"
-     And more information if column is clicked
-     //
-=======
-    
->>>>>>> 94cf8d8afca522cab7e7086b488ead8c41b2f1d7
-    $('#nnPercentageAllChart').highcharts({
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'Nynorskandel for hver etat'
-        },
-        xAxis: {
-            type: 'category'
-        },
-        yAxis: {
-            title: {
-                text: '% nynorsk'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            shared: true,
-            headerFormat: '',
-            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> nynorsk<br/>'
-        },
-        credits: {
-            enabled: false
-        },
-        series: [{
-            name: 'Andel nynorsk',
-            data: data_list
-        }],
-        drilldown: {
-            series: drilldown_series
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.1f}%',
-                    style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
-                }
-            }
-        }
-    });
-});
-
-
 /*
 Returns the string with first letter in uppercase
  */
@@ -326,8 +250,105 @@ function capitalize(string) {
 }
 
 
+if(url === "http://localhost:3002/nynorsk_o_meter" || url === "http://localhost:3002/nynorsk_o_meter_nn") {
+    $.getJSON('http://localhost:3002/api/v3/all', function(data) {
+        var nnPercent = parseFloat((data.all.lang_terms.nn.doc_count / (data.all.lang_terms.nn.doc_count + data.all.lang_terms.nb.doc_count) * 100).toFixed(2));
+        $('#nynorskOMeter').highcharts({
 
+            chart: {
+                type: 'gauge',
+                plotBackgroundColor: null,
+                plotBackgroundImage: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
 
+            title: {
+                text: 'Nynorsk-o-meteret'
+            },
 
+            pane: {
+                startAngle: -120,
+                endAngle: 120,
+                background: [{
+                    backgroundColor: {
+                        linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
+                        stops: [
+                            [0, '#FFF'],
+                            [1, '#333']
+                        ]
+                    },
+                    borderWidth: 0,
+                    outerRadius: '109%'
+                }, {
+                    backgroundColor: {
+                        linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
+                        stops: [
+                            [0, '#333'],
+                            [1, '#FFF']
+                        ]
+                    },
+                    borderWidth: 1,
+                    outerRadius: '107%'
+                }, {
+                    // default background
+                }, {
+                    backgroundColor: '#DDD',
+                    borderWidth: 0,
+                    outerRadius: '105%',
+                    innerRadius: '103%'
+                }]
+            },
+            credits: {
+                enabled: false
+            },
 
+            // the value axis
+            yAxis: {
+                min: 0,
+                max: 100,
 
+                minorTickInterval: 'auto',
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickPosition: 'inside',
+                minorTickColor: '#666',
+
+                tickPixelInterval: 30,
+                tickWidth: 2,
+                tickPosition: 'inside',
+                tickLength: 10,
+                tickColor: '#666',
+                labels: {
+                    step: 2,
+                    rotation: 'auto'
+                },
+                title: {
+                    text: '%'
+                },
+                plotBands: [{
+                    from: 50,
+                    to: 100,
+                    color: '#55BF3B' // green
+                }, {
+                    from: 25,
+                    to: 50,
+                    color: '#DDDF0D' // yellow
+                }, {
+                    from: 0,
+                    to: 25,
+                    color: '#DF5353' // red
+                }]
+            },
+
+            series: [{
+                name: 'Andel nynorsk totalt',
+                data: [nnPercent],
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+            }]
+
+        });
+    });
+}
