@@ -1,35 +1,16 @@
-{% extends 'layout.html' %}
-{% block title %}Header/Footer{% endblock %}
-{% block header %}Om prosjektet{% endblock %}
-{% block menu %} {% include 'menuBokmal.html' %}{% endblock %}
-{% block content %}
-
-<-- TODO translate to bokmal-->
-<div class="pure-g">
-    <div class="pure-u-1-12"></div>
-    <div class="pure-u-20-24">
-        <h1>Motivasjon</h1>
-        <p>Prosjektet har som mål å vise at analysen av målbruk i offentleg sektor kan være mer effektiv enn det den er i dag.
-            I dag blir denne sett på som en av mange tidstyver, men me av det manuelle arbeidet kan automatiseres.</p>
-        <h1>Metode</h1>
-        <p>Tilnærmingen som blir brukt er basert på "big-data". Vi samler inn store mengder tekst fra det statlige sine nettsider, offentlige dokumenter og aktivitet på sosiale media.
-            For å finne domene som er knyttet til en etat, bruker vi Norid sin oversikt.
-            Deretter kan vi bruke en løsning som identifiserer hvilket språk teksten er på.
-            Denne informasjonen blir lagret, og kan analysers og presenteres.</p>
-        <h1>Rom for feil</h1>
-        <p>Som de fleste andre løsninger, er ikke denne helt feilfri.</p>
-        <h3>Va har ingen garantier for at...</h3>
-        <ul>
-            <li>Vi har fått med oss informasjon fra alle offentlege kjelder som er knytta til ein etat.</li>
-            <li>Språkanalysen er 100% korrekt.</li>
-            <li>Nettsider og dokument held det formatet me forventar</li>
-            <ul>
-                <li>Mange stader blir det nytta utdaterte metodar, eller metodar som er utanfor standarden. Det er ikkje alltid enkelt å ta hensyn til alle dei ulike løysningane.</li>
-                <li>Mange nettstader har ei mengd utdaterte lenkjer, noko som gjer at me ikkje kjem til all informasjonen som ligg der.</li>
-            </ul>
+<nav>
+    <div>
+        <div class="menu-button">Meny</div>
+        <ul class="menu with-js opacity sn-screen" data-breakpoint="991">
+            <li class="first leaf"><a id="home" href="/"><span class="buttonText">Hjem</span></a>
+            <li class="leaf"><a id="complex" href="/complex"><span class="buttonText">Kompleksitet</span></a>
+            <li class="leaf"><a id="agency" href="/agency"><span class="buttonText">Etat</span></a>
+            <li class="last"><a id="difi" href="/total"><span class="buttonText">Totalt</span></a>
+            <li class="last leaf"><a id="about" href="/about"><span class="buttonText">Om prosjektet</span></a>
+            <li class="last leaf"><a id="nynorsk_o_meter" href="/nynorsk_o_meter"><span class="buttonText">Nynorsk-o-meteret</span></a>
         </ul>
-        <h1>Vegen vidare</h1>
-        <p>Kva kan me bruke dette til? Draumen er at denne løysninga til slutt kan erstatte den manuelle rapporteringa som blir gjort i dag.
-            I det minste håpar me at den kan gi inspirere språkrådet til å prøve ut alternative løysningar.</p>
     </div>
-</div>
+    <div class="seperator">
+        <hr>
+    </div>
+</nav>
