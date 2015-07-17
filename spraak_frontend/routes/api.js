@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var extend = require('util')._extend
 
+//Maks antall som kan returneres i en enkelt query.
+var pages = 50;
+
 var elasticsearch = require('elasticsearch');
 
 
@@ -121,13 +124,18 @@ var es = function(req,res,next){
     res.es = function(json,cb) {
         client.search(json).then(function (resp) {
             //console.log(resp)
+            if(cb == raw){
+                res.send(resp);
+            }
+
             var hits = resp.aggregations;
-            for(a in hits)
-                console.log((""+a).length);
+
             if(cb != null) {
                 var s = cb(hits);
                 res.send(s);
-            }else {
+            }
+            else
+            {
                 res.send(hits);
             }
         }, function (err) {
@@ -460,13 +468,20 @@ router.get("/v4/owners/all/foryear/:date", (function(req, res) {
             query: {
                 filtered: {
                     filter:{
-
+                        bool:{
+                            must:{
+                                term: {
+                                    post_year: req.params.date
+                                }
+                            }
+                        }
                     }
                 }
             },
             aggs: {
                 owners: {
                     terms: {
+                        size: pages,
                         field: "owner"
                     },
                     aggs: {
@@ -513,6 +528,7 @@ router.get("/v4/owners/all/yearfortype/:date/:type", (function(req, res) {
             aggs: {
                 owners: {
                     terms: {
+                        size: pages,
                         field: "owner"
                     },
                     aggs: {
@@ -548,6 +564,7 @@ router.get("/v4/owners/all/fortype/:type", (function(req, res) {
             aggs: {
                 owners: {
                     terms: {
+                        size: pages,
                         field: "owner"
                     },
                     aggs: {
@@ -568,8 +585,139 @@ router.get("/v4/owners/all/fortype/:type", (function(req, res) {
             }
         }
     }, format);
-}))
+}));
+var raw = "raw";
 
+router.get("/v4/search/:word", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body: {
+            query: {
+                match:{
+                    text:{
+                        query:req.params.word
+                    }
+                }
+            }
+        }
+
+    },raw);
+}));
+
+router.get("/v4/searchwithname/:word/:etat", (function(req, res) {
+    res.es({
+
+        index: 'spraak',
+
+            filtered:{
+                query: {
+                    match: {
+                        text: {
+                            query: req.params.word
+                        }
+                    }
+                },
+                filter:{
+                    must:{
+                        term:{owner:req.params.owner}
+                    }
+                }
+            }
+
+    },raw);
+}));
+
+
+router.get("/v4/bywordcount/:lower/:higher", (function(req, res) {
+    lower = parseInt(req.params.lower);
+    lower = isNaN(lower)? 0 : lower;
+    higher = parseInt(req.params.higher);
+    higher = isNaN(higher)? 9999999 :  higher;
+    res.es({
+        index: 'spraak',
+        body: {
+            query: {
+                filtered: {
+                    filter:{
+                        numeric_range:{
+                            words:{
+                                gte:lower,
+                                lte:higher
+                            }
+                        }
+                    }
+                }
+            },
+            aggs: {
+                owners: {
+                    terms: {
+                        size: pages,
+                        field: "owner"
+                    },
+                    aggs: {
+                        topterms: {
+                            terms: {
+                                field: "type"
+                            },
+                            aggs: all
+                        }
+                    }
+                }
+            }
+        }
+    }, format);
+}));
+
+
+router.get("/v4/bywordcount/type/:type/:lower/:higher", (function(req, res) {
+    _type = req.params.type;
+    lower = parseInt(req.params.lower);
+    lower = isNaN(lower)? 0 : lower;
+    higher = parseInt(req.params.higher);
+    higher = isNaN(higher)? 9999999 :  higher;
+    res.es({
+        index: 'spraak',
+        body: {
+            query: {
+                filtered: {
+                    filter:{
+                        bool:{
+                            must:[
+                                {
+                                    term:{type:_type}
+                                },
+                                {
+                                    numeric_range:{
+                                        words:{
+                                            gte:lower,
+                                                lte:higher
+                                        }
+                                    }
+                                }
+                                    ]
+                            }
+                        }
+                    }
+                },
+            aggs: {
+                owners: {
+                    terms: {
+                        size: pages,
+                        field: "owner"
+                    },
+                    aggs: {
+                        topterms: {
+                            terms: {
+                                field: "type"
+                            },
+                            aggs: all
+                        }
+                    }
+                }
+            }
+        }
+    }, format);
+}));
 
 
 module.exports = {
