@@ -47,8 +47,10 @@ public class ElasticConnector {
     private void connect(){
         Settings settings = ImmutableSettings.settingsBuilder()
                 .put("cluster.name", "elasticsearch.difi.no").build();
+
         Client client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress("elasticsearch.difi.local", 9300));
+
         this.client = client;
     }
 
@@ -138,6 +140,9 @@ public class ElasticConnector {
                 msg.put("lang", code);
                 msg.put("complexity", LIX);
                 msg.put("confidence", confidence);
+                if(!msg.containsKey("words")) {
+                    msg.put("words", analysis.complexity.wordCount);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }catch(java.nio.BufferUnderflowException e){
