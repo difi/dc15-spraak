@@ -122,10 +122,21 @@ public class TextExtractor implements Runnable {
             }
 
             JSONObject json = new JSONObject();
-            ArrayList<String> paragraphs = extractor.getParagraphsLongerThan(300);
+            int docNumberOfWords = Utils.getNumberOfWords(extractor.getAllText());
+            ArrayList<String> paragraphs = new ArrayList<>();
+
+            if(docNumberOfWords == 0) {
+                return;
+            }
+
+            if (docNumberOfWords < 300) {
+                paragraphs.add(extractor.getAllText());
+            }
+            else {
+                paragraphs = extractor.getParagraphsLongerThan(300);
+            }
             int creationYear = extractor.getCreationYear();
             String type = extractor.isForm() ? "form" : "file";
-            int docNumberOfWords = Utils.getNumberOfWords(extractor.getAllText());
             extractor.closeDoc();
 
             db.partOfOpen();
