@@ -12,7 +12,7 @@ $(document).ready(function() {
         $('#nb_toggle').attr('href',currentlyAtNynorsk ? currentURL.replace('_nn', '') : '');
     });
 
-    $('#langLinks').find('a').each(function() {
+    $('#lang_links').find('a').each(function() {
         $(this).toggleClass('active', ($(this).attr('id') == 'nn_toggle' && currentlyAtNynorsk) || ($(this).attr('id') == 'nb_toggle' && !currentlyAtNynorsk));
     });
 });
