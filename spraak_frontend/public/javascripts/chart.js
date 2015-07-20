@@ -6,12 +6,11 @@ var nnComplex = [];
 var nbComplex = [];
 var user = "difi";
 var toptags = [];
-var url = window.location.href;
+// remove _nn to make code work on nn pages
+var url = window.location.pathname.replace('_nn','');
 
-
-if (url === "http://localhost:3002/total" || url === "http://localhost:3002/complex") {
-    $.getJSON('http://localhost:3002/api/v3/owner/' + user + '/all', function (data) {
-
+if (url === "/total" || url === "/complex") {
+    $.getJSON('/api/v3/owner/' + user + '/all', function (data) {
         /*
          //Gets total bokmål and nynorsk data.
          bokmal = data.all.lang_terms.buckets[0].doc_count;
@@ -53,7 +52,7 @@ if (url === "http://localhost:3002/total" || url === "http://localhost:3002/comp
 
 
         });
-        if (url === "http://localhost:3002/total") {
+        if (url === "/total") {
             console.log("piechart loaded");
 
             $('#piechart').highcharts({
@@ -102,7 +101,7 @@ if (url === "http://localhost:3002/total" || url === "http://localhost:3002/comp
 
         }
 
-        if (url === "http://localhost:3002/complex") {
+        if (url === "/complex") {
             console.log("complex loaded");
 
             $('#lixChart').highcharts({
@@ -157,9 +156,9 @@ if (url === "http://localhost:3002/total" || url === "http://localhost:3002/comp
 
 
 
-if (url === "http://localhost:3002/agency") {
+if (url === "/agency") {
 
-$.getJSON('http://localhost:3002/api/v3/owners/lang', function(data) {
+$.getJSON('/api/v3/owners/lang', function(data) {
     var drilldown_series = [];
     var data_list = [];
 
@@ -168,7 +167,7 @@ $.getJSON('http://localhost:3002/api/v3/owners/lang', function(data) {
         var percentNN = (ownerData.lang_terms.nn.doc_count / ownerData.doc_count) * 100;
         data_list.push({name: capitalize(owner), y: percentNN, drilldown: owner});
         var drilldown_data = [];
-        $.getJSON('http://localhost:3002/api/v3/owner/' + owner + "/all", function(data) {
+        $.getJSON('/api/v3/owner/' + owner + "/all", function(data) {
             $.each(data.toptags, function(source, sourceData) {
                 if (sourceData.lang_terms.nn != undefined) {
                     drilldown_data.push([capitalize(source), (sourceData.lang_terms.nn.doc_count / sourceData.doc_count) * 100]);
@@ -181,7 +180,6 @@ $.getJSON('http://localhost:3002/api/v3/owners/lang', function(data) {
         drilldown_series.push({id: owner, data: drilldown_data});
     });
 
-    console.log(drilldown_series);
     /*
      A column chart showing the percentage of nynorsk for all "owners"
      And more information if column is clicked
@@ -250,8 +248,8 @@ function capitalize(string) {
 }
 
 
-if(url === "http://localhost:3002/nynorsk_o_meter" || url === "http://localhost:3002/nynorsk_o_meter_nn") {
-    $.getJSON('http://localhost:3002/api/v3/all', function(data) {
+if(url === "/nynorsk_o_meter") {
+    $.getJSON('/api/v3/all', function(data) {
         var nnPercent = parseFloat((data.all.lang_terms.nn.doc_count / (data.all.lang_terms.nn.doc_count + data.all.lang_terms.nb.doc_count) * 100).toFixed(2));
         $('#nynorskOMeter').highcharts({
 

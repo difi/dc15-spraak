@@ -1,35 +1,17 @@
-
-
-
-var url = window.location.href;
-
 $(document).ready(function() {
-    if(url === "http://localhost:3002/") {
-        $("#home").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/total") {
-        $("#difi").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/complex") {
-        $("#complex").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/agency") {
-        $("#agency").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/nynorsk_o_meter") {
-        $("#nynorsk_o_meter").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/about") {
-        $("#about").addClass("active-trail active");
-    }
+    var url = window.location.pathname.replace('_nn','');
 
-    //Same for nynorsk
-    if(url === "http://localhost:3002/nn") {
+    if(url === "/") {
         $("#home").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/total_nn") {
+    } else if (url === "/total") {
         $("#difi").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/complex_nn") {
+    } else if (url === "/complex") {
         $("#complex").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/agency_nn") {
+    } else if (url === "/agency") {
         $("#agency").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/nynorsk_o_meter_nn") {
+    } else if (url === "/nynorsk_o_meter") {
         $("#nynorsk_o_meter").addClass("active-trail active");
-    } else if (url === "http://localhost:3002/about_nn") {
+    } else if (url === "/about") {
         $("#about").addClass("active-trail active");
     }
 });

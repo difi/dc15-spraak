@@ -2,7 +2,7 @@
  * Created by camp-aka on 20.07.2015.
  */
 $(document).ready(function() {
-    var currentURL = window.location.href;
+    var currentURL = window.location.pathname;
     var currentlyAtNynorsk = currentURL.substr(-3) === '_nn';
     $('#nn_toggle').click(function() {
         $('#nn_toggle').attr('href',currentlyAtNynorsk ? '' : currentURL + '_nn');
