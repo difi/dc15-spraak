@@ -37,7 +37,7 @@ public class Classifier {
 	 * Laster default config "config.ini"
 	 */
 	public void loadConfig() throws IOException{
-		loadConfig("resources/config.ini","default");
+		loadConfig("spraak/resources/config.ini","default");
 	}
 	
 	/*
@@ -123,13 +123,14 @@ public class Classifier {
 		int length = str.length();
 		if(length < 300){
 			try{
-				return new AnalyzedText( shortClassifier.classify(str,rule_set), (new TextComplexity(str)), shortClassifier.percent);
+				String s = shortClassifier.classify(str,rule_set);
+				return new AnalyzedText(s, (new TextComplexity(str)), shortClassifier.percent);
 			}catch(Exception e){
-				//Dette var ikke norsk tekst
+				//"Dette var ikkje norsk tekst", sa guten, og sendte strengen videre
 			}
 		}
 		DetectedLanguage result = langid.classify(str, true);
-		return new AnalyzedText(result.getLangCode(), new TextComplexity(str), result.confidence);
+		return new AnalyzedText(result.getLangCode(), new TextComplexity(str), (float) result.getConfidence());
 
 	}
 }

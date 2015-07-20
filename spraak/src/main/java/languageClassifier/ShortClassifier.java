@@ -79,7 +79,7 @@ public class ShortClassifier {
         return false;
     }
 
-    public static float percent;
+    public float percent;
     public String classify(String text, RuleSet ruleset) throws Exception {
 		this.ruleset = ruleset;
 		String[] text_array = text.toLowerCase().split(" ");
@@ -89,9 +89,6 @@ public class ShortClassifier {
 
 		float[] result = check_text(ruleset.endinger, ruleset.hele, text_array);	
 		float[] result_bm = check_text(ruleset.endinger_bm, ruleset.hele_bm, text_array);
-        if(result[0] == 0f && result[1] == 0f && result_bm[0] == 0f && result_bm[1] == 0f){
-            return "unknown";
-        }
 
 		float combined = result[0] + result[1];
 		float combined_bm = result_bm[0] + result_bm[1];
