@@ -1,6 +1,9 @@
 package documentTextExtractor;
 
 import connectors.ElasticConnector;
+import languageClassifier.AnalyzedText;
+import languageClassifier.Classifier;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import utils.Utils;
 
@@ -8,6 +11,8 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by camp-aka on 22.06.2015.
@@ -124,18 +129,72 @@ public class TextExtractor implements Runnable {
             extractor.closeDoc();
 
             db.partOfOpen();
+            json = new JSONObject();
+            json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
+            json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
+            json.put("type", type);
+            json.put("post_year", creationYear);
 
+
+
+
+            String text = "";
+            Integer wordCount = 0;
+            Float complexity = 0f;
+            Float confidence = 0f;
+            Map<String,JSONObject> map = new HashMap();
+            Float amt = (float) paragraphs.size();
+            String langs =  "";
             for (String paragraph : paragraphs) {
-                json = new JSONObject();
-                json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
-                json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
-                json.put("type", type);
-                json.put("text",paragraph);
-                json.put("words", docNumberOfWords);
-                json.put("post_year", creationYear);
-                db.write(json);
-            }
+                Classifier classifier = new Classifier();
+                AnalyzedText analysis = classifier.classify(paragraph);
+                wordCount   += (int) analysis.complexity.wordCount;
+                complexity  += analysis.complexity.LIX;
+                confidence  += analysis.confidence;
 
+                JSONObject obj = new JSONObject();
+                if(!map.containsKey(analysis.language)){
+                    obj.put("complexity",analysis.complexity.LIX);
+                    obj.put("confidence",analysis.confidence);
+                    obj.put("count",1);
+                    langs+=analysis.language+"\n";
+                }else{
+                    obj = map.get(analysis.language);
+                    obj.put("complexity", ((Float) obj.get("complexity")) + analysis.complexity.LIX);
+                    obj.put("confidence", ((Float) obj.get("confidence")) + analysis.confidence);
+                    obj.put("count",((int) obj.get("count"))+1);
+                }
+                map.put(analysis.language,obj);
+            }
+            confidence /= amt;
+            complexity /= amt;
+            json.put("lang",null);
+            Integer cur = 0;
+
+            for(String key : map.keySet()){
+                JSONObject obj = map.get(key);
+                obj.put("complexity", Float.parseFloat(obj.get("complexity")+"")/Float.parseFloat(obj.get("count")+""));
+                map.put(key,obj);
+                if(Integer.parseInt(obj.get("count")+"") > cur) {
+                    System.out.println(obj.get("count") +" > " + cur);
+                    json.put("lang", key);
+                    cur = Integer.parseInt(obj.get("count")+"");
+                }
+            }
+            try{
+                json.put("ratio",Float.parseFloat(map.get(json.get("lang")).get("count")+"")/amt);
+            }catch(Exception e){
+                System.out.println("Could not write the following to db: "+ path + "\nDivision by zero? Amount of paragraphs: " + amt);
+            }
+            json.put("languages",map);
+            json.put("confidence",confidence);
+            json.put("complexity",complexity);
+            json.put("words", wordCount);
+            json.put("text",text);
+
+
+
+            db.write(json);
             db.partOfClose();
 
         }
