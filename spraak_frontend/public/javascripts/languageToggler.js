@@ -15,4 +15,6 @@ $(document).ready(function() {
     $('#lang_links').find('a').each(function() {
         $(this).toggleClass('active', ($(this).attr('id') == 'nn_toggle' && currentlyAtNynorsk) || ($(this).attr('id') == 'nb_toggle' && !currentlyAtNynorsk));
     });
+
+    $('#home_logo').attr('href', currentlyAtNynorsk ? '/_nn' : '/');
 });
