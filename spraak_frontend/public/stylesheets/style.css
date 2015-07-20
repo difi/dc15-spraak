@@ -194,5 +194,8 @@ h1,h2,h3,h4,p {
     display:none;
   }
 
-
+  #langLinks a.active {
+    color: #303132;
+    font-weight: bold;
+  }
 }
