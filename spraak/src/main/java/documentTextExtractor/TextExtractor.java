@@ -1,5 +1,6 @@
 package documentTextExtractor;
 
+import com.google.common.collect.Queues;
 import connectors.ElasticConnector;
 import languageClassifier.AnalyzedText;
 import languageClassifier.Classifier;
@@ -10,42 +11,37 @@ import utils.Utils;
 import java.io.File;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by camp-aka on 22.06.2015.
  */
 public class TextExtractor implements Runnable {
     private ArrayList<String> settings;
-    private String single_file;
-    private ElasticConnector db;
-
-    public TextExtractor(ArrayList<String> settings, ElasticConnector database) {
-        this.settings = settings;
-        this.db = database;
-        this.db.setType("file");
-    }
+    public static ElasticConnector db;
 
     public TextExtractor(String url, ElasticConnector db){
-        single_file = url;
-        this.db = db;
+        if(this.db == null)
+            this.db = db;
+        queue.add(new DocumentObject(url,db.getOwner()));
+        Thread t = new Thread(this);
+        t.start();
     }
+
     @Override
     public void run() {
-        if(single_file != null){
-            handleFile(single_file);
-        }
-        else if (this.settings != null && !this.settings.isEmpty()) {
+        if (this.settings != null && !this.settings.isEmpty()) {
             for (String path : this.settings) {
                 ArrayList<String> filesToCheck = walk(path);
                 for (String filePath : filesToCheck) {
-                    handleFile(filePath);
+                    queue.add(new DocumentObject(filePath, db.getOwner()));
                 }
             }
         }
+        if(!running)
+            handleFile();
     }
+
 
     /*
     Adds all files under a directory to an ArrayList recursively and returns it.
@@ -68,8 +64,19 @@ public class TextExtractor implements Runnable {
         return filePaths;
     }
 
-    public void handleFile(String path) {
+
+    private static boolean running = false;
+    private static Queue<DocumentObject> queue;
+    public static void handleFile(){
+        running = true;
+        while(queue.size() > 0){
+            handleFile(queue.poll());
+        }
+        running = false;
+    }
+    public static void handleFile(DocumentObject o) {
         DocumentTextExtractor extractor;
+        String path = o.source;
         path = path.toLowerCase();
         if (path.endsWith(".pdf")) {
             extractor = new PdfExtractor();
@@ -135,15 +142,14 @@ public class TextExtractor implements Runnable {
 
             int creationYear = extractor.getCreationYear();
             String type = extractor.isForm() ? "form" : "file";
-            int docNumberOfWords = Utils.getNumberOfWords(extractor.getAllText());
             extractor.closeDoc();
 
             db.partOfOpen();
-            json = new JSONObject();
             json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
             json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
             json.put("type", type);
             json.put("post_year", creationYear);
+            json.put("owner",o.owner);
 
 
 
