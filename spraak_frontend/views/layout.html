@@ -31,7 +31,7 @@
         <header>
             <div class="branding sub-portal">
                 <div class="logo">
-                    <a href="/"><h1>difi.github.io/difi-sikker-digital-post-klient-dotnet</h1></a>
+                    <a id="home_logo" href="/"></a>
                 </div>
                 <div class="seperator"></div>
                 <div class="sub-portal">
@@ -42,15 +42,17 @@
             <div class="tools">
                 <div class="menu">
                     <h2>Sekundærmeny</h2>
-                    <ul class="links">
-                        <li> <a href="/" class="first">Bokmål</a></li>
-                        <li><a href="/nn">Nynorsk</a></li>
-                        <li class="last"><a href="">Samisk</a></li>
-
+                    <ul class="links" id="lang_links">
+                        <li> <a id="nb_toggle" href="/" class="first">Bokmål</a></li>
+                        <li class="last"><a id="nn_toggle" href="/_nn">Nynorsk</a></li>
                     </ul>
                 </div>
             </div>
         </header>
+        <div clss="separator"><hr></div>
+
+        {% block menu %}{% endblock %}
+
         <div id="above-content">
             <div>
                 <section class="box title">
@@ -102,12 +104,16 @@
     <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
     <script type="text/javascript" src="http://code.highcharts.com/modules/exporting.js"></script>
     <script type="text/javascript" src="http://code.highcharts.com/modules/drilldown.js"></script>
+    <script type="text/javascript" src="http://code.highcharts.com/highcharts-more.src.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.js"></script>
     <script src ="javascripts/chart.js"></script>
     <script src ="javascripts/activeButton.js"></script>
     <script src ="javascripts/searchField.js"></script>
-    <script src ="javascripts/inputValidation.js"></script>
+    <!--<script src ="javascripts/comparisonPie.js"></script>-->
 
+    <script src ="javascripts/inputValidation.js"></script>
+    <script src="javascripts/mobileMenu.js"></script>
+    <script src ="javascripts/languageToggler.js"></script>
 
 
 

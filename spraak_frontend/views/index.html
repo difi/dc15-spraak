@@ -2,6 +2,8 @@
 
 {% block title %}Header/Footer{% endblock %}
 {% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
+{% block menu %} {% include 'menuBokmal.html' %}{% endblock %}
+
 {% block content %}
 
 
@@ -11,7 +13,9 @@
 
     <div class="pure-u-7-12">
 
-        <div id = "main">
+        {% include 'inputBox.html' %}
+
+        <div class = "main">
 
         <h1>Velkommen!</h1>
 
@@ -26,19 +30,19 @@
             Gunfrid Bakbrei venter avkom senere dette året, vi i redaksjonen gratulere Bakbrei samt donor Lysvik
             Slustein. </p>
 
-        {% include 'inputBox.html' %}
-
         </div>
+
+
+        <div class = "graphContent1"></div>
+        <br/><br/>
+        <div class = "graphContent2"></div>
+        <br/><br/>
+        <div class = "graphContent3"></div>
+        <br/><br/>
 
 
     </div>
     <div class="pure-u-1-12"></div>
-    <div class="pure-u-1-6">
-
-
-        {% include 'menuBokmal.html' %}
-
-    </div>
     <div class="pure-u-1-12"></div>
 </div>
 

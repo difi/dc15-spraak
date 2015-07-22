@@ -3,6 +3,8 @@
 
 {% block title %}complex{% endblock %}
 {% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
+{% block menu %} {% include 'menuBokmal.html' %}{% endblock %}
+
 {% block content %}
 
         <div class="pure-g">
@@ -24,12 +26,6 @@
 
             </div>
             <div class="pure-u-1-12"></div>
-            <div class="pure-u-1-6">
-
-
-                {% include 'menuBokmal.html' %}
-
-            </div>
             <div class="pure-u-1-12"></div>
         </div>
 

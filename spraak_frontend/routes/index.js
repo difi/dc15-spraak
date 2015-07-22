@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.get('/nn', function(req, res, next) {
+router.get('/_nn', function(req, res, next) {
   res.render('index_nn', { title: 'Express' });
 });
 
@@ -33,7 +33,18 @@ router.get('/total_nn', function(req, res, next) {
 router.get('/agency_nn', function(req, res, next) {
   res.render('agency_nn', { title: 'Express' });
 });
-
+router.get('/nynorsk_o_meter', function(req, res, next) {
+  res.render('nynorsk_o_meter', { title: 'Express' });
+});
+router.get('/nynorsk_o_meter_nn', function(req, res, next) {
+  res.render('nynorsk_o_meter_nn', { title: 'Express' });
+});
+router.get('/about', function(req, res, next) {
+  res.render('about', { title: 'Express' });
+});
+router.get('/about_nn', function(req, res, next) {
+  res.render('about_nn', { title: 'Express' });
+});
 
 module.exports = router;
 
