@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block title %}ComplexChart{% endblock %}
-{% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
+{% block header %} DUST, portalen for glede i ein elles vrien språkleg kvardag. {% endblock %}
+{% block menu %} {% include 'menuNynorsk.html' %}{% endblock %}
 {% block content %}
 
 <div class="pure-g">
@@ -17,10 +18,6 @@
 
     </div>
     <div class="pure-u-1-12"></div>
-
-    <div class="pure-u-1-6">
-        {% include 'menuNynorsk.html' %}
-    </div>
     <div class="pure-u-1-12"></div>
 </div>
 
