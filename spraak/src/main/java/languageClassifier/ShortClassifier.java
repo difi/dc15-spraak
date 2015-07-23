@@ -68,11 +68,10 @@ public class ShortClassifier {
 	* Om mer enn 70% av gjenkjente ord er nynorske antar teksten å være nynorsk.
 	* Om teksten ikke har gjenkjente ord antas teksten å være bokmål.
 	*/
-    Set<String> strings = new HashSet<String>(Arrays.asList("the", "a", "was", "where", "why", "when", "which", "there", "their", "je", "ich", "ne", "pas", "tu", "vous", "à", "pour", "une", "bin", "mit", "das", "ist", "nicht", "die", "sie", "n'est", "ou", "partie"));
     private boolean containsForeign(String[] check){
         List<String> x = Arrays.asList(check);
         for(String word : x){
-            if(strings.contains(word)){
+            if(ruleset.foreign.contains(word)){
                 return true;
             }
         }

@@ -68,7 +68,7 @@ public class Classifier {
 				}
 				else{
 					if(line.isEmpty()){
-						
+						continue;
 					}
 					else if(current.equals("hele")){
 						ruleset.hele.add(line);
@@ -80,6 +80,8 @@ public class Classifier {
 						ruleset.endinger_bm.add(line);
 					}else if(current.equals("exempt")){
 						ruleset.exempt.add(line);
+					}else if(current.equals("foreign")){
+						ruleset.foreign.add(line);
 					}
 				}
 			}
