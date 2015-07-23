@@ -42,7 +42,7 @@ public class PDFWriter {
     }
 
 
-    //itererer over map hentet fra elasticsearch og legger det til rapporten som latexkode.
+    //går igjennom et tre av LatexNoder og skriver informasjonen lagret der.
     public static void createReport(LatexNode node, int depth) {
         //report += newLine+node.getImages(); //"\\includegraphics{Sammendraglanekassenpie}";
         pw.println(getSectionType(depth,node.getName()));
@@ -63,34 +63,30 @@ public class PDFWriter {
 
     private static PrintWriter pw;
     public static long time = 0;
-    //Printer en rapport og returnerer lokaliseringen til strengen.
+
+    //Printer en rapport og returnerer filbanen til pdf som en streng.
     public static String getReport(LatexNode l) {
-         String title = "\\author{Difi}\n \\title{Sammendrag av spr{\\aa}bruk \n i statlige kilder.}" +
+        String title = "\\author{Difi}\n \\title{Sammendrag av spr{\\aa}bruk \n i statlige kilder.}" +
                 "\n\\maketitle\n";
         try {
+
             pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File("C:\\Users\\camp-lsa\\IdeaProjects\\dc15-spraak\\spraak\\temp.tex"))));
                 pw.println(header);
                 pw.println(title);
                 createReport(l,0);
                 pw.println(footer);
             pw.close();
-
             time = System.currentTimeMillis();
-
             String command = "cmd.exe /c cd spraak & pdflatex temp.tex -job-name="+ time + " -quiet -output-directory=LatexFolder -include-directory=resources/LatexIncludes";
 
-            System.out.println(command);
             Process cmd = Runtime.getRuntime().exec(command);
             BufferedReader br = new BufferedReader(new InputStreamReader(cmd.getInputStream()));
-            System.out.println("Got here....");
-
             String line;
             while((line = br.readLine()) != null) {
                 System.out.println(line);
             }
             br.close();
             cmd.waitFor();
-
             return "LatexFolder\\"+time+".pdf";
         } catch(Exception e) {
             e.printStackTrace();
