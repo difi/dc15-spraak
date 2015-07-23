@@ -36,9 +36,10 @@ $('#button').on("click", function() {
 
     if (inputValues.indexOf('complex') >= 0) {
 
-        $('.graphContent2').addClass("piechartFjas")
+        $('.graphContent2').addClass("piechartFjas");
     } else {
-        $('.graphContent2').removeClass("piechartFjas").children('highcharts-container').remove();
+        $('.graphContent2').removeClass("piechartFjas");
+        $('.graphContent2').children('highcharts-container').remove();
     }
 
     if (inputValues.indexOf('agency') >= 0) {
