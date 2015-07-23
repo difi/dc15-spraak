@@ -23,20 +23,22 @@ $('#button').on("click", function() {
     console.log(inputValues);
     $('.main').addClass("hidden");
 
-    console.log("før if:" + inputValues);
+
 
     if (inputValues.indexOf('difi') >= 0) {
 
         $('.graphContent1').addClass("piechartDifi")
     } else {
-        $('.graphContent1').children('div').remove();
+        console.log("fjas");
+        $('.graphContent1').removeClass("piechartDifi");
+        $('.graphContent1').children('.highcharts-container').remove();
     }
 
     if (inputValues.indexOf('complex') >= 0) {
 
         $('.graphContent2').addClass("piechartFjas")
     } else {
-        $('.graphContent2').children('div').remove();
+        $('.graphContent2').removeClass("piechartFjas").children('highcharts-container').remove();
     }
 
     if (inputValues.indexOf('agency') >= 0) {
