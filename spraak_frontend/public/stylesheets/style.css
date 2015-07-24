@@ -149,17 +149,7 @@ h1,h2,h3,h4,p {
   }
 }
 
-.style-2 select[type="text"] {
-  padding: 10px;
-  border: solid 5px rgba(123, 180, 235, .5);
-  transition: border 0.3s;
-  width: 100%;
-  border-radius: 0;
-
-
-}
-
-select, option {
+.style-2 input[type="text"] {
   padding: 10px;
   border: solid 5px rgba(123, 180, 235, .5);
   transition: border 0.3s;
@@ -167,8 +157,16 @@ select, option {
   border-radius: 0;
 }
 
-.style-2 select[type="text"]:focus,
-.style-2 select[type="text"].focus {
+select, option, input {
+  padding: 10px;
+  border: solid 5px rgba(123, 180, 235, .5);
+  transition: border 0.3s;
+  width: 100%;
+  border-radius: 0;
+}
+
+.style-2 input[type="text"]:focus,
+.style-2 input[type="text"].focus {
   border: solid 5px #7bb4eb !important;
   outline: 0 !important;
   border-radius: 0;
@@ -195,5 +193,4 @@ select, option {
 .pure-button:hover {
   color: #ffffff !important;
   background-color: #94cdfe !important;
-
 }

@@ -45,6 +45,13 @@ router.get('/about', function(req, res, next) {
 router.get('/about_nn', function(req, res, next) {
   res.render('about_nn', { title: 'Express' });
 });
+router.get('/ordbruk', function(req, res, next) {
+  res.render('ordbruk', { title: 'Express' });
+});
+router.get('/ordbruk_nn', function(req, res, next) {
+  res.render('ordbruk_nn', { title: 'Express' });
+});
+
 
 module.exports = router;
 
