@@ -12,11 +12,8 @@ import java.net.URL;
  * Created by camp-lsa on 29.06.2015.
  */
 public class ReportCreator {
+    //Addresse til lokalt elasticsearch-api.
     final static String basePath = "http://localhost:3002/api/v3/owners/all";
-    public static void main(String... args){
-        LatexNode l = setAll();
-        PDFWriter.getReport(l);
-    }
 
     //returnerer path til skrevet pdf-fil.
     public static String getPDFReport(){
@@ -48,22 +45,21 @@ public class ReportCreator {
             System.out.println(key);
             for(Object term : ((JSONObject) ministry.get("topterms")).keySet()){
                 JSONObject obj = (JSONObject) ((JSONObject) ministry.get("topterms")).get(term);
-
                 temp = ((JSONObject) obj.get("complexity_nn"));
-                n = ((Number)temp.get("avg"));
-                float a = n== null ? 0f : n.floatValue();
+                    n = ((Number)temp.get("avg"));
+                    float a = n== null ? 0f : n.floatValue();
 
                 temp = ((JSONObject) obj.get("complexity_nb"));
-                n = ((Number)temp.get("avg"));
-                float b = n== null ? 0f : n.floatValue();
+                    n = ((Number)temp.get("avg"));
+                    float b = n== null ? 0f : n.floatValue();
 
                 temp = ((JSONObject) obj.get("lang_terms"));
 
                 n = temp.get("nn") == null ? 0 : ((Number) ((JSONObject) temp.get("nn")).get("doc_count"));
-                float c = n == null ? 0f : n.floatValue();
+                    float c = n == null ? 0f : n.floatValue();
 
                 n = temp.get("nb") == null ? 0 : ((Number) ((JSONObject) temp.get("nb")).get("doc_count"));
-                float d = n == null ? 0f : n.floatValue();
+                    float d = n == null ? 0f : n.floatValue();
 
 
                 float percentNN = 100 * c/(c+d);
@@ -71,7 +67,6 @@ public class ReportCreator {
 
                 float[] values = {a,b,percentNN,percentNB};
                 LatexNode child = new LatexNode(term.toString(), values);
-
 
                 if(term.toString().matches(regex_socmedia))
                     socMediaNode.addChild(child);

@@ -7,12 +7,10 @@ var pages = 50;
 
 var elasticsearch = require('elasticsearch');
 
-
 //Alt: docker01.difi.local.8080',
 
 var client = new elasticsearch.Client({
-    host: 'elasticsearch.difi.local:8080',
-    log: 'trace'
+    host: 'elasticsearch.difi.local:8080'
 });
 
 
@@ -123,14 +121,11 @@ var format = function(data){
 var es = function(req,res,next){
     res.es = function(json,cb) {
         client.search(json).then(function (resp) {
-            //console.log(resp)
-            if(cb == raw){
+            var hits = resp.aggregations;
+            if(cb == "raw"){
                 res.send(resp);
             }
-
-            var hits = resp.aggregations;
-
-            if(cb != null) {
+            else if(cb != null) {
                 var s = cb(hits);
                 res.send(s);
             }
@@ -586,45 +581,51 @@ router.get("/v4/owners/all/fortype/:type", (function(req, res) {
         }
     }, format);
 }));
+
 var raw = "raw";
 
 router.get("/v4/search/:word", (function(req, res) {
     res.es({
         index: 'spraak',
         body: {
-            query: {
-                match:{
-                    text:{
-                        query:req.params.word
-                    }
+            query: {match:{text:{query:req.params.word}}},
+            aggs: {
+                toptags: {
+                    terms: {
+                        field: "owner"
+
+                    },
+                    aggs: all
                 }
             }
         }
 
-    },raw);
+    },format);
 }));
 
-router.get("/v4/searchwithname/:word/:etat", (function(req, res) {
+router.get("/v4/searchwithname/:word/:owner", (function(req, res) {
+    console.log("COUNTING AMT OF DOCS WITH WORD " + req.params.word + " WRITTEN BY " +req.params.etat);
     res.es({
-
         index: 'spraak',
-
-            filtered:{
-                query: {
-                    match: {
-                        text: {
-                            query: req.params.word
-                        }
-                    }
-                },
-                filter:{
-                    must:{
-                        term:{owner:req.params.owner}
+        body: {
+            query: {
+                filtered: {
+                    query: {match:{text:{query:req.params.word}}},
+                    filter:{
+                        term: {owner: req.params.owner}
                     }
                 }
+            },
+            aggs: {
+                toptags: {
+                    terms: {
+                        field: "type"
+                    },
+                    aggs: all
+                }
             }
-
-    },raw);
+        }
+    },format);
 }));
 
 

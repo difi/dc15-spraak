@@ -46,6 +46,8 @@ public class LatexNode {
     public String toString(){
         return complexity_nn + " - " + complexity_nn + " | " + percent_nn + " - " + percent_nb;
     }
+
+    //Rekursiv funksjon som summerer verdier for alle barn-noder. Summen av denne nodens barn blir denne nodens verdier.
     public void sumChildren(){
         complexity_nb   = 0;
         complexity_nn   = 0;
@@ -66,6 +68,7 @@ public class LatexNode {
         percent_nb      /=children.size();
     }
 
+    //returnerer navnet til noden.
     public String getName(){
         if(this.name.equals("fb"))
             return "facebook";
@@ -77,7 +80,7 @@ public class LatexNode {
             return this.name;
     }
 
-    //Mulig dette ikke funker andre steder...
+    //Henter navn for bilde. Erstatter æ,ø og å med unicode.
     public String getImageName(){
         String name = "";
         LatexNode n = this;
@@ -88,7 +91,7 @@ public class LatexNode {
         return name.replaceAll("\u00E5|\u00E6|\u00F8","");
     }
 
-
+    //Kaller chart-funksjoner hos ImageGrabber returnerer latex for bildene.
     public String getImages(){
         String LatexImages = "";
         if(!not_pie_applicable.contains(this.name))
