@@ -73,6 +73,15 @@ if (url === "/total" || url === "/complex") {
             if (url === "/total") {
                 console.log("piechart loaded");
 
+                if(nnPercentAll < 25) {
+                    $('#totalInfoTextNN').text(capitalize(selectedOwner) + ' har ikkje oppnådd kravet på 25% nynorsk frå språkrådet.');
+                    $('#totalInfoText').text(capitalize(selectedOwner) + ' har ikke oppnådd kravet på 25% nynorsk fra språkrådet.');
+                }
+                else {
+                    $('#totalInfoTextNN').text(capitalize(selectedOwner) + ' har vore flinke!');
+                    $('#totalInfoText').text(capitalize(selectedOwner) + ' har vært flinke!');
+                }
+
                 $('#piechart').highcharts({
                     chart: {
                         plotBackgroundColor: null,
