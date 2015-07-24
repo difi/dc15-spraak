@@ -52,4 +52,6 @@ crashlytics-build.properties
 
 */node_modules
 
+*/_doks/*
+
 
