@@ -1,19 +1,7 @@
 
-
 var inputValues = [];
 
-$html = '<select name="items" id="items" multiple="multiple" size="1" class="chosenElement">';
-$html += '<option value="difi">Difi</option>';
-$html += '<option value="complex">Kompleksitet</option>';
-$html += '<option value="agency">Etater</option>';
-$html += '</select>';
-
-
 $('.html-multi-chosen-select').chosen({ width: "210px" });
-
-
-
-
 
 $('#button').on("click", function() {
     inputValues = $('.html-multi-chosen-select').chosen().val();

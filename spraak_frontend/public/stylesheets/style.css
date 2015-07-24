@@ -157,12 +157,13 @@ h1,h2,h3,h4,p {
   border-radius: 0;
 }
 
-select, option, input {
+input {
   padding: 10px;
   border: solid 5px rgba(123, 180, 235, .5);
   transition: border 0.3s;
   width: 100%;
   border-radius: 0;
+
 }
 
 .style-2 input[type="text"]:focus,
@@ -189,6 +190,18 @@ select, option, input {
   padding-bottom: 12px;
 
 }
+
+.chosen-container-multi {
+  border:none;
+
+}
+
+
+.chosen-choices, .choice-results {
+  border:5px solid rgba(123, 180, 235, .5) !important;
+  border-radius:0 !important;
+}
+
 
 .pure-button:hover {
   color: #ffffff !important;
