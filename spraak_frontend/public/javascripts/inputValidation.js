@@ -44,7 +44,7 @@ $('#button').on("click", function() {
             $('.graphContent2').addClass("piechartFjas");
         } else {
             $('.graphContent2').removeClass("piechartFjas");
-            $('.graphContent2').children('highcharts-container').remove();
+            $('.graphContent2').children('.highcharts-container').remove();
         }
 
 
