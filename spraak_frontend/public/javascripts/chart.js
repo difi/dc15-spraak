@@ -4,25 +4,48 @@ var owners = [];
 
 /*
 Fill owners list.
-Add these to owners dropdown.
  */
 $.getJSON('/api/v3/owners/lang', function(data) {
-        var s = $('<select></select>').attr("id", 'ownersDropDown');
     $.each(data.toptags, function(key, val) {
         owners.push(key);
-        s.append('<option value="' + key + '">' + capitalize(key) + '</option>');
     });
-        $('#ownersDropDown').append(s);
 });
 
-
-if (url === "/total" || url === "/complex") {
+if (url === "/total") {
+    loadTypeahead(); // ownerTypeahead.js
     var selectedOwner;
-    $("#ownerSelectButton").click(function () {
-        // Get selected choice from dropdown
-        selectedOwner = $("#ownersDropDown :selected").val();
-        $.getJSON('/api/v3/owner/' + selectedOwner + '/all', function (data) {
+    $("#ownerSelectTypeahead").keyup(function(event) {
+        selectedOwner = $('#ownerSelectTypeahead').val();
+        /*
+         Enter-button while in text field == click on ownerSelectButton.
+         */
+        if(event.keyCode == 13) {
+            $("#ownerSelectButton").click();
+        }
 
+        /*
+         Disable ownerSelectButton if search field is empty.
+         */
+        if(selectedOwner == '') {
+            $('#ownerSelectButton').attr('disabled', 'disabled');
+        }
+        else {
+            $('#ownerSelectButton').removeAttr('disabled');
+        }
+    });
+
+    $("#ownerSelectButton").click(function () {
+        // Get selected choice from typeahead
+        selectedOwner = $("#ownerSelectTypeahead").val();
+        if (selectedOwner == '') {
+            return;
+        }
+
+        $('#lixInfo').removeAttr('hidden');
+        $('#lixChart').removeAttr('hidden');
+        $('#piechart').removeAttr('hidden');
+
+        $.getJSON('/api/v3/owner/' + selectedOwner + '/all', function (data) {
             var nnComplex = [];
             var nbComplex = [];
             var toptags = [];
@@ -31,6 +54,7 @@ if (url === "/total" || url === "/complex") {
 
             // Get total nn og nb percentage for selectedOwner
             $.each(data.toptags, function() {
+                // If no documents exist in language, set to 0
                 bokmal += (this.lang_terms.nb != null ? this.lang_terms.nb.doc_count : 0);
                 nynorsk += (this.lang_terms.nn != null ? this.lang_terms.nn.doc_count : 0);
             });
@@ -70,16 +94,21 @@ if (url === "/total" || url === "/complex") {
                 }
             });
 
-            if (url === "/total") {
-                console.log("piechart loaded");
 
                 if(nnPercentAll < 25) {
                     $('#totalInfoTextNN').text(capitalize(selectedOwner) + ' har ikkje oppnådd kravet på 25% nynorsk frå språkrådet.');
                     $('#totalInfoText').text(capitalize(selectedOwner) + ' har ikke oppnådd kravet på 25% nynorsk fra språkrådet.');
                 }
-                else {
+                else if(nnPercentAll >= 25) {
                     $('#totalInfoTextNN').text(capitalize(selectedOwner) + ' har vore flinke!');
                     $('#totalInfoText').text(capitalize(selectedOwner) + ' har vært flinke!');
+                }
+                else {
+                    /*
+                    Clear text when selectedOwner is invalid.
+                     */
+                    $('#totalInfoTextNN').text('');
+                    $('#totalInfoText').text('');
                 }
 
                 $('#piechart').highcharts({
@@ -90,7 +119,7 @@ if (url === "/total" || url === "/complex") {
                         type: 'pie'
                     },
                     title: {
-                        text: 'Nynorsk- og bokmålsandelen til ' + selectedOwner + ":"
+                        text: 'Nynorsk- og bokmålsandelen til ' + capitalize(selectedOwner) + ":"
                     },
                     tooltip: {
                         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -108,6 +137,9 @@ if (url === "/total" || url === "/complex") {
                             }
                         }
                     },
+                    credits: {
+                        enabled: false
+                    },
                     series: [{
                         name: "Andel",
                         colorByPoint: true,
@@ -124,10 +156,7 @@ if (url === "/total" || url === "/complex") {
                     }]
                 });
 
-            }
 
-            if (url === "/complex") {
-                console.log("complex loaded");
 
                 $('#lixChart').highcharts({
                     chart: {
@@ -175,7 +204,6 @@ if (url === "/total" || url === "/complex") {
                         data: nbComplex
                     }]
                 });
-            }
         });
     });
 }

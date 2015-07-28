@@ -207,3 +207,43 @@ select, input {
   color: #ffffff !important;
   background-color: #94cdfe !important;
 }
+
+
+.tt-input {
+  width: 100% !important;
+}
+
+.tt-menu {
+  width: 100% !important;
+  margin-top: 0px;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #7bb4eb;
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.tt-cursor, .tt-suggestion:hover {
+  color: white;
+  background-color: #7bb4eb;
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+.tt-hint {
+  color: #999;
+}
+
+.twitter-typeahead {
+  width: 100% !important;
+}
+
+#totalInfoText {
+  text-align: center;
+}
