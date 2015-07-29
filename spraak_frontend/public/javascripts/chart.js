@@ -1,156 +1,222 @@
-var bokmal;
-var nynorsk;
-var nnPercentAll;
-var nbPercentAll;
-var nnComplex = [];
-var nbComplex = [];
-var user = "difi";
-var toptags = [];
-// remove _nn to make code work on nn pages
+// remove _nn from path to make code work on nn pages
 var url = window.location.pathname.replace('_nn','');
+var owners = [];
 
-if (url === "/total" || url === "/complex") {
-    $.getJSON('/api/v3/owner/' + user + '/all', function (data) {
+/*
+Fill owners list.
+ */
+$.getJSON('/api/v3/owners/lang', function(data) {
+    $.each(data.toptags, function(key, val) {
+        owners.push(key);
+    });
+});
+
+if (url === "/total") {
+    loadTypeahead(); // ownerTypeahead.js
+    var selectedOwner;
+    var lixChart = $('#lixChart');
+    var pieChart = $('#piechart');
+    var lixInfo = $('#lixInfo');
+    var infoTextNN = $('#totalInfoTextNN');
+    var infoTextNB = $('#totalInfoText');
+    var ownerSelectButton = $("#ownerSelectButton");
+    var ownerSelectTypeahead = $("#ownerSelectTypeahead");
+
+    ownerSelectTypeahead.keyup(function(event) {
+        selectedOwner = ownerSelectTypeahead.val();
         /*
-         //Gets total bokmål and nynorsk data.
-         bokmal = data.all.lang_terms.buckets[0].doc_count;
-         nynorsk = data.all.lang_terms.buckets[1].doc_count;
-         var nb = parseInt(bokmal);
-         var nn = parseInt(nynorsk);
-         nnPercentAll = (nn / (nb + nn)) * 100;
-         nbPercentAll = (nb / (nb + nn)) * 100;
+         Enter-button while in text field == click on ownerSelectButton.
          */
-        var format = function (v) {
+        if(event.keyCode == 13) {
+            ownerSelectButton.click();
+        }
 
-            if (v.complexity_nn.doc_count > 0) {
-                var nn = parseInt(v.complexity_nn.avg);
-                nnComplex.push(nn);
-            } else {
-                nnComplex.push(0);
-            }
-            if (v.complexity_nb.doc_count > 0) {
-                var nb = parseInt(v.complexity_nb.avg);
-                nbComplex.push(nb);
-            } else {
-                nbComplex.push(0);
-            }
+        /*
+         Disable ownerSelectButton if search field is empty.
+         */
+        if(selectedOwner == '') {
+            ownerSelectButton.attr('disabled', 'disabled');
+        }
+        else {
+            ownerSelectButton.removeAttr('disabled');
+        }
+    });
 
-        };
+    ownerSelectButton.click(function () {
+        // Get selected choice from typeahead
+        selectedOwner = ownerSelectTypeahead.val();
+        if (selectedOwner == '') {
+            return;
+        }
 
-        $.each(data.toptags, function (key) {
-            format(this);
+        $.getJSON('/api/v3/owner/' + selectedOwner + '/all', function (data) {
+            var nnComplex = [];
+            var nbComplex = [];
+            var toptags = [];
+            var bokmal = 0;
+            var nynorsk = 0;
 
-            if (key === "web") {
-                toptags.push("Web");
-            } else if (key === "file") {
-                toptags.push("Documents")
-            } else if (key === "fb") {
-                toptags.push("Facebook")
-            } else if (key === "twitter") {
-                toptags.push("Twitter")
-            }
+            // Get total nn og nb percentage for selectedOwner
+            $.each(data.toptags, function() {
+                // If no documents exist in language, set to 0
+                bokmal += (this.lang_terms.nb != null ? this.lang_terms.nb.doc_count : 0);
+                nynorsk += (this.lang_terms.nn != null ? this.lang_terms.nn.doc_count : 0);
+            });
+
+             var nb = parseInt(bokmal);
+             var nn = parseInt(nynorsk);
+             var nnPercentAll = (nn / (nb + nn)) * 100;
+             var nbPercentAll = (nb / (nb + nn)) * 100;
+
+            var format = function (v) {
+                if (v.complexity_nn.doc_count > 0) {
+                    var nn = parseInt(v.complexity_nn.avg);
+                    nnComplex.push(nn);
+                } else {
+                    nnComplex.push(0);
+                }
+                if (v.complexity_nb.doc_count > 0) {
+                    var nb = parseInt(v.complexity_nb.avg);
+                    nbComplex.push(nb);
+                } else {
+                    nbComplex.push(0);
+                }
+            };
+
+            $.each(data.toptags, function (key) {
+                format(this);
+                if (key === "web") {
+                    toptags.push("Web");
+                } else if (key === "file") {
+                    toptags.push("Documents")
+                } else if (key === "fb") {
+                    toptags.push("Facebook")
+                } else if (key === "twitter") {
+                    toptags.push("Twitter")
+                } else if (key === "form") {
+                    toptags.push("Skjema")
+                }
+            });
 
 
-        });
-        if (url === "/total") {
-            console.log("piechart loaded");
+                if(nnPercentAll < 25) {
+                    infoTextNN.text(capitalize(selectedOwner) + ' har ikkje oppnådd kravet på 25% nynorsk frå språkrådet.');
+                    infoTextNB.text(capitalize(selectedOwner) + ' har ikke oppnådd kravet på 25% nynorsk fra språkrådet.');
+                }
+                else if(nnPercentAll >= 25) {
+                    infoTextNN.text(capitalize(selectedOwner) + ' har vore flinke!');
+                    infoTextNB.text(capitalize(selectedOwner) + ' har vært flinke!');
+                }
+                else {
+                    /*
+                    Add message when selectedOwner is invalid. Hide charts since they have nothing to show.
+                     */
+                    lixInfo.attr('hidden', 'hidden');
+                    lixChart.attr('hidden', 'hidden');
+                    pieChart.attr('hidden', 'hidden');
+                    infoTextNN.text('"' + capitalize(selectedOwner) + '" er ikkje i lista vår.');
+                    infoTextNB.text('"' + capitalize(selectedOwner) + '" er ikke i lista vår.');
+                    return;
+                }
 
-            $('#piechart').highcharts({
-                chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
-                },
-                title: {
-                    text: 'Nynorsk- og bokmålsandelen til Difi:'
-                },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                            style: {
-                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    lixInfo.removeAttr('hidden');
+                    lixChart.removeAttr('hidden');
+                    pieChart.removeAttr('hidden');
+
+                pieChart.highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Nynorsk- og bokmålsandelen til ' + capitalize(selectedOwner) + ":"
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
                             }
                         }
-                    }
-                },
-                series: [{
-                    name: "Andel",
-                    colorByPoint: true,
-                    data: [{
-                        name: "Nynorsk",
-                        y: 25,
-                        sliced: true,
-                        selected: true
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: "Andel",
+                        colorByPoint: true,
+                        data: [{
+                            name: "Nynorsk",
+                            y: nnPercentAll,
+                            sliced: true,
+                            selected: true
 
-                    }, {
-                        name: "Bokmål",
-                        y: 75
-
-
+                        }, {
+                            name: "Bokmål",
+                            y: nbPercentAll
+                        }]
                     }]
-                }]
-            });
+                });
 
-        }
 
-        if (url === "/complex") {
-            console.log("complex loaded");
 
-            $('#lixChart').highcharts({
-                chart: {
-                    type: 'areaspline'
-                },
-                title: {
-                    text: 'Gjennomsnittlig kompleksitetsgrad nynorsk og bokmål'
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'left',
-                    verticalAlign: 'top',
-                    x: 570,
-                    y: 60,
-                    floating: true,
-                    borderWidth: 1,
-                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-                },
-                xAxis: {
-                    categories: toptags
-
-                },
-                yAxis: {
+                lixChart.highcharts({
+                    chart: {
+                        type: 'areaspline'
+                    },
                     title: {
-                        text: 'LIX-score'
-                    }
-                },
-                tooltip: {
-                    shared: true,
-                    valueSuffix: ''
-                },
-                credits: {
-                    enabled: false
-                },
-                plotOptions: {
-                    areaspline: {
-                        fillOpacity: 0.1
-                    }
-                },
-                series: [{
-                    name: 'Nynorsk',
-                    data: nnComplex
-                }, {
-                    name: 'Bokmål',
-                    data: nbComplex
-                }]
-            });
-        }
+                        text: 'Gjennomsnittlig kompleksitetsgrad nynorsk og bokmål'
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'left',
+                        verticalAlign: 'top',
+                        x: 570,
+                        y: 60,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                    },
+                    xAxis: {
+                        categories: toptags
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'LIX-score'
+                        }
+                    },
+                    tooltip: {
+                        shared: true,
+                        valueSuffix: ''
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        areaspline: {
+                            fillOpacity: 0.1
+                        }
+                    },
+                    series: [{
+                        name: 'Nynorsk',
+                        data: nnComplex
+                    }, {
+                        name: 'Bokmål',
+                        data: nbComplex
+                    }]
+                });
+        });
     });
 }
 
@@ -161,7 +227,6 @@ if (url === "/agency") {
 $.getJSON('/api/v3/owners/lang', function(data) {
     var drilldown_series = [];
     var data_list = [];
-
 
     $.each(data.toptags, function(owner, ownerData) {
         var percentNN = (ownerData.lang_terms.nn.doc_count / ownerData.doc_count) * 100;

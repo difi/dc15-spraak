@@ -13,6 +13,8 @@ $(document).ready(function() {
         $("#nynorsk_o_meter").addClass("active-trail active");
     } else if (url === "/about") {
         $("#about").addClass("active-trail active");
+    } else if (url === "/ordbruk") {
+        $("#ordbruk").addClass("active-trail active");
     }
 });
 
