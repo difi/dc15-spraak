@@ -63,7 +63,6 @@ public class TextExtractor implements Runnable {
         return filePaths;
     }
 
-
     public static void handleFile(DocumentObject o) {
         DocumentTextExtractor extractor;
         String path = o.source;
