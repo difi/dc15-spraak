@@ -66,7 +66,7 @@ public class TextExtractor implements Runnable {
 
 
     private static boolean running = false;
-    private static Queue<DocumentObject> queue;
+    private static Queue<DocumentObject> queue = new LinkedList();
     public static void handleFile(){
         running = true;
         while(queue.size() > 0){
@@ -74,6 +74,7 @@ public class TextExtractor implements Runnable {
         }
         running = false;
     }
+
     public static void handleFile(DocumentObject o) {
         DocumentTextExtractor extractor;
         String path = o.source;
