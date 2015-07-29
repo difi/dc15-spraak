@@ -18,28 +18,27 @@ import java.util.*;
  */
 public class TextExtractor implements Runnable {
     private ArrayList<String> settings;
+    private DocumentObject single_file;
     public static ElasticConnector db;
 
     public TextExtractor(String url, ElasticConnector db){
-        if(this.db == null)
-            this.db = db;
-        queue.add(new DocumentObject(url,db.getOwner()));
-        Thread t = new Thread(this);
-        t.start();
+        this.db = db;
+        single_file = new DocumentObject(url, db.getOwner());
     }
 
     @Override
     public void run() {
+        if(single_file != null){
+            handleFile(single_file);
+        }
         if (this.settings != null && !this.settings.isEmpty()) {
             for (String path : this.settings) {
                 ArrayList<String> filesToCheck = walk(path);
                 for (String filePath : filesToCheck) {
-                    queue.add(new DocumentObject(filePath, db.getOwner()));
+                    handleFile(new DocumentObject(filePath, db.getOwner()));
                 }
             }
         }
-        if(!running)
-            handleFile();
     }
 
 
@@ -65,15 +64,6 @@ public class TextExtractor implements Runnable {
     }
 
 
-    private static boolean running = false;
-    private static Queue<DocumentObject> queue;
-    public static void handleFile(){
-        running = true;
-        while(queue.size() > 0){
-            handleFile(queue.poll());
-        }
-        running = false;
-    }
     public static void handleFile(DocumentObject o) {
         DocumentTextExtractor extractor;
         String path = o.source;
@@ -145,6 +135,7 @@ public class TextExtractor implements Runnable {
             extractor.closeDoc();
 
             db.partOfOpen();
+            json = new JSONObject();
             json.put("name", path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf(".")));
             json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
             json.put("type", type);

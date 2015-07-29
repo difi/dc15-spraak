@@ -149,23 +149,23 @@ public class Crawler extends WebCrawler {
 
             //finds forms.
 
-            Elements forms = doc.select("body").select("form");
-            for(Element el : forms){
-                String name = el.attr("action");
-                for(Element b : el.getElementsByTag("input")) {
-                    if(b.hasAttr("name"))
-                        name += b.attr("name");
-                }
-                if(!exists(name)){
-                    j.put("domain", this.domain);
-                    j.put("site", page.getWebURL().getURL());
-                    j.put("type", "form");
-                    j.put("text", clean(el.text()));
-                    j.put("words", Utils.getNumberOfWords(out));
-                    this.forms.add(name);
-                    this.db.write(j);
-                }
-            }
+//            Elements forms = doc.select("body").select("form");
+//            for(Element el : forms){
+//                String name = el.attr("action");
+//                for(Element b : el.getElementsByTag("input")) {
+//                    if(b.hasAttr("name"))
+//                        name += b.attr("name");
+//                }
+//                if(!exists(name)){
+//                    j.put("domain", this.domain);
+//                    j.put("site", page.getWebURL().getURL());
+//                    j.put("type", "form");
+//                    j.put("text", clean(el.text()));
+//                    j.put("words", Utils.getNumberOfWords(out));
+//                    this.forms.add(name);
+//                    this.db.write(j);
+//                }
+//            }
             out = this.clean(out);
 
             // TODO: Fix

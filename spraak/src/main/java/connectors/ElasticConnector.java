@@ -167,10 +167,11 @@ public class ElasticConnector {
         int i = 0;
         while(i != 5) {
             try {
-                IndexResponse respone = this.client.prepareIndex("spraak", this.type)
-                        .setSource(msg)
-                        .execute()
-                        .actionGet();
+//                IndexResponse respone = this.client.prepareIndex("spraak", this.type)
+//                        .setSource(msg)
+//                        .execute()
+//                        .actionGet();
+                System.out.println(msg);
                 break;
             }catch(Exception e){
                 i += 1;
