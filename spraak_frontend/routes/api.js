@@ -603,6 +603,7 @@ router.get("/v4/search/:word", (function(req, res) {
     },format);
 }));
 
+
 router.get("/v4/searchwithname/:word/:owner", (function(req, res) {
     console.log("COUNTING AMT OF DOCS WITH WORD " + req.params.word + " WRITTEN BY " +req.params.etat);
     res.es({
@@ -720,6 +721,127 @@ router.get("/v4/bywordcount/type/:type/:lower/:higher", (function(req, res) {
     }, format);
 }));
 
+router.get("/v5/search/:word/:from/:size", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        from: req.params.from,
+        size: req.params.size,
+        body: {
+            query: {
+                match:{
+                    text:{
+                        query:req.params.word
+                    }
+                }
+            }
+        }
+
+    },raw);
+}));
+
+router.get("/v5/stats/type/:type/:lang/:amt", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body:{
+            "size": 0,
+            "aggs" : {
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"term":{"type":req.params.type}},
+                                {"term":{"lang":req.params.lang}}
+                            ]
+                        }
+                    },
+                    "aggs":{
+                        "gris" : {
+                            "terms" : {
+                                "field" : "text",
+                                "size":parseInt(req.params.amt)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },cleanSmall);
+}));
+
+
+router.get("/v5/stats/all/:lang/:amt", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body:{
+            "size": 0,
+            "aggs" : {
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"term":{"lang":req.params.lang}}
+                            ]
+                        }
+                    },
+                    "aggs":{
+                        "gris" : {
+                            "terms" : {
+                                "field" : "text",
+                                "size":parseInt(req.params.amt)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },cleanSmall);
+}));
+
+
+router.get("/v5/stats/owner/:owner/:lang/:amt", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body:{
+            "size": 0,
+            "aggs" : {
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"term":{"lang":req.params.lang}},
+                                {"term":{"owner":req.params.owner}}
+
+                            ]
+                        }
+                    },
+                    "aggs":{
+                        "gris" : {
+                            "terms" : {
+                                "field" : "text",
+                                "size":parseInt(req.params.amt)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },cleanSmall);
+}));
+function isNumber(obj) { return !isNaN(parseInt(obj)) && !isNaN(parseFloat(obj));}
+var cleanSmall = function(data){
+
+    console.log(data["filtered"]["gris"]["buckets"]);
+    var newArray = new Array();
+    for(i = 0; i < data["filtered"]["gris"]["buckets"].length; i++){
+        var element =  data["filtered"]["gris"]["buckets"][i];
+        if(element["key"].length > 4 && !isNumber(element)){
+            console.log(element["key"]);
+            newArray.push(element);
+        }
+    }
+    data["filtered"]["gris"]["buckets"] = newArray;
+    return data;
+}
 
 module.exports = {
     'router': router,
