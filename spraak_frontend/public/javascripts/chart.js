@@ -50,6 +50,18 @@ if (url === "/total") {
         }
 
         $.getJSON('/api/v3/owner/' + selectedOwner + '/all', function (data) {
+            if(jQuery.isEmptyObject(data.toptags)) {
+                /*
+                 Add message when selectedOwner is invalid. Hide charts since they have nothing to show.
+                 */
+                lixInfo.attr('hidden', 'hidden');
+                lixChart.attr('hidden', 'hidden');
+                pieChart.attr('hidden', 'hidden');
+                infoTextNN.text('Fann ingen data for "' + capitalize(selectedOwner) + '".');
+                infoTextNB.text('Fant ingen data for "' + capitalize(selectedOwner) + '".');
+                return;
+            }
+
             var nnComplex = [];
             var nbComplex = [];
             var toptags = [];
@@ -106,17 +118,6 @@ if (url === "/total") {
                 else if(nnPercentAll >= 25) {
                     infoTextNN.text(capitalize(selectedOwner) + ' har vore flinke!');
                     infoTextNB.text(capitalize(selectedOwner) + ' har vært flinke!');
-                }
-                else {
-                    /*
-                    Add message when selectedOwner is invalid. Hide charts since they have nothing to show.
-                     */
-                    lixInfo.attr('hidden', 'hidden');
-                    lixChart.attr('hidden', 'hidden');
-                    pieChart.attr('hidden', 'hidden');
-                    infoTextNN.text('"' + capitalize(selectedOwner) + '" er ikkje i lista vår.');
-                    infoTextNB.text('"' + capitalize(selectedOwner) + '" er ikke i lista vår.');
-                    return;
                 }
 
                     lixInfo.removeAttr('hidden');
