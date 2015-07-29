@@ -14,36 +14,40 @@ $.getJSON('/api/v3/owners/lang', function(data) {
 if (url === "/total") {
     loadTypeahead(); // ownerTypeahead.js
     var selectedOwner;
-    $("#ownerSelectTypeahead").keyup(function(event) {
-        selectedOwner = $('#ownerSelectTypeahead').val();
+    var lixChart = $('#lixChart');
+    var pieChart = $('#piechart');
+    var lixInfo = $('#lixInfo');
+    var infoTextNN = $('#totalInfoTextNN');
+    var infoTextNB = $('#totalInfoText');
+    var ownerSelectButton = $("#ownerSelectButton");
+    var ownerSelectTypeahead = $("#ownerSelectTypeahead");
+
+    ownerSelectTypeahead.keyup(function(event) {
+        selectedOwner = ownerSelectTypeahead.val();
         /*
          Enter-button while in text field == click on ownerSelectButton.
          */
         if(event.keyCode == 13) {
-            $("#ownerSelectButton").click();
+            ownerSelectButton.click();
         }
 
         /*
          Disable ownerSelectButton if search field is empty.
          */
         if(selectedOwner == '') {
-            $('#ownerSelectButton').attr('disabled', 'disabled');
+            ownerSelectButton.attr('disabled', 'disabled');
         }
         else {
-            $('#ownerSelectButton').removeAttr('disabled');
+            ownerSelectButton.removeAttr('disabled');
         }
     });
 
-    $("#ownerSelectButton").click(function () {
+    ownerSelectButton.click(function () {
         // Get selected choice from typeahead
-        selectedOwner = $("#ownerSelectTypeahead").val();
+        selectedOwner = ownerSelectTypeahead.val();
         if (selectedOwner == '') {
             return;
         }
-
-        $('#lixInfo').removeAttr('hidden');
-        $('#lixChart').removeAttr('hidden');
-        $('#piechart').removeAttr('hidden');
 
         $.getJSON('/api/v3/owner/' + selectedOwner + '/all', function (data) {
             var nnComplex = [];
@@ -96,22 +100,30 @@ if (url === "/total") {
 
 
                 if(nnPercentAll < 25) {
-                    $('#totalInfoTextNN').text(capitalize(selectedOwner) + ' har ikkje oppnådd kravet på 25% nynorsk frå språkrådet.');
-                    $('#totalInfoText').text(capitalize(selectedOwner) + ' har ikke oppnådd kravet på 25% nynorsk fra språkrådet.');
+                    infoTextNN.text(capitalize(selectedOwner) + ' har ikkje oppnådd kravet på 25% nynorsk frå språkrådet.');
+                    infoTextNB.text(capitalize(selectedOwner) + ' har ikke oppnådd kravet på 25% nynorsk fra språkrådet.');
                 }
                 else if(nnPercentAll >= 25) {
-                    $('#totalInfoTextNN').text(capitalize(selectedOwner) + ' har vore flinke!');
-                    $('#totalInfoText').text(capitalize(selectedOwner) + ' har vært flinke!');
+                    infoTextNN.text(capitalize(selectedOwner) + ' har vore flinke!');
+                    infoTextNB.text(capitalize(selectedOwner) + ' har vært flinke!');
                 }
                 else {
                     /*
-                    Clear text when selectedOwner is invalid.
+                    Add message when selectedOwner is invalid. Hide charts since they have nothing to show.
                      */
-                    $('#totalInfoTextNN').text('');
-                    $('#totalInfoText').text('');
+                    lixInfo.attr('hidden', 'hidden');
+                    lixChart.attr('hidden', 'hidden');
+                    pieChart.attr('hidden', 'hidden');
+                    infoTextNN.text('"' + capitalize(selectedOwner) + '" er ikkje i lista vår.');
+                    infoTextNB.text('"' + capitalize(selectedOwner) + '" er ikke i lista vår.');
+                    return;
                 }
 
-                $('#piechart').highcharts({
+                    lixInfo.removeAttr('hidden');
+                    lixChart.removeAttr('hidden');
+                    pieChart.removeAttr('hidden');
+
+                pieChart.highcharts({
                     chart: {
                         plotBackgroundColor: null,
                         plotBorderWidth: null,
@@ -158,7 +170,7 @@ if (url === "/total") {
 
 
 
-                $('#lixChart').highcharts({
+                lixChart.highcharts({
                     chart: {
                         type: 'areaspline'
                     },
