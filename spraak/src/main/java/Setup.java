@@ -146,8 +146,8 @@ public class Setup {
 
     public static void main(String[] args) {
 
-        String log4jConfPath = "src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
-        PropertyConfigurator.configure(log4jConfPath);
+        //String log4jConfPath = "src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
+        //PropertyConfigurator.configure(log4jConfPath);
 
         Setup s = new Setup("setup.json");
 
