@@ -16,9 +16,11 @@ if (url === "/total") {
     var selectedOwner;
     var lixChart = $('#lixChart');
     var pieChart = $('#piechart');
-    var lixInfo = $('#lixInfo');
+    var stats = $('#stats');
     var infoTextNN = $('#totalInfoTextNN');
     var infoTextNB = $('#totalInfoText');
+    var noHitsMessageNN = $('#noHitsMessageNN');
+    var noHitsMessageNB = $('#noHitsMessageNB');
     var ownerSelectButton = $("#ownerSelectButton");
     var ownerSelectTypeahead = $("#ownerSelectTypeahead");
 
@@ -54,11 +56,9 @@ if (url === "/total") {
                 /*
                  Add message when selectedOwner is invalid. Hide charts since they have nothing to show.
                  */
-                lixInfo.attr('hidden', 'hidden');
-                lixChart.attr('hidden', 'hidden');
-                pieChart.attr('hidden', 'hidden');
-                infoTextNN.text('Fann ingen data for "' + capitalize(selectedOwner) + '".');
-                infoTextNB.text('Fant ingen data for "' + capitalize(selectedOwner) + '".');
+                stats.attr('hidden', 'hidden');
+                noHitsMessageNN.text('Fann ingen data for "' + capitalize(selectedOwner) + '".');
+                noHitsMessageNB.text('Fant ingen data for "' + capitalize(selectedOwner) + '".');
                 return;
             }
 
@@ -120,10 +120,12 @@ if (url === "/total") {
                 infoTextNB.text(capitalize(selectedOwner) + ' har vært flinke!');
             }
 
-            lixInfo.removeAttr('hidden');
-            lixChart.removeAttr('hidden');
-            pieChart.removeAttr('hidden');
+            stats.removeAttr('hidden');
+            noHitsMessageNN.text('');
+            noHitsMessageNB.text('');
+            $('#owner').text(capitalize(selectedOwner));
 
+            loadSourceChart(selectedOwner);
             pieChart.highcharts({
                 chart: {
                     plotBackgroundColor: null,
@@ -223,27 +225,13 @@ if (url === "/total") {
 
 
 
-if (url === "/agency") {
-
-    $.getJSON('/api/v3/owners/lang', function(data) {
-        var drilldown_series = [];
+function loadSourceChart(selectedOwner) {
+    $.getJSON('/api/v3/owner/' + selectedOwner + '/all', function(data) {
         var data_list = [];
-
-        $.each(data.toptags, function(owner, ownerData) {
-            var percentNN = (ownerData.lang_terms.nn.doc_count / ownerData.doc_count) * 100;
-            data_list.push({name: capitalize(owner), y: percentNN, drilldown: owner});
-            var drilldown_data = [];
-            $.getJSON('/api/v3/owner/' + owner + "/all", function(data) {
-                $.each(data.toptags, function(source, sourceData) {
-                    if (sourceData.lang_terms.nn != undefined) {
-                        drilldown_data.push([capitalize(source), (sourceData.lang_terms.nn.doc_count / sourceData.doc_count) * 100]);
-                    }
-                    else {
-                        drilldown_data.push([capitalize(source), 0]);
-                    }
-                });
-            });
-            drilldown_series.push({id: owner, data: drilldown_data});
+        $.each(data.toptags, function(source, sourceData) {
+            console.log(sourceData);
+            var percentNN = ((sourceData.lang_terms.nn != null ? sourceData.lang_terms.nn.doc_count : 0) / sourceData.doc_count) * 100;
+            data_list.push({name: capitalize(source), y: percentNN});
         });
 
         /*
@@ -257,12 +245,12 @@ if (url === "/agency") {
             }
         });
 
-        $('#nnPercentageAllChart').highcharts({
+        $('#nnSourceChart').highcharts({
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Nynorskandel for hver etat'
+                text: 'Nynorskandel for hver kilde'
             },
             xAxis: {
                 type: 'category'
@@ -287,9 +275,6 @@ if (url === "/agency") {
                 name: 'Andel nynorsk',
                 data: data_list
             }],
-            drilldown: {
-                series: drilldown_series
-            },
             plotOptions: {
                 series: {
                     borderWidth: 0,

@@ -18,20 +18,12 @@ router.get('/total', function (req, res, next) {
   res.render('total', {title: 'Express'});
 });
 
-router.get('/agency', function(req, res, next) {
-  res.render('agency', { title: 'Express' });
-});
-
 router.get('/complex_nn', function(req, res, next) {
   res.render('complex_nn', { title: 'Express' });
 });
 
 router.get('/total_nn', function(req, res, next) {
   res.render('total_nn', { title: 'Express' });
-});
-
-router.get('/agency_nn', function(req, res, next) {
-  res.render('agency_nn', { title: 'Express' });
 });
 router.get('/nynorsk_o_meter', function(req, res, next) {
   res.render('nynorsk_o_meter', { title: 'Express' });
