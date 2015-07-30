@@ -14,51 +14,59 @@
         </div>
         <div class="pure-button" id="ownerSelectButton" disabled>Gå</div>
         <br/><br/>
-        <h2 id="owner"></h2>
-        <div id="piechart" hidden></div>
-        <p id="totalInfoText"></p>
-        <br/><br/>
-        <div id="lixChart" hidden></div>
-        <div id="lixInfo" hidden>
-            <h3>LIX</h3>
-            <p>Lesbarhetsindeksen "LIX" avgjør hvor lettlest en tekst er ved å se på blant annet lengden på setninger. </p>
-            <table class="pure-table">
-                <thead>
-                <tr>
-                    <th>Poengsum</th>
-                    <th>Forklaring</th>
-                    <th>Tilsvarer</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>< 30</td>
-                    <td>Veldig lettlest</td>
-                    <td>Barnebøker</td>
-                </tr>
-                <tr>
-                    <td>30 - 40</td>
-                    <td>Lettlest</td>
-                    <td>Skjønnlitteratur, populærtidsskrift</td>
-                </tr>
-                <tr>
-                    <td>40 - 50</td>
-                    <td>Middels</td>
-                    <td>Vanlige avistekster</td>
-                </tr>
-                <tr>
-                    <td>50 - 60</td>
-                    <td>Vanskelig</td>
-                    <td>Norm for offisielle tekster</td>
-                </tr>
-                <tr>
-                    <td>> 60</td>
-                    <td>Veldig vanskelig</td>
-                    <td>Lovtekster</td>
-                </tr>
-                </tbody>
-            </table>
+        <p id="noHitsMessageNB"></p>
+        <div id="stats" hidden>
+            <h2 id="owner"></h2>
+            <h3>Totalt</h3>
+            <div id="piechart"></div>
+            <p id="totalInfoText"></p>
+            <br/><br/>
+            <div id="nnSourceChart"></div>
+            <br/><br/>
+            <h3>Språkkompleksitet</h3>
+            <div id="lixChart"></div>
+            <div id="lixInfo">
+                <h4>Om LIX</h4>
+                <p>Lesbarhetsindeksen "LIX" avgjør hvor lettlest en tekst er ved å se på blant annet lengden på setninger. </p>
+                <table class="pure-table">
+                    <thead>
+                    <tr>
+                        <th>Poengsum</th>
+                        <th>Forklaring</th>
+                        <th>Tilsvarer</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>< 30</td>
+                        <td>Veldig lettlest</td>
+                        <td>Barnebøker</td>
+                    </tr>
+                    <tr>
+                        <td>30 - 40</td>
+                        <td>Lettlest</td>
+                        <td>Skjønnlitteratur, populærtidsskrift</td>
+                    </tr>
+                    <tr>
+                        <td>40 - 50</td>
+                        <td>Middels</td>
+                        <td>Vanlige avistekster</td>
+                    </tr>
+                    <tr>
+                        <td>50 - 60</td>
+                        <td>Vanskelig</td>
+                        <td>Norm for offisielle tekster</td>
+                    </tr>
+                    <tr>
+                        <td>> 60</td>
+                        <td>Veldig vanskelig</td>
+                        <td>Lovtekster</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
     </div>
     <div class="pure-u-1-12"></div>
 </div>

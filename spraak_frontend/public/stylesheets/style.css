@@ -244,6 +244,6 @@ select, input {
   width: 100% !important;
 }
 
-#totalInfoText {
+#totalInfoText, #totalInfoTextNN {
   text-align: center;
 }
