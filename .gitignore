@@ -49,9 +49,6 @@ crashlytics-build.properties
 
 */target/
 *~
-
 */node_modules
 
 */_doks/*
-
-
