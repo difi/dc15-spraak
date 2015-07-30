@@ -20,7 +20,9 @@ supervisor -e 'html|js|css' node bin/www
 ```
 medan du er i /spraak_frontend. 
 Supervisor restartar automatisk kvar gong det blir gjort endringar. Om du vil restarte manuelt, kan du køyre kommandoen
-```rs```
+```
+rs
+```
 Om du køyrer Windows, vil du kanskje trenge eit alternativt windows-shell for dette, f.eks. [Babun](http://babun.github.io/)
 
 Sida vil vere tilgjengeleg på [http://localhost:3002/](http://localhost:3002/)
