@@ -1,65 +1,48 @@
 {% extends 'layout.html' %}
-
 {% block title %}Header/Footer{% endblock %}
-{% block header %} DUST, portalen for glede i en ellers vrien språklig hverdag. {% endblock %}
+{% block header %} Om prosjektet {% endblock %}
 {% block menu %} {% include 'menuBokmal.html' %}{% endblock %}
-
 {% block content %}
 
-
 <div class="pure-g">
-
     <div class="pure-u-1-12"></div>
-
     <div class="pure-u-20-24">
-
-        {% include 'inputBox.html' %}
-
-        <div class = "main">
-
-        <h1>Velkommen!</h1>
-
-        <p>Finn din data lett, eller les om dagens nytt</p>
-        <br/>
-
-        <h2>Og videre kan vi lese om følgende utvikling</h2>
-        <p>En mann fra Florø ble observert programmerende på en buss natt i til fredag. Vitner kan medele omville blikk
-            og utydelige variabelnavn. Vi følger saken tett <br/><br/>I andre nyheter har skogseier og
-            entrepenør Gunde Vannplask økt bemanningen før årets grenklipp.  Vannplask lover lokalbefolkningen at
-            årets begivenhet blir et skue for både store og små. <br/><br/>Til slutt, dagens gladnyhet. Vår egen
-            Gunfrid Bakbrei venter avkom senere dette året, vi i redaksjonen gratulere Bakbrei samt donor Lysvik
-            Slustein. </p>
-
-        </div>
+        <h1>Motivasjon</h1>
+        <p>Prosjektet har som mål å vise at analysen av målbruk i offentlig sektor kan være mer effektiv enn det den er i dag.
+            I dag blir denne sett på som en av mange tidstyver, men mye av det manuelle arbeidet kan automatiseres.</p>
+        <h1>Metode</h1>
+        <p>Tilnærmingen som blir brukt er basert på "big-data". Vi samler inn store mengder tekst fra det statlige sine nettsider, offentlige dokumenter og aktivitet på sosiale media.
+            For å finne domene som er knyttet til ein etat, bruker vi Norid sin oversikt.
+            Deretter kan vi bruke en løsnning som identifiserer hvilket språk teksten er på.
+            Denne informasjonen blir lagret, analysert og presentert.</p>
+        <h1>Rom for feil</h1>
+        <p>Som de fleste andre løsninger, er ikke denne helt feilfri.</p>
+        <h3>Vi har ingen garantier for at...</h3>
+        <ul>
+            <li>Vi har fått med oss informasjon fra alle offentlige kilder som er knyttet til en etat.</li>
+            <li>Språkanalysen er 100% korrekt.</li>
+            <li>Nettsider og dokumenter er på det formatet vi forventer</li>
+            <ul>
+                <li>Mange steder blir det brukt utdaterte metoder som ikke følger standarden. Det er ikke alltid enkelt å ta hensyn til alle de ulike løsningene.</li>
+                <li>Mange nettsteder har ein mengde utdaterte lenker, noe som gjør at vi ikke kommer til all informasjonen som ligger der.</li>
+            </ul>
+        </ul>
+        <h1>Kildetyper</h1>
+        <p>Dataene som blir samlet inn, er delt inn i fire ulike kategorier. </p>
+        <h3>Filer</h3>
+        <p>Dette er filer som har som mål å informere om noe. Det vil si  filer av typen .pdf som ikke inneholder skjemaelementer. Disse blir hentet ut fra nettstedene som er registrert på etaten.</p>
+        <h3>Skjema</h3>
+        <p>Filer som kan endres av bruker, for eksempel .docx og .odt, blir regnet som skjema. Her skal også webskjema komme etter hvert, men på grunn av stor forskjell i oppsett er de vanskelige å kjenne igjen. </p>
+        <h3>Web</h3>
+        <p>All tekst vi har samlet inn fra nettsteder som er registrert på en bestemt etat.</p>
+        <h3>Twitter</h3>
+        <p>Tekst fra etaten sin konto på Twitter.</p>
+        <h3>Facebook</h3>
+        <p>Tekst fra etaten sin konto på Facebook.</p>
+        <h1>Veien videre</h1>
+        <p>Hva kan vi bruke dette til? Drømmen er at denne løsningen til slutt kan erstatte den manuelle rapporteringen som blir gjort i dag.
+            I det minste håper vi at den kan inspirere språkrådet til å prøve ut alternative løsninger.</p>
     </div>
     <div class="pure-u-1-12"></div>
 </div>
-
-
-<div class="pure-g">
-        <div class="pure-u-1-12"></div>
-        <div class="pure-u-8-24">
-
-        <div class = "graphContent1"></div>
-
-            </div>
-    <div class="pure-u-1-12"></div>
-
-    <div class="pure-u-8-24">
-        <div class = "graphContent2"></div>
-
-
-</div>
-    <div class="pure-u-1-12"></div>
-
-</div>
-
-
-
-
-
-
-
-<br/><br/>
-
 {% endblock %}
