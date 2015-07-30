@@ -53,13 +53,7 @@ public class Crawler extends WebCrawler {
         myCrawlDomains = (String[]) this.settings.get("domains");
 
         this.domain = myCrawlDomains[0];
-
     }
-
-    @Override
-    public void onBeforeExit(){
-    }
-
 
     @Override
     public boolean shouldVisit(Page page, WebURL url) {
