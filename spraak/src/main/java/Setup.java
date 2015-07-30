@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
 
@@ -60,6 +61,7 @@ public class Setup {
 
     }
 
+    public static int moduleCount = 0;
     public void initiateThreads() {
 
         Iterator<String> iterator = this.targets.keySet().iterator();
