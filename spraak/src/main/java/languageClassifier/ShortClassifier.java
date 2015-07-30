@@ -93,8 +93,10 @@ public class ShortClassifier {
 		float combined_bm = result_bm[0] + result_bm[1];
 		percent = combined/(combined+combined_bm);
 
-        if(combined + combined_bm == 0f)
+        if(combined + combined_bm == 0.0f) {
+			percent = 1.0f; 
 			return "nb";
+		}
 		else if(percent > 0.7f)
             return "nn";
 		else {
