@@ -1,3 +1,24 @@
-# dc15-spraak
+#Korleis kome i gang
+## Tekniske krav
+###spraak
+* Java 8.0
+* [Maven](https://maven.apache.org/) for å handsame dependecies. 
+	* Sjå `pom.xml` for Maven-dependencies.
 
-Simple webcrawler using the Twitter API. Sorts the posts and retweeets by a given user by year, and post them to an empty file.
+
+### spraak_frontend
+* [NodeJS](https://nodejs.org/)
+
+For å køyre testserver, kan du anten køyre den manuelt, eller installere [Supervisor](http://supervisord.org/index.html) og køyre kommandoen
+```
+supervisor -e 'html|js|css' node bin/www
+```
+medan du er i /spraak_frontend. 
+Supervisor restartar automatisk kvar gong det blir gjort endringar. Om du vil restarte manuelt, kan du køyre kommandoen
+```rs```
+Om du køyrer Windows, vil du kanskje trenge eit alternativt windows-shell for dette, f.eks. [Babun](http://babun.github.io/)
+
+Sida vil vere tilgjengeleg på [http://localhost:3002/](http://localhost:3002/)
+
+
+
