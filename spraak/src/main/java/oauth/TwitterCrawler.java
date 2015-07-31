@@ -62,6 +62,7 @@ public class TwitterCrawler implements Runnable {
                     JSONObject twitterPosts = new JSONObject();
                     String tweet = status.getText();
 
+
                     year = status.getCreatedAt().toString();
                     year = year.substring(year.length() - 4, year.length());
 

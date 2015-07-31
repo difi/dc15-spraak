@@ -94,7 +94,7 @@ public class ShortClassifier {
 		percent = combined/(combined+combined_bm);
 
         if(combined + combined_bm == 0.0f) {
-			percent = 1.0f; 
+			percent = 1.0f;
 			return "nb";
 		}
 		else if(percent > 0.7f)
