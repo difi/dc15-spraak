@@ -16,7 +16,7 @@ public interface DocumentTextExtractor {
     public int getNumberOfWords() throws IOException;
     public void closeDoc() throws IOException;
     public int getCreationYear() throws IOException;
-
+    public String getTitle() throws IOException;
     // Returns true for everything except PDF without input fields
     public boolean isForm() throws IOException;
 }

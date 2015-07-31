@@ -133,6 +133,10 @@ public class PdfExtractor implements DocumentTextExtractor {
         }
         return 0;
     }
+
+    public String getTitle() throws IOException {
+        return pddoc.getDocumentInformation().getTitle();
+    }
 }
 
 
