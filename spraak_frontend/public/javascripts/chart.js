@@ -1,6 +1,9 @@
 // remove _nn from path to make code work on nn pages
 var url = window.location.pathname.replace('_nn','');
 var owners = [];
+/*
+ Affects total.html and total_nn.html
+ */
 
 /*
  Fill owners list.
@@ -233,11 +236,6 @@ function loadSourceChart(selectedOwner) {
             var percentNN = ((sourceData.lang_terms.nn != null ? sourceData.lang_terms.nn.doc_count : 0) / sourceData.doc_count) * 100;
             data_list.push({name: capitalize(source), y: percentNN});
         });
-
-        /*
-         A column chart showing the percentage of nynorsk for all "owners"
-         And more information if column is clicked
-         */
 
         Highcharts.setOptions({
             lang: {

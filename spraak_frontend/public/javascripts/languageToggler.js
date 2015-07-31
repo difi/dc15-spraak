@@ -1,6 +1,12 @@
-/**
- * Created by camp-aka on 20.07.2015.
+/*
+ * Handles language toggling (between bokmål and nynorsk.
+ * All pages must have the format:
+ *
+ * .../pagenameorwhatever for bokmål version
+ * .../pagenameorwhatever_nn for nynorsk version
+ * for this to work properly
  */
+
 $(document).ready(function() {
     var currentURL = window.location.pathname;
     var currentlyAtNynorsk = currentURL.substr(-3) === '_nn';
