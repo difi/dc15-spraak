@@ -401,3 +401,11 @@ if(url === "/nynorsk_o_meter") {
         });
     });
 }
+
+Highcharts.setOptions({
+    chart: {
+        style: {
+            fontFamily: 'Open Sans'
+        }
+    }
+});
