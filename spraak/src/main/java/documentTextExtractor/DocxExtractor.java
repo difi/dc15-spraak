@@ -79,6 +79,10 @@ public class DocxExtractor implements DocumentTextExtractor {
         return Integer.parseInt(dateFormat.format(doc.getProperties().getCoreProperties().getCreated()));
     }
 
+    public String getTitle() throws IOException {
+        return doc.getProperties().getCoreProperties().getTitle();
+    }
+
     /*
    Everything except PDF without input fields is considered to be a form.
     */

@@ -80,6 +80,10 @@ public class DocExtractor implements DocumentTextExtractor {
         return Integer.parseInt(dateFormat.format(doc.getSummaryInformation().getCreateDateTime()));
     }
 
+    public String getTitle() throws IOException {
+        return doc.getSummaryInformation().getTitle();
+    }
+
     /*
     Everything except PDF without input fields is considered to be a form.
      */
