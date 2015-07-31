@@ -32,8 +32,8 @@ var step = 0;
 function fix(arr){
     var r = arr;
     var query_thing = query.split(" ");
-    for(var w in query_thing){
-        for(var i =0; i < r.length; i++){
+    for(var i =0; i < r.length; i++){
+        for(var w in query_thing){
             var word = query_thing[w];
             var count = 0;
             s = r[i]["_source"]["text"].split(" ");
@@ -47,27 +47,30 @@ function fix(arr){
             r[i]["counts"][word] = count;
         }
     }
-    return r;
 
+    return r;
 }
+
 function highlightText(text){
     var query_list = query.split(" ");
     var newtext = "";
     var text_split = text.split(/\.| |:|,|_|-|\|/g);
 
     for(var i = 0; i < text.length; i++){
+        var found = false;
         for(var j = 0; j < query_list.length; j++){
             if(text_split[i]) {
                 text_split[i] = text_split[i].replace(/\s/g, "");
                 if (text_split[i].startsWith(query_list[j]))
                 {
                     newtext += "<span class='highlight'>" + text_split[i] + "</span> ";
+                    found = true;
                     break;
-                }else{
-                    newtext += text_split[i] + " ";
                 }
             }
-
+        }
+        if(!found  && text_split[i]){
+            newtext += text_split[i] + " ";
         }
     }
     return newtext;
@@ -91,8 +94,9 @@ function handleResult(text){
         d.appendChild(content);
         document.getElementById("resultbox").appendChild(d);
     }
-    arr = fix(arr);
 
+    arr = fix(arr);
+    console.log(arr);
     var query_thing = query.split(" ");
     arr = arr.sort(function(a, b){
         var sum = 0;
@@ -102,6 +106,7 @@ function handleResult(text){
         }
         return sum;
     });
+    console.log(arr);
     for(var i = 0; i < arr.length; i++){
         var sep = document.createElement("div");
         sep.setAttribute("class","separator");
