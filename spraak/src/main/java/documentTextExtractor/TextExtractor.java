@@ -136,14 +136,11 @@ public class TextExtractor implements Runnable {
 
             db.partOfOpen();
             json = new JSONObject();
-            json.put("title", (!title.isEmpty() ? title : path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf("."))));
+            json.put("title", (title != null ? title : path.substring(path.replaceAll("\\\\","/").lastIndexOf("/") + 1, path.lastIndexOf("."))));
             json.put("filetype",path.substring(path.lastIndexOf(".") + 1, path.length()));
             json.put("type", type);
             json.put("post_year", creationYear);
             json.put("owner",o.owner);
-
-
-
 
             String text = "";
             Integer wordCount = 0;
