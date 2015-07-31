@@ -183,7 +183,6 @@ public class TextExtractor implements Runnable {
                 obj.put("complexity", Float.parseFloat(obj.get("complexity")+"")/Float.parseFloat(obj.get("count")+""));
                 map.put(key,obj);
                 if(Integer.parseInt(obj.get("count")+"") > cur) {
-                    System.out.println(obj.get("count") +" > " + cur);
                     json.put("lang", key);
                     cur = Integer.parseInt(obj.get("count")+"");
                 }
