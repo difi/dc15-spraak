@@ -739,6 +739,199 @@ router.get("/v5/search/:word/:from/:size", (function(req, res) {
     },raw);
 }));
 
+router.get("/v5/search/source/:word/:source/:from/:size", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        from: req.params.from,
+        size: req.params.size,
+        body: {
+            filter:{
+                bool:{
+                    must:{
+                        term:{
+                            owner:req.params.source
+                        }
+                    }
+                }
+            },
+            query: {
+                match:{
+                    text:{
+                        query:req.params.word
+                    }
+                }
+            }
+        }
+
+    },raw);
+}));
+
+
+router.get("/v5/search/type/:word/:type/:from/:size", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        from: req.params.from,
+        size: req.params.size,
+        body: {
+            filter:{
+                bool:{
+                    must:{
+                        term:{
+                            type:req.params.type
+                        }
+                    }
+                }
+            },
+            query: {
+                match:{
+                    text:{
+                        query:req.params.word
+                    }
+                }
+            }
+        }
+
+    },raw);
+}));
+
+router.get("/v5/search/source/type/:word/:source/:type/:from/:size", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        from: req.params.from,
+        size: req.params.size,
+        body: {
+            filter:{
+                bool:{
+                    must:[
+                        {term: {owner: req.params.source}},
+                        {term: {type: req.params.type}}
+                    ]
+                }
+            },
+            query: {
+                match:{
+                    text:{
+                        query:req.params.word
+                    }
+                }
+            }
+        }
+
+    },raw);
+}));
+
+
+router.get("/v5/search/stats/:type/:lang", (function(req, res) {
+    var t = req.params.type;
+    res.es({
+        index: 'spraak',
+        body:{
+            "size": 0,
+            "aggs" : {
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"term":{"type":req.params.type}},
+                                {"term":{"lang":req.params.lang}}
+                            ]
+                        }
+                    },
+                    "aggs":{
+                        "gris" : {
+                            "terms" : {
+                                "field" : "text",
+                                "size":100
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },raw);
+}));
+
+
+router.get("/v5/search/stats/:lang", (function(req, res) {
+    var t = req.params.type;
+    res.es({
+        index: 'spraak',
+        body:{
+            "size": 0,
+            "aggs" : {
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"term":{"lang":req.params.lang}}
+                            ]
+                        }
+                    },
+                    "aggs":{
+                        "gris" : {
+                            "terms" : {
+                                "field" : "text",
+                                "size":100
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },raw);
+}));
+
+
+router.get("/v5/search/stats/:owner/:lang", (function(req, res) {
+    var t = req.params.type;
+    res.es({
+        index: 'spraak',
+        body:{
+            "size": 0,
+            "aggs" : {
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"term":{"lang":req.params.lang}},
+                                {"term":{"owner":req.params.owner}}
+
+                            ]
+                        }
+                    },
+                    "aggs":{
+                        "gris" : {
+                            "terms" : {
+                                "field" : "text",
+                                "size":100
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },raw);
+}));
+
+
+
+router.get("/v3/all/names", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body: {
+            aggs: {
+                owners: {
+                    terms: {
+                        size: 100,
+                        field: "owner"
+                    }
+                }
+            }
+        }
+    }, format);
+}))
+
+
 router.get("/v5/stats/type/:type/:lang/:amt", (function(req, res) {
     res.es({
         index: 'spraak',

@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block title %}Header/Footer{% endblock %}
+
+{% block content %}
+<style>
+    .searchresult{
+        border-style: solid;
+        border-color: rgba(0,0,0,0.1);
+        border-width: 2px;
+
+    }
+    .highlight{
+        background-color: rgba(255,0,0,0.2);
+    }
+    .separator{
+        height: 20px;
+        background-color: rgba(50,50,50,0.1);
+    }
+    .resultcontent{
+
+    }
+    .resultsrc{
+        background-color: rgba(50,50,50,0.3);
+        color: blue;
+    }
+    .resultlink{
+
+    }
+</style>
+<div style="position: relative; margin-left: auto; margin-right: auto">
+    <input type="text" id="searchtext" placeholder="Søk etter noko!"> </input>
+    <button id="thebutton">SØK</button>
+    <select id="type">
+        <option value="all">alle</option>
+        <option value="web">Nett</option>
+        <option value="fb">Facebook</option>
+        <option value="twitter">Twitter</option>
+        <option value="file">Filer</option>
+    </select>
+    <select id="kilde">
+    </select>
+    <img height="50px" id="loading" src="http://www.ppimusic.ie/images/loading_anim.gif" style="visibility: hidden;">
+</div>
+<div id="resultbox">
+
+</div>
+<script src="javascripts/search.js"></script>
+
+{% endblock %}
