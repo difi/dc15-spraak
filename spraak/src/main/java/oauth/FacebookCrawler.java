@@ -55,6 +55,7 @@ public class FacebookCrawler implements Runnable{
                     facebookPosts.put("account", ID);
                     facebookPosts.put("text", message);
                     facebookPosts.put("post_year", year);
+                    facebookPosts.put("site","http://www.facebook.com/"+post.getId());
                     this.db.write(facebookPosts);
 
                     year = post.getCreatedTime().toString();
