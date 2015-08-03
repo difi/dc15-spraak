@@ -1,3 +1,6 @@
+/*
+ Typeahead used in total.html and total_nn.html
+ */
 var loadTypeahead = function() {
     var owners = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.whitespace,
