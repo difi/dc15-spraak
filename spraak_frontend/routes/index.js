@@ -14,6 +14,9 @@ router.get('/complex', function(req, res, next) {
 router.get('/total', function (req, res, next) {
   res.render('total', {title: 'Express'});
 });
+router.get('/search', function (req, res, next) {
+  res.render('search', {title: 'Express'});
+});
 router.get('/complex_nn', function(req, res, next) {
   res.render('complex_nn', { title: 'Express' });
 });

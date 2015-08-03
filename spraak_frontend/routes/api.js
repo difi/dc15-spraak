@@ -721,12 +721,91 @@ router.get("/v4/bywordcount/type/:type/:lower/:higher", (function(req, res) {
     }, format);
 }));
 
+router.get("/v5/search/query/:query", (function(req, res) {
+    var query_split = req.params.query.toLowerCase().split("&");
+    var text, must = [],from = 0, size = 10, lower = 0, higher = 99999999999;
+    var _lower = 0,_higher = 99999999999;
+    for(var i = 0; i < query_split.length; i++){
+        var key = query_split[i].split("=")[0];
+        var val = query_split[i].split("=")[1];
+        console.log(key +": " + val);
+        if(key=="text"){
+            text = val;
+        }else if(key=="source" && val != "all"){
+            must.push({term:{"owner":val}});
+        }else if(key=="type" && val != "all"){
+            must.push({term:{"type":val}});
+        }else if(key=="lang" && val != "all"){
+            must.push({term:{"type":val}});
+        }else if(key=="domain" && val != "all"){
+            must.push({term:{"domain":val}});
+        }else if(key=="from"){
+            from = parseInt(val);
+        }else if(key=="size"){
+            size = parseInt(val);
+        }else if(key=="mincount"){
+            lower = parseInt(val);
+        }else if(key=="maxcount"){
+            higher = parseInt(val);
+        }else if(key=="mincomp"){
+            _lower = parseFloat(val);
+        }else if(key=="maxcomp"){
+            _higher = parseFloat(val);
+        }
+    }
+    must.push({numeric_range:{
+            words:{
+                gte:lower,
+                    lte:higher
+            }
+        }});
+    must.push({numeric_range:{
+        complexity:{
+            gte:_lower,
+            lte:_higher
+        }
+    }});
+
+    res.es({
+        index: 'spraak',
+        from: from,
+        size: size,
+        body: {
+            filter:{
+                bool: {
+                    must: must
+                }
+
+            },
+            query: {
+                match:{
+                    text:{
+                        query:text
+                    }
+                }
+            }
+        }
+
+    },raw);
+}));
+
+
+
 router.get("/v5/search/:word/:from/:size", (function(req, res) {
     res.es({
         index: 'spraak',
         from: req.params.from,
         size: req.params.size,
         body: {
+            filter:{
+                bool:{
+                    must:{
+                        term:{
+                            owner:req.params.source
+                        }
+                    }
+                }
+            },
             query: {
                 match:{
                     text:{
@@ -929,7 +1008,24 @@ router.get("/v3/all/names", (function(req, res) {
             }
         }
     }, format);
-}))
+}));
+
+
+router.get("/v3/all/domains", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body: {
+            aggs: {
+                domains: {
+                    terms: {
+                        size: 300,
+                        field: "domain"
+                    }
+                }
+            }
+        }
+    }, format);
+}));
 
 
 router.get("/v5/stats/type/:type/:lang/:amt", (function(req, res) {
@@ -1020,6 +1116,7 @@ router.get("/v5/stats/owner/:owner/:lang/:amt", (function(req, res) {
         }
     },cleanSmall);
 }));
+
 function isNumber(obj) { return !isNaN(parseInt(obj)) && !isNaN(parseFloat(obj));}
 var cleanSmall = function(data){
 

@@ -20,17 +20,57 @@
     .resultcontent{
 
     }
-    .resultsrc{
+    .resulttitle {
+        background-color: rgba(10,10,10,0.5);
+        color: rgb(255,255,255);
+
+    }
+    .resultsrc {
         background-color: rgba(50,50,50,0.3);
         color: blue;
+    }
+    .resultcount {
+        background-color: rgba(50,50,50,0.3);
+        border-bottom-style: solid;
+        border-color: rgba(0,0,0,0.1);
+    }
+    .resultcomp {
+        background-color: rgba(80,80,80,0.3);
+    }
+    #show:hover{
+        cursor: pointer;
     }
     .resultlink{
 
     }
+    #loading_data{
+        position: fixed;
+        left: calc(50% - 100px);
+        top: calc(50% - 100px);
+        width: 200px;
+        height: 140px;
+        background-color: white;
+        text-align: center;
+        border-style: solid;
+        border-radius: 50px;
+    }
+    #cover{
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+    }
 </style>
 <div style="position: relative; margin-left: auto; margin-right: auto">
-    <input type="text" id="searchtext" placeholder="Søk etter noko!"> </input>
+
+    <input type="text" id="searchtext" placeholder="Søk etter noko!">
     <button id="thebutton">SØK</button>
+    <button id="show" onclick="toggleAdvanced()">Avansert Søk</button>
+
+    <div id="advanced" style="visibility: hidden;">
+        <fieldset>
     <select id="type">
         <option value="all">alle</option>
         <option value="web">Nett</option>
@@ -38,12 +78,30 @@
         <option value="twitter">Twitter</option>
         <option value="file">Filer</option>
     </select>
+
+    <select id="lang">
+        <option value="all">alle</option>
+        <option value="nn">Nynorsk</option>
+        <option value="nb">Bokmål</option>
+    </select>
     <select id="kilde">
     </select>
+    <input type="text" id="minord" placeholder="Minimum ord">
+    <input type="text" id="maxord" placeholder="Maksimum ord">
+    <input type="text" id="minkomp" placeholder="Minimum kompleksitet">
+    <input type="text" id="maxkomp" placeholder="Maksimum kompleksitet">
+        </fieldset>
+    </div>
     <img height="50px" id="loading" src="http://www.ppimusic.ie/images/loading_anim.gif" style="visibility: hidden;">
 </div>
 <div id="resultbox">
 
+</div>
+<div id="cover">
+    <div id="loading_data">
+        <img height="100px" src="http://www.ppimusic.ie/images/loading_anim.gif"><br/>
+        Loading....
+    </div>
 </div>
 <script src="javascripts/search.js"></script>
 

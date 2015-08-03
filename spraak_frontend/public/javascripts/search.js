@@ -1,32 +1,56 @@
-/**
- * Created by camp-lsa on 29.07.2015.
- */
 
 
 var query;
-var a;
-var b;
+var visible = false;
+function toggleAdvanced(){
+
+    visible = !visible;
+    document.getElementById("advanced").style.visibility = visible ? "visible": "hidden";
+}
 function search(){
-        document.getElementById("resultbox").innerHTML = "";
-        xml = new XMLHttpRequest();
-        a = document.getElementById("kilde").value == "all" ? "" : "/"+document.getElementById("kilde").value;
-        b = document.getElementById("type").value == "all" ? "" : "/"+document.getElementById("type").value;
-        if(a != "" && b != "")
-            xml.open("GET", "/api/v5/search/source/type/"+query+a+b+"/0/10", true);
-        else if(a!="")
-            xml.open("GET", "/api/v5/search/source/"+query+a+"/0/10", true);
-        else if(b != "")
-            xml.open("GET", "/api/v5/search/type/"+query+b+"/0/10", true);
-        else
-            xml.open("GET", "/api/v5/search/"+query+"/0/10", true);
-        xml.onload = function(){
-            handleResult(xml.response);
-        };
-        xml.onerror = function(err){
-            console.log(err);
-        };
-        xml.send();
+    document.getElementById("resultbox").innerHTML = "";
+    var xml = new XMLHttpRequest();
+    var a, b, lang, min, max, mincomp, maxcomp;
+    if(visible) {
+        a =document.getElementById("kilde").value == "all" ? "" : document.getElementById("kilde").value;
+        b = document.getElementById("type").value == "all" ? "" : document.getElementById("type").value;
+        lang = document.getElementById("type").value == "all" ? "" : document.getElementById("lang").value;
+        min = document.getElementById("minord").value;
+        max = document.getElementById("maxord").value;
+        mincomp = document.getElementById("minkomp").value;
+        maxcomp = document.getElementById("maxkomp").value;
     }
+    var q = "";
+    if(a != ""){
+        q +="&source="+a;
+    }
+    if(b != ""){
+        q +="&type="+b;
+    }
+    if(lang != ""){
+        q +="&lang="+lang;
+    }
+    if(min != "" && parseInt(min)){
+        q +="&mincount="+parseInt(min);
+    }
+    if(max != "" && parseInt(max)){
+        q +="&maxcount="+parseInt(max);
+    }
+    if(max != "" && parseInt(max)){
+        q +="&mincomp="+parseInt(max);
+    }
+    if(max != "" && parseInt(max)){
+        q +="&maxcomp="+parseInt(max);
+    }
+    xml.open("GET","/api/v5/search/query/text="+query+q,true);
+    xml.onload = function(){
+        handleResult(xml.response);
+    };
+    xml.onerror = function(err){
+        console.log(err);
+    };
+    xml.send();
+}
 
 var step = 0;
 function fix(arr){
@@ -55,7 +79,9 @@ function highlightText(text){
     var query_list = query.split(" ");
     var newtext = "";
     var text_split = text.split(/\.| |:|,|_|-|\|/g);
-
+    if(text_split.length == 0)
+        console.log(text);
+    var neverfound = true;
     for(var i = 0; i < text.length; i++){
         var found = false;
         for(var j = 0; j < query_list.length; j++){
@@ -65,6 +91,7 @@ function highlightText(text){
                 {
                     newtext += "<span class='highlight'>" + text_split[i] + "</span> ";
                     found = true;
+                    neverfound = false;
                     break;
                 }
             }
@@ -72,6 +99,9 @@ function highlightText(text){
         if(!found  && text_split[i]){
             newtext += text_split[i] + " ";
         }
+    }
+    if(neverfound){
+        console.log("NEVER FOUND: " +text_split);
     }
     return newtext;
 }
@@ -113,26 +143,37 @@ function handleResult(text){
         var cur = arr[i]["_source"];
         var d = document.createElement("div");
             d.setAttribute("class","searchresult");
+        var title = document.createElement("div");
+            title.setAttribute("class","resulttitle");
+            title.innerHTML = "Tittel: " + cur["title"];
         var src = document.createElement("div");
             src.setAttribute("class","resultsrc");
             src.innerHTML = "Kilde: <a href='"+cur["site"]+"'>"+cur["owner"] +"</a> - "+cur["type"];
+        var comp = document.createElement("div");
+            comp.setAttribute("class","resultcomp");
+            comp.innerHTML ="Kompleksitet: " + + parseFloat(cur["complexity"]).toFixed(2);
+        var count = document.createElement("div");
+            count.setAttribute("class","resultcount");
+            count.innerHTML ="Antall ord: " + + cur["words"];
         var content = document.createElement("div");
             content.setAttribute("class","resultcontent");
         var t = produceSummary(cur["title"], cur["text"]);
-        t = highlightText(t);
-        if(b=="twitter")
-            content.innerHTML += t;
+        if(document.getElementById("type").value=="twitter")
+            content.innerHTML += highlightText(t);
         else if(t.length > 50) {
             if(t.length < 600)
-                content.innerHTML += "..." + t + "...";
+                content.innerHTML += "..." + highlightText(t) + "...";
             else
-                content.innerHTML+= "..."+ t.substring(0,600)+"...";
+                content.innerHTML+= "..."+ highlightText(t).substring(0,600)+"...";
         }
         else if(cur["text"] > 200)
-            content.innerHTML+= "..."+ cur["text"].substring(0,600)+"...";
+            content.innerHTML+= "..."+ highlightText(cur["text"].substring(0,600))+"...";
         else
-            content.innerHTML += cur["text"];
+            content.innerHTML += highlightText(cur["text"]);
+        d.appendChild(title);
         d.appendChild(src);
+        d.appendChild(comp);
+        d.appendChild(count);
         d.appendChild(content);
         document.getElementById("resultbox").appendChild(d);
         if(i < arr.length -1)
@@ -149,11 +190,13 @@ function click(event){
     search();
 }
 window.onload=function(){
-
+    loader = document.getElementById("cover");
+    loader.style.visibility = "visible";
     var option = document.createElement("option");
     option.setAttribute("value", "all");
     option.innerText = "all";
     document.getElementById("kilde").appendChild(option);
+    document.getElementById("thebutton").onclick = function(event){click(event);};
 
     xml = new XMLHttpRequest();
     xml.open("GET", "/api/v3/all/names", true);
@@ -165,13 +208,11 @@ window.onload=function(){
             option.innerText = name;
             document.getElementById("kilde").appendChild(option);
         }
-        document.getElementById("thebutton").onclick = function(event){click(event);};
         document.getElementById("kilde");
+        loader.style.visibility = "hidden";
     };
     xml.send();
-
-
-}
+};
 
 
 function split_content_to_sentences(content){
@@ -228,6 +269,8 @@ function get_sentences_ranks(title, content){
                 else
                     count = count.length;
                 score += count/sentences[i].split(" ").length;
+                if(title.indexOf(query_list[k]) >= 0)
+                    score *= 1.5;
                 if(isNaN(score)){
                     console.log("Count: " + count);
                     console.log("SentL: " +sentences[i].split(" ").length);
@@ -278,7 +321,6 @@ function get_summary(content, sentences_dic){
         if(sentence)
             summary+=sentence+". \n";
     }
-    console.log("\n\n\n\n\n");
     return summary;
 }
 
