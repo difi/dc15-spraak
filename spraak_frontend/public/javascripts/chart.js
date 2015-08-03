@@ -395,14 +395,7 @@ if(url === "/nynorsk_o_meter") {
 }
 
 function getNorwegianSourceName(dbSourceName) {
-    var ret;
-    $.each(sourcesNames, function(en, no) {
-        if(dbSourceName === en) {
-            ret = no;
-            return false;
-        }
-    });
-    return ret;
+    return sourcesNames[dbSourceName];
 }
 
 Highcharts.setOptions({
