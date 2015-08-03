@@ -17,4 +17,3 @@ $(document).ready(function() {
         $("#ordbruk").addClass("active-trail active");
     }
 });
-
