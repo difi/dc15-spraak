@@ -4,6 +4,8 @@
 if(url == "/ordbruk") {
     var wordSearchButton = $('#wordSearchButton');
     var wordOwnersList = $('#wordOwnersList');
+    var head = $('#wordOwnersListHead');
+    var headNN = $('#wordOwnersListHeadNN');
     var word = '';
     wordSearchButton.attr('disabled', 'disabled');
     $('#wordSearch').keyup(function(event) {
@@ -31,7 +33,8 @@ if(url == "/ordbruk") {
         if (word == '') {
             return;
         }
-        var list = $('<table class="pure-table"><thead><tr><th>Etat</th><th>Antall dokumenter som inneholder "' + word + '"</th></tr></thead><tbody></tbody></table>').attr('id', 'wordOwnersList');
+
+        var list= $('<div></div>');
         $.getJSON('/api/v4/search/' + word, function(data) {
 
             if(jQuery.isEmptyObject(data.toptags)) {
@@ -39,10 +42,16 @@ if(url == "/ordbruk") {
                 return;
             }
             $.each(data.toptags, function(owner) {
-                list.append('<tr><td>' + capitalize(owner) + '</td><td>' + this.doc_count + '</td></tr>');
-            })
+                list.before('<div class=pure-g><div class="pure-u-1-2"><p>' + capitalize(owner) + '</p></div><div class="pure-u-1-2"><p>' + this.doc_count + '</p></div></div>');
+            });
         });
-        wordOwnersList.empty(); // Clear table to avoid duplication if button is clicked several times
+
+        // Clear list to avoid duplication if button is clicked several times
+        head.empty();
+        headNN.empty();
+        head.append('<div class=pure-g><div class="pure-u-1-2"><p><b>Etat</b></p></div><div class="pure-u-1-2"><p><b>Antall dokumenter som inneholder "' + word + '"</b></p></div></div>');
+        headNN.append('<div class=pure-g><div class="pure-u-1-2"><p><b>Etat</b></p></div><div class="pure-u-1-2"><p><b>Antall dokument som inneheld "' + word + '"</b></p></div></div>');
+        wordOwnersList.empty();
         wordOwnersList.append(list);
     });
 
