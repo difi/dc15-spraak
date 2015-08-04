@@ -28,7 +28,7 @@ h1,h2,h3,h4,p {
   margin-right:0px;
 }
 
-#body, p, .pure-table {
+#body, p, .pure-table, ul, li {
   font-family: Open Sans, sans-serif;
 }
 
