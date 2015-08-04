@@ -692,15 +692,15 @@ router.get("/v4/bywordcount/type/:type/:lower/:higher", (function(req, res) {
                                     numeric_range:{
                                         words:{
                                             gte:lower,
-                                                lte:higher
+                                            lte:higher
                                         }
                                     }
                                 }
-                                    ]
-                            }
+                            ]
                         }
                     }
-                },
+                }
+            },
             aggs: {
                 owners: {
                     terms: {
@@ -721,6 +721,62 @@ router.get("/v4/bywordcount/type/:type/:lower/:higher", (function(req, res) {
     }, format);
 }));
 
+
+router.get("/v4/bywordcount/type/:type/:owner/:lower/:higher", (function(req, res) {
+    var _type = req.params.type;
+    var _owner = req.params.owner;
+    var lower = parseInt(req.params.lower);
+    var lower = isNaN(lower)? 0 : lower;
+    var higher = parseInt(req.params.higher);
+    var higher = isNaN(higher)? 9999999 :  higher;
+    res.es({
+        index: 'spraak',
+        body: {
+            query: {
+                filtered: {
+                    filter:{
+                        bool:{
+                            must:[
+                                {
+                                    term:{type:_type}
+                                },
+                                {
+                                    term:{owner:_owner}
+                                },
+                                {
+                                    numeric_range:{
+                                        words:{
+                                            gte:lower,
+                                            lte:higher
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            aggs: {
+                owners: {
+                    terms: {
+                        size: pages,
+                        field: "owner"
+                    },
+                    aggs: {
+                        topterms: {
+                            terms: {
+                                field: "type"
+                            },
+                            aggs: all
+                        }
+                    }
+                }
+            }
+        }
+    }, format);
+}));
+
+
 router.get("/v5/search/query/:query", (function(req, res) {
     var query_split = req.params.query.toLowerCase().split("&");
     var text, must = [],from = 0, size = 10, lower = 0, higher = 99999999999;
@@ -736,7 +792,7 @@ router.get("/v5/search/query/:query", (function(req, res) {
         }else if(key=="type" && val != "all"){
             must.push({term:{"type":val}});
         }else if(key=="lang" && val != "all"){
-            must.push({term:{"type":val}});
+            must.push({term:{"lang":val}});
         }else if(key=="domain" && val != "all"){
             must.push({term:{"domain":val}});
         }else if(key=="from"){
@@ -1008,6 +1064,28 @@ router.get("/v3/all/names", (function(req, res) {
             }
         }
     }, format);
+}));
+
+
+//DENNE FUNKER IKKE. SKAL HENTE FREKVENS AV ORD OVER DOKUMENTER OG TOTAL BRUK PER EIER.
+router.get("/test/:word", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body:{
+            "size": 0,
+            "query":{
+                "match":req.params.word
+            },
+            "aggs":{
+                "tags" : {
+                    "significant_terms" : {
+                        "field":"text"
+                    }
+                }
+            }
+
+        }
+    },raw);
 }));
 
 
