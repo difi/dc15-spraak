@@ -1,5 +1,14 @@
 
-
+var valid = false;
+function validate(source){
+    if(source.value != "" && isNaN(source.value)){
+        source.style.borderColor = "red";
+        valid = false;
+    }else{
+        valid = valid ? true : false;
+        source.style.borderColor = "rgba(123, 180, 235, .5)";
+    }
+}
 var query;
 var visible = false;
 function toggleAdvanced(){
@@ -119,7 +128,7 @@ function handleResult(text){
         var content = document.createElement("div");
         content.setAttribute("class","resultcontent");
         content.setAttribute("style","text-align: center;")
-        content.innerHTML = "FANT INGEN RESULTATER FOR <br/>"+ query +"<br/> PÅ <br/>"+document.getElementById("type").options[document.getElementById("type").selectedIndex].innerHTML + "<br/> HOS <br/>"+ a.substring(1) ;
+        content.innerHTML = "FANT INGEN RESULTATER FOR <br/>"+ query +"<br/> PÅ <br/>"+document.getElementById("type").options[document.getElementById("type").selectedIndex].innerHTML + "<br/> HOS <br/>"+ document.getElementById("kilde").options[document.getElementById("kilde").selectedIndex].innerHTML.substring(1) ;
         d.appendChild(src);
         d.appendChild(content);
         document.getElementById("resultbox").appendChild(d);
@@ -182,8 +191,34 @@ function handleResult(text){
     document.getElementById("loading").style.visibility = "hidden";
 }
 
+function alfalyze(){
+    var rot = 0;
+    /*setInterval(function(){
+        document.body.style.transform="rotate("+rot+"deg)";
+    }, 200);*/
+    var img = document.createElement("img");
+        img.src = "alf.png";
+        img.setAttribute("id","alf");
+        img.setAttribute("style","position: fixed; left: 30%; top: 35%; width:500px; height: 500px;");
+
+    document.body.appendChild(img);
+    setInterval(function(){
+        rot++;
+        document.getElementById("alf").style["-webkit-filter"]= "hue-rotate("+rot*5+"deg)";
+        document.getElementById("alf").style.transform = "rotate("+(-1*rot)+"deg) scale("+((rot*4%100)/100)+")";
+
+    }, 20);
+}
 function click(event){
+    if(valid) {
+        alert("Invalid values!")
+        return;
+    }
     query = document.getElementById("searchtext").value;
+    if(query.toLowerCase()=="alf"){
+        alfalyze();
+        return;
+    }
     if(query == "")
         return;
     document.getElementById("loading").style.visibility = "visible";
