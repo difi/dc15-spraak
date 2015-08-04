@@ -140,183 +140,7 @@ var es = function(req,res,next){
     next();
 }
 
-
-router.get("/all", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body: {
-            aggs: all
-        }
-    });
-}))
-
-
-router.get("/all/:type", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        type: req.params.type,
-        body: {
-            aggs: all
-        }
-    });
-}))
-
-router.get("/v1/all", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body: {
-            aggs: {
-                toptags: {
-                    terms: {
-                        field: "type"
-                    },
-                    aggs: all
-                },
-                all: {
-                    global: {},
-                    aggs: all
-                }
-            }
-        }
-    });
-}))
-
-router.get("/v1/all/:type", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        type: req.params.type,
-        body: {
-            aggs: {
-                toptags: {
-                    terms: {
-                        field: "type"
-                    },
-                    aggs: all
-                    }
-                }
-            }
-    });
-}))
-
-router.get("/v1/owners", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body: {
-            aggs: {
-                toptags: {
-                    terms: {
-                        field: "owner"
-                    },
-                    aggs: {
-                        lang_terms: {
-                            terms: {
-                                field: "lang"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-}))
-
-router.get("/v1/owner/:owner", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body: {
-            aggs: {
-                toptags: {
-                    filter: {
-                        term: {
-                            owner: req.params.owner
-                        }
-                    },
-                    aggs: all
-                }
-            }
-        }
-    });
-}))
-
-
-
-router.get("/v2/owner/:owner/all", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body: {
-            query: {
-                filtered: {
-                    query: {match_all: {}},
-                    filter:{
-                        term: {owner: req.params.owner}
-                    }
-                }
-            },
-            aggs: {
-                toptags: {
-                    terms: {
-                        field: "type"
-                    },
-                    aggs: all
-                },
-                all: {
-                    global: {},
-                    aggs: all
-                }
-            }
-        }
-    });
-}))
-
-router.get("/v2/owners", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body: {
-            aggs: {
-                toptags: {
-                    terms: {
-                        field: "owner"
-                    },
-                }
-            }
-        }
-    }, (function (resp) {
-            var d = resp.toptags.buckets;
-            var l = [];
-            for(var i in d){
-                console.log(d[i])
-                l.push(d[i].key)
-            }
-            return l;
-        })
-    );
-}))
-
-router.get("/v2/owners/lang", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body: {
-            aggs: {
-                toptags: {
-                    terms: {
-                        field: "owner"
-                    },
-                    aggs: {
-                        lang_terms: {
-                            terms: {
-                                field: "lang"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    });
-}))
-
-
-
-
+//Henter ut oppsamlet info om spesifikk kilde for alle typer data.
 router.get("/v3/owner/:owner/all", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -345,7 +169,7 @@ router.get("/v3/owner/:owner/all", (function(req, res) {
     }, format);
 }))
 
-
+//Henter ut oppsamlet info om spesifikk alle typer data.
 router.get("/v3/owners/all", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -372,7 +196,7 @@ router.get("/v3/owners/all", (function(req, res) {
 
 
 
-
+//Henter ut totalinfo, mao samlingen av web, filer osv..
 router.get("/v3/all", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -389,7 +213,7 @@ router.get("/v3/all", (function(req, res) {
 
 
 
-
+//Henter ut alle kilder.
 router.get("/v3/owners", (function(req, res) {
     res.es({
             index: 'spraak',
@@ -415,7 +239,7 @@ router.get("/v3/owners", (function(req, res) {
         })
     );
 }))
-
+//Henter ut info om alle språk.
 router.get("/v3/owners/lang", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -438,7 +262,7 @@ router.get("/v3/owners/lang", (function(req, res) {
     }, format);
 }))
 
-
+//Henter ut info om sannsynlighet for riktig språk.
 router.get("/v3/owners/confidence", function(req, res){
     res.es({
         index: "spraak",
@@ -456,6 +280,7 @@ router.get("/v3/owners/confidence", function(req, res){
 
 
 
+//Henter ut info for et gitt år for alle kilder.
 router.get("/v4/owners/all/foryear/:date", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -499,6 +324,7 @@ router.get("/v4/owners/all/foryear/:date", (function(req, res) {
     }, format);
 }))
 
+//Henter ut info for et gitt år og for en gitt type(e.g. web.)
 router.get("/v4/owners/all/yearfortype/:date/:type", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -540,7 +366,7 @@ router.get("/v4/owners/all/yearfortype/:date/:type", (function(req, res) {
     }, format);
 }));
 
-
+//Henter info for en gitt type.
 router.get("/v4/owners/all/fortype/:type", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -583,7 +409,7 @@ router.get("/v4/owners/all/fortype/:type", (function(req, res) {
 }));
 
 var raw = "raw";
-
+//Søker etter et ord. Dette kan erstattes med v5/search/query-tingen da den gjør det samme med mer.
 router.get("/v4/search/:word", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -603,7 +429,7 @@ router.get("/v4/search/:word", (function(req, res) {
     },format);
 }));
 
-
+//Denne kan antakeligvis fjernes og erstattes med søk fra v3.
 router.get("/v4/searchwithname/:word/:owner", (function(req, res) {
     console.log("COUNTING AMT OF DOCS WITH WORD " + req.params.word + " WRITTEN BY " +req.params.etat);
     res.es({
@@ -629,7 +455,7 @@ router.get("/v4/searchwithname/:word/:owner", (function(req, res) {
     },format);
 }));
 
-
+//Returnerer dokumenter som er i et visst ordintervall.
 router.get("/v4/bywordcount/:lower/:higher", (function(req, res) {
     lower = parseInt(req.params.lower);
     lower = isNaN(lower)? 0 : lower;
@@ -670,7 +496,7 @@ router.get("/v4/bywordcount/:lower/:higher", (function(req, res) {
     }, format);
 }));
 
-
+//Returnerer dokumenter av type som er i et visst ordintervall.
 router.get("/v4/bywordcount/type/:type/:lower/:higher", (function(req, res) {
     _type = req.params.type;
     lower = parseInt(req.params.lower);
@@ -721,7 +547,7 @@ router.get("/v4/bywordcount/type/:type/:lower/:higher", (function(req, res) {
     }, format);
 }));
 
-
+//Returnerer dokumenter av type fra eier som er i et visst ordintervall.
 router.get("/v4/bywordcount/type/:type/:owner/:lower/:higher", (function(req, res) {
     var _type = req.params.type;
     var _owner = req.params.owner;
@@ -777,7 +603,8 @@ router.get("/v4/bywordcount/type/:type/:owner/:lower/:higher", (function(req, re
 }));
 
 
-router.get("/v5/search/query/:query", (function(req, res) {
+//Returnerer søk etter tekst baser på query.
+router.get("/v3/search/query/:query", (function(req, res) {
     var query_split = req.params.query.toLowerCase().split("&");
     var text, must = [],from = 0, size = 10, lower = 0, higher = 99999999999;
     var _lower = 0,_higher = 99999999999;
@@ -846,210 +673,7 @@ router.get("/v5/search/query/:query", (function(req, res) {
 }));
 
 
-
-router.get("/v5/search/:word/:from/:size", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        from: req.params.from,
-        size: req.params.size,
-        body: {
-            filter:{
-                bool:{
-                    must:{
-                        term:{
-                            owner:req.params.source
-                        }
-                    }
-                }
-            },
-            query: {
-                match:{
-                    text:{
-                        query:req.params.word
-                    }
-                }
-            }
-        }
-
-    },raw);
-}));
-
-router.get("/v5/search/source/:word/:source/:from/:size", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        from: req.params.from,
-        size: req.params.size,
-        body: {
-            filter:{
-                bool:{
-                    must:{
-                        term:{
-                            owner:req.params.source
-                        }
-                    }
-                }
-            },
-            query: {
-                match:{
-                    text:{
-                        query:req.params.word
-                    }
-                }
-            }
-        }
-
-    },raw);
-}));
-
-
-router.get("/v5/search/type/:word/:type/:from/:size", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        from: req.params.from,
-        size: req.params.size,
-        body: {
-            filter:{
-                bool:{
-                    must:{
-                        term:{
-                            type:req.params.type
-                        }
-                    }
-                }
-            },
-            query: {
-                match:{
-                    text:{
-                        query:req.params.word
-                    }
-                }
-            }
-        }
-
-    },raw);
-}));
-
-router.get("/v5/search/source/type/:word/:source/:type/:from/:size", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        from: req.params.from,
-        size: req.params.size,
-        body: {
-            filter:{
-                bool:{
-                    must:[
-                        {term: {owner: req.params.source}},
-                        {term: {type: req.params.type}}
-                    ]
-                }
-            },
-            query: {
-                match:{
-                    text:{
-                        query:req.params.word
-                    }
-                }
-            }
-        }
-
-    },raw);
-}));
-
-
-router.get("/v5/search/stats/:type/:lang", (function(req, res) {
-    var t = req.params.type;
-    res.es({
-        index: 'spraak',
-        body:{
-            "size": 0,
-            "aggs" : {
-                "filtered":{
-                    "filter":{
-                        "bool":{
-                            "must":[
-                                {"term":{"type":req.params.type}},
-                                {"term":{"lang":req.params.lang}}
-                            ]
-                        }
-                    },
-                    "aggs":{
-                        "gris" : {
-                            "terms" : {
-                                "field" : "text",
-                                "size":100
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },raw);
-}));
-
-
-router.get("/v5/search/stats/:lang", (function(req, res) {
-    var t = req.params.type;
-    res.es({
-        index: 'spraak',
-        body:{
-            "size": 0,
-            "aggs" : {
-                "filtered":{
-                    "filter":{
-                        "bool":{
-                            "must":[
-                                {"term":{"lang":req.params.lang}}
-                            ]
-                        }
-                    },
-                    "aggs":{
-                        "gris" : {
-                            "terms" : {
-                                "field" : "text",
-                                "size":100
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },raw);
-}));
-
-
-router.get("/v5/search/stats/:owner/:lang", (function(req, res) {
-    var t = req.params.type;
-    res.es({
-        index: 'spraak',
-        body:{
-            "size": 0,
-            "aggs" : {
-                "filtered":{
-                    "filter":{
-                        "bool":{
-                            "must":[
-                                {"term":{"lang":req.params.lang}},
-                                {"term":{"owner":req.params.owner}}
-
-                            ]
-                        }
-                    },
-                    "aggs":{
-                        "gris" : {
-                            "terms" : {
-                                "field" : "text",
-                                "size":100
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },raw);
-}));
-
-
-
+//Returnerer liste med alle eiere.
 router.get("/v3/all/names", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -1066,29 +690,7 @@ router.get("/v3/all/names", (function(req, res) {
     }, format);
 }));
 
-
-//DENNE FUNKER IKKE. SKAL HENTE FREKVENS AV ORD OVER DOKUMENTER OG TOTAL BRUK PER EIER.
-router.get("/test/:word", (function(req, res) {
-    res.es({
-        index: 'spraak',
-        body:{
-            "size": 0,
-            "query":{
-                "match":req.params.word
-            },
-            "aggs":{
-                "tags" : {
-                    "significant_terms" : {
-                        "field":"text"
-                    }
-                }
-            }
-
-        }
-    },raw);
-}));
-
-
+//Returnerer liste med alle domener.
 router.get("/v3/all/domains", (function(req, res) {
     res.es({
         index: 'spraak',
@@ -1096,7 +698,7 @@ router.get("/v3/all/domains", (function(req, res) {
             aggs: {
                 domains: {
                     terms: {
-                        size: 300,
+                        size: 100,
                         field: "domain"
                     }
                 }
@@ -1105,8 +707,8 @@ router.get("/v3/all/domains", (function(req, res) {
     }, format);
 }));
 
-
-router.get("/v5/stats/type/:type/:lang/:amt", (function(req, res) {
+//Returnerer ordfrekvenser for gitt type og eier, max amt ord.
+router.get("/v3/stats/type/:type/:lang/:amt", (function(req, res) {
     res.es({
         index: 'spraak',
         body:{
@@ -1135,8 +737,8 @@ router.get("/v5/stats/type/:type/:lang/:amt", (function(req, res) {
     },cleanSmall);
 }));
 
-
-router.get("/v5/stats/all/:lang/:amt", (function(req, res) {
+//Returnerer ordfrekvenser for gitt språk, max amt ord.
+router.get("/v3/stats/all/:lang/:amt", (function(req, res) {
     res.es({
         index: 'spraak',
         body:{
@@ -1165,7 +767,8 @@ router.get("/v5/stats/all/:lang/:amt", (function(req, res) {
 }));
 
 
-router.get("/v5/stats/owner/:owner/:lang/:amt", (function(req, res) {
+//Returnerer ordfrekvenser for gitt språk og eier, max amt ord.
+router.get("/v3/stats/owner/:owner/:lang/:amt", (function(req, res) {
     res.es({
         index: 'spraak',
         body:{
