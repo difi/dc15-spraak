@@ -15,5 +15,7 @@ $(document).ready(function() {
         $("#about").addClass("active-trail active");
     } else if (url === "/ordbruk") {
         $("#ordbruk").addClass("active-trail active");
+    } else if (url === "/search") {
+        $("#search").addClass("active-trail active");
     }
 });
