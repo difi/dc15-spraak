@@ -155,6 +155,7 @@ public class TextExtractor implements Runnable {
                 wordCount   += (int) analysis.complexity.wordCount;
                 complexity  += analysis.complexity.LIX;
                 confidence  += analysis.confidence;
+                text += paragraph;
 
                 JSONObject obj = new JSONObject();
                 if(!map.containsKey(analysis.language)){
@@ -170,6 +171,7 @@ public class TextExtractor implements Runnable {
                 }
                 map.put(analysis.language,obj);
             }
+
             confidence /= amt;
             complexity /= amt;
             json.put("lang",null);
@@ -195,6 +197,7 @@ public class TextExtractor implements Runnable {
             json.put("words", wordCount);
             json.put("text",text);
 
+            System.out.println(json);
 
 
             db.write(json);
