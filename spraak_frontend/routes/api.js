@@ -221,7 +221,8 @@ router.get("/v3/owners", (function(req, res) {
                 aggs: {
                     toptags: {
                         terms: {
-                            field: "owner"
+                            field: "owner",
+                            size: 9999999
                         },
                     }
                 }
