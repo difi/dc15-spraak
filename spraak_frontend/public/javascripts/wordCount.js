@@ -38,6 +38,8 @@ if(url == "/ordbruk") {
         $.getJSON('/api/v4/search/' + word, function(data) {
 
             if(jQuery.isEmptyObject(data.toptags)) {
+                head.empty();
+                headNN.empty();
                 wordOwnersList.append('<p>Ingen treff</p>');
                 return;
             }
