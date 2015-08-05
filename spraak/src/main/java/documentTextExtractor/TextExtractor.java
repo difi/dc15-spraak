@@ -141,7 +141,7 @@ public class TextExtractor implements Runnable {
             json.put("type", type);
             json.put("post_year", creationYear);
             json.put("owner",o.owner);
-
+            json.put("site", o.source);
             String text = "";
             Integer wordCount = 0;
             Float complexity = 0f;
