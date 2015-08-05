@@ -187,14 +187,12 @@ function loadComplexityChart(chartElement, selectedOwner, nnComplex, nbComplex, 
             type: 'areaspline'
         },
         title: {
-            text: 'Gjennomsnittlig kompleksitetsgrad nynorsk og bokmål hos ' + capitalize(selectedOwner)
+            text: 'Gjennomsnittlig kompleksitetsgrad'
         },
         legend: {
             layout: 'vertical',
-            align: 'left',
+            align: 'right',
             verticalAlign: 'top',
-            x: 570,
-            y: 60,
             floating: true,
             borderWidth: 1,
             backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
@@ -210,7 +208,8 @@ function loadComplexityChart(chartElement, selectedOwner, nnComplex, nbComplex, 
         },
         tooltip: {
             shared: true,
-            valueSuffix: ''
+            headerFormat: 'LIX-kompleksitet <br/> <b>{point.x}</b> <br/>',
+            pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:.2f}</b><br/>'
         },
         credits: {
             enabled: false
