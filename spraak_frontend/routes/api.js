@@ -54,6 +54,18 @@ var all = {
                 }
             }
         }
+    },
+    confidences: {
+        terms:{
+            field:"lang"
+        },
+        aggs:{
+            count: {
+                stats: {
+                    field: "confidence"
+                }
+            }
+        }
     }
 }
 
@@ -671,7 +683,6 @@ router.get("/v3/search/query/:query", (function(req, res) {
 
     },raw);
 }));
-
 
 //Returnerer liste med alle eiere.
 router.get("/v3/all/names", (function(req, res) {
