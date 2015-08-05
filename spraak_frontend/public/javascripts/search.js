@@ -11,13 +11,19 @@ function validate(source){
 }
 var query;
 var visible = false;
+var start = 0;
 function toggleAdvanced(){
-
     visible = !visible;
+    document.getElementById("advanced").style.height= visible? "300px":"0px";
     document.getElementById("advanced").style.visibility = visible ? "visible": "hidden";
 }
-function search(){
-    document.getElementById("resultbox").innerHTML = "";
+
+function search(n){
+    document.getElementById("loading").style.visibility = "visible";
+    if(n){
+        start += n;
+        start = start <= 0 ? 0 : start;
+    }
     var xml = new XMLHttpRequest();
     var a, b, lang, min, max, mincomp, maxcomp;
     if(visible) {
@@ -28,30 +34,33 @@ function search(){
         max = document.getElementById("maxord").value;
         mincomp = document.getElementById("minkomp").value;
         maxcomp = document.getElementById("maxkomp").value;
+        console.log(maxkomp.value);
     }
     var q = "";
-    if(a != ""){
+    if(a){
         q +="&source="+a;
     }
-    if(b != ""){
+    if(b){
         q +="&type="+b;
     }
-    if(lang != ""){
+    if(lang){
         q +="&lang="+lang;
     }
-    if(min != "" && parseInt(min)){
+    if(min && parseInt(min)){
         q +="&mincount="+parseInt(min);
     }
-    if(max != "" && parseInt(max)){
+    if(max && parseInt(max)){
         q +="&maxcount="+parseInt(max);
     }
-    if(max != "" && parseInt(max)){
-        q +="&mincomp="+parseInt(max);
+    if(mincomp && parseInt(mincomp)){
+        q +="&mincomp="+parseInt(mincomp);
     }
-    if(max != "" && parseInt(max)){
-        q +="&maxcomp="+parseInt(max);
+    if(maxcomp && parseInt(maxcomp)){
+        q +="&maxcomp="+parseInt(maxcomp);
     }
-    xml.open("GET","/api/v5/search/query/text="+query+q,true);
+    q+= "&from="+start;
+    console.log(q);
+    xml.open("GET","/api/v3/search/query/text="+query+q,true);
     xml.onload = function(){
         handleResult(xml.response);
     };
@@ -116,9 +125,19 @@ function highlightText(text){
 }
 
 function handleResult(text){
+    document.getElementById("noresults").style.visibility="hidden";
     var obj = JSON.parse(text);
     var arr = obj["hits"]["hits"];
+
     if(arr.length == 0){
+        document.getElementById("loading").style.visibility = "hidden";
+        if(start > 0){
+            document.getElementById("noresults").style.visibility="visible";
+            start -=10;
+            return;
+        }
+        document.getElementById("resultbox").innerHTML = "";
+        start = 0;
         var d = document.createElement("div");
         d.setAttribute("class","searchresult");
         var src = document.createElement("div");
@@ -132,10 +151,17 @@ function handleResult(text){
         d.appendChild(src);
         d.appendChild(content);
         document.getElementById("resultbox").appendChild(d);
+        document.getElementById("forrige").style.visibility="hidden";
+        document.getElementById("neste").style.visibility="hidden";
+        return;
     }
 
+    document.getElementById("resultbox").innerHTML = "";
+    document.getElementById("forrige").style.visibility="visible";
+    document.getElementById("neste").style.visibility="visible";
+
     arr = fix(arr);
-    console.log(arr);
+
     var query_thing = query.split(" ");
     arr = arr.sort(function(a, b){
         var sum = 0;
@@ -145,7 +171,9 @@ function handleResult(text){
         }
         return sum;
     });
-    console.log(arr);
+
+    document.getElementById("resultbox").innerHTML = "Viser elementer f.o.m element " + start + " t.o.m " + (start+arr.length-1) + ". Totalt " +obj["hits"]["total"] +" elementer.";
+
     for(var i = 0; i < arr.length; i++){
         var sep = document.createElement("div");
         sep.setAttribute("class","separator");
@@ -223,8 +251,10 @@ function click(event){
         return;
     document.getElementById("loading").style.visibility = "visible";
     search();
-}
+};
+
 window.onload=function(){
+
     loader = document.getElementById("cover");
     loader.style.visibility = "visible";
     var option = document.createElement("option");

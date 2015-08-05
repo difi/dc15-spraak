@@ -251,3 +251,21 @@ select, input {
 #totalInfoText, #totalInfoTextNN {
   text-align: center;
 }
+
+
+.lars{
+  border-left: none !important;
+
+  outline: none !important;
+}
+
+.test{
+  padding-left: 2px;
+  padding-top: 8.5px;
+  border-left: solid 5px rgba(123, 180, 235, .5);
+  border-top: solid 5px rgba(123, 180, 235, .5);
+  border-bottom: solid 5px rgba(123, 180, 235, .5);
+  border-style-right: none;
+  border-radius: 0;
+  padding-right: 4%;
+}

@@ -62,6 +62,7 @@
         height: 100%;
         background-color: rgba(0,0,0,0.7);
     }
+
 </style>
 <div style="position: relative; margin-left: auto; margin-right: auto">
 
@@ -69,7 +70,7 @@
     <button id="thebutton">SØK</button>
     <button id="show" onclick="toggleAdvanced()">Avansert Søk</button>
 
-    <div id="advanced" style="visibility: hidden;">
+    <div id="advanced" style="visibility: hidden; height: 0px;">
             <div class="pure-g">
                 <div class="test pure-u-1-24">
                     Kilde:
@@ -127,6 +128,11 @@
             </div>
     </div>
     <img height="50px" id="loading" src="http://www.ppimusic.ie/images/loading_anim.gif" style="visibility: hidden;">
+</div>
+<div style="text-align: center; height: 30px;">
+    <button style="float: left; visibility: hidden;"id="forrige" onclick="search(-10)">FORRIGE</button>
+    <span id="noresults" style="visibility:hidden;">INGEN FLERE ELEMENTER Å VISE</span>
+    <button style="float: right; visibility: hidden;" id="neste" onclick="search(10)">NESTE</button>
 </div>
 <div id="resultbox">
 
