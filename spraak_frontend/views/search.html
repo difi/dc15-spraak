@@ -1,7 +1,9 @@
 {% extends 'layout.html' %}
-
 {% block title %}Header/Footer{% endblock %}
-
+{% block header %}
+<img src="images/Stoogle.png" alt="Stoogle Logo">
+{% endblock %}
+{% block menu %} {% include 'menuBokmal.html' %}{% endblock %}
 {% block content %}
 <style>
     .searchresult{
@@ -143,6 +145,5 @@
         Loading....
     </div>
 </div>
-<script src="javascripts/search.js"></script>
-
+<script type="text/javascript" src="scripts/search.js"></script>
 {% endblock %}

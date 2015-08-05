@@ -225,7 +225,7 @@ function alfalyze(){
         document.body.style.transform="rotate("+rot+"deg)";
     }, 200);*/
     var img = document.createElement("img");
-        img.src = "alf.png";
+        img.src = "images/alf.png";
         img.setAttribute("id","alf");
         img.setAttribute("style","position: fixed; left: 30%; top: 35%; width:500px; height: 500px;");
 
