@@ -704,7 +704,7 @@ router.get("/v3/all/names", (function(req, res) {
 }));
 
 //Returnerer liste med alle domener.
-router.get("v3/all/domains/:owner", (function(req, res) {
+router.get("/v3/all/domains/:owner", (function(req, res) {
     res.es({
         index: 'spraak',
         body: {

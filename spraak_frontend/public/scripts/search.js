@@ -117,9 +117,8 @@ function highlightText(text){
         var found = false;
         for(var j = 0; j < query_list.length; j++){
             if(text_split[i]) {
-                text_split[i] = text_split[i].replace(/\s/g, "");
-                if (text_split[i].startsWith(query_list[j]))
-                {
+                text_split[i] = text_split[i].replace(/\s|\(|\)/g, "");
+                if (text_split[i].startsWith(query_list[j])) {
                     newtext += "<span class='highlight'>" + text_split[i] + "</span> ";
                     found = true;
                     neverfound = false;
@@ -211,18 +210,24 @@ function handleResult(text){
         var content = document.createElement("div");
             content.setAttribute("class","resultcontent");
         var t = produceSummary(cur["title"], cur["text"]);
+
         if(document.getElementById("type").value=="twitter")
             content.innerHTML += highlightText(t);
-        else if(t.length > 50) {
-            if(t.length < 600)
+
+        else if(t.length > 0) {
+            if(t.length < 600) {
                 content.innerHTML += "..." + highlightText(t) + "...";
-            else
-                content.innerHTML+= "..."+ highlightText(t).substring(0,600)+"...";
+            }
+            else {
+                content.innerHTML += "..." + highlightText(t.substring(0, 800)) + "...";
+            }
         }
-        else if(cur["text"].length > 200)
-            content.innerHTML+= "..."+ highlightText(cur["text"].substring(0,600))+"...";
-        else
+        else if(cur["text"].length > 200) {
+            content.innerHTML += "..." + highlightText(cur["text"].substring(0, 600)) + "...";
+        }
+        else {
             content.innerHTML += highlightText(cur["text"]);
+        }
 
         d.appendChild(title);
         d.appendChild(src);
@@ -236,25 +241,6 @@ function handleResult(text){
     document.getElementById("loading").style.visibility = "hidden";
 }
 
-//easteregg.
-function alfalyze(){
-    var rot = 0;
-    /*setInterval(function(){
-        document.body.style.transform="rotate("+rot+"deg)";
-    }, 200);*/
-    var img = document.createElement("img");
-        img.src = "images/alf.png";
-        img.setAttribute("id","alf");
-        img.setAttribute("style","position: fixed; left: 30%; top: 35%; width:500px; height: 500px;");
-
-    document.body.appendChild(img);
-    setInterval(function(){
-        rot++;
-        document.getElementById("alf").style["-webkit-filter"]= "hue-rotate("+rot*5+"deg)";
-        document.getElementById("alf").style.transform = "rotate("+(-1*rot)+"deg) scale("+((rot*4%100)/100)+")";
-
-    }, 20);
-}
 //Søker etter info om det faktisk er gyldig input og query ikke er tomt.
 function click(event){
     if(valid) {
@@ -262,10 +248,7 @@ function click(event){
         return;
     }
     query = document.getElementById("searchtext").value;
-    if(query.toLowerCase()=="alf"){
-        alfalyze();
-        return;
-    }
+
     if(query == "")
         return;
     document.getElementById("loading").style.visibility = "visible";
@@ -280,7 +263,7 @@ window.onload=function(){
 
     var option = document.createElement("option");
     option.setAttribute("value", "all");
-    option.innerText = "all";
+    option.innerText = "alle";
     document.getElementById("kilde").appendChild(option);
     document.getElementById("thebutton").onclick = function(event){click(event);};
     xml = new XMLHttpRequest();
@@ -290,7 +273,7 @@ window.onload=function(){
         for(name in json["owners"]){
             var option = document.createElement("option");
             option.setAttribute("value", name);
-            option.innerText = name;
+            option.innerHTML = name;
             document.getElementById("kilde").appendChild(option);
         }
         document.getElementById("kilde");
@@ -306,19 +289,19 @@ window.onload=function(){
 //splitter opp til setninger
 function split_content_to_sentences(content){
     var content = content.replace("\n",". ");
-    return content.split(". ");
+    return content.split(/\. |\? |! |: |, /g);
 }
 
 //returnerer en liste med avsnitt hvor en antar 5 setninger er et avsnitt.
 function split_content_to_paragraphs(content){
-    var c = content.split(". ");
+    var c = content.split(/\. |\? |! |: |, /g);
     var toret = [];
     i = 0;
     var cur = "";
     if(c.length > 5){
         for(var j = 0; j < c.length; j++){
             cur += c[j]+". ";
-            if(i++%3){
+            if(i++%5){
                 i = 0;
                 toret.push(cur);
                 cur = "";
@@ -336,7 +319,6 @@ function split_content_to_paragraphs(content){
 //Om ordet også er i tittelen så er setningen mer relevant.
 function get_sentences_ranks(title, content){
     var sentences = split_content_to_sentences(content);
-
     var n = sentences.length;
 
     var query_list = query.split(" ");
@@ -351,8 +333,8 @@ function get_sentences_ranks(title, content){
                 else
                     count = count.length;
                 score += count/sentences[i].split(" ").length;
-                if(title.indexOf(query_list[k]) >= 0)
-                    score *= 1.5;
+                //if(title.indexOf(query_list[k]) >= 0)
+                //      score *= 1.5;
                 if(isNaN(score)){
                     console.log("Count: " + count);
                     console.log("SentL: " +sentences[i].split(" ").length);
@@ -400,6 +382,7 @@ function contains(p, q){
 
 //returnerer sammendrag.
 function get_summary(content, sentences_dic){
+    console.log("\n\n\n\n\n\n\n");
     var paragraphs = split_content_to_paragraphs(content);
     var summary = "";
     for(var i = 0; i < paragraphs.length; i++){
