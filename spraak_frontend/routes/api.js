@@ -695,6 +695,38 @@ router.get("/v3/all/names", (function(req, res) {
                     terms: {
                         size: 100,
                         field: "owner"
+                    },
+                    aggs:all
+                }
+            }
+        }
+    }, format);
+}));
+
+//Returnerer liste med alle domener.
+router.get("v3/all/domains/:owner", (function(req, res) {
+    res.es({
+        index: 'spraak',
+        body: {
+            aggs: {
+                filtered: {
+                    filter: {
+                        bool: {
+                            must: {
+                                term: {
+                                    owner: req.params.owner
+                                }
+                            }
+                        }
+                    },
+                    aggs: {
+                        domains: {
+                            terms: {
+                                size: 100,
+                                field: "domain"
+                            },
+                            aggs: all
+                        }
                     }
                 }
             }
