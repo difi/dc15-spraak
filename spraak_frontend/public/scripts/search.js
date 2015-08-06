@@ -1,4 +1,6 @@
 
+
+//endrer farge på input i nummer-bokser basert på om det er nummer der eller ikke.
 var valid = false;
 function validate(source){
     if(source.value != "" && isNaN(source.value)){
@@ -9,15 +11,24 @@ function validate(source){
         source.style.borderColor = "rgba(123, 180, 235, .5)";
     }
 }
-var query;
+
+
+
 var visible = false;
-var start = 0;
+
+
+//Brukes til å vise/skjule avanserte søk-instillinger.
 function toggleAdvanced(){
     visible = !visible;
     document.getElementById("advanced").style.height= visible? "300px":"0px";
     document.getElementById("advanced").style.visibility = visible ? "visible": "hidden";
 }
 
+
+
+var query;
+var start = 0;
+//Henter inn info og sender query til serveren.
 function search(n){
     document.getElementById("loading").style.visibility = "visible";
     if(n){
@@ -70,6 +81,7 @@ function search(n){
     xml.send();
 }
 
+//Kalkulerer ordfrekvens i resultatene i tilfelle en vil sortere på det fremfor ES sitt.
 var step = 0;
 function fix(arr){
     var r = arr;
@@ -93,6 +105,7 @@ function fix(arr){
     return r;
 }
 
+//Markerer ord som er søkt på.
 function highlightText(text){
     var query_list = query.split(" ");
     var newtext = "";
@@ -124,11 +137,12 @@ function highlightText(text){
     return newtext;
 }
 
+//Tar inn et jsonobject og skriver resultatene til resultbox.
 function handleResult(text){
     document.getElementById("noresults").style.visibility="hidden";
     var obj = JSON.parse(text);
     var arr = obj["hits"]["hits"];
-
+    console.log(obj);
     if(arr.length == 0){
         document.getElementById("loading").style.visibility = "hidden";
         if(start > 0){
@@ -160,8 +174,9 @@ function handleResult(text){
     document.getElementById("forrige").style.visibility="visible";
     document.getElementById("neste").style.visibility="visible";
 
-    arr = fix(arr);
 
+    /*
+    arr = fix(arr);
     var query_thing = query.split(" ");
     arr = arr.sort(function(a, b){
         var sum = 0;
@@ -171,6 +186,7 @@ function handleResult(text){
         }
         return sum;
     });
+    */
 
     document.getElementById("resultbox").innerHTML = "Viser elementer f.o.m element " + start + " t.o.m " + (start+arr.length-1) + ". Totalt " +obj["hits"]["total"] +" elementer.";
 
@@ -203,10 +219,11 @@ function handleResult(text){
             else
                 content.innerHTML+= "..."+ highlightText(t).substring(0,600)+"...";
         }
-        else if(cur["text"] > 200)
+        else if(cur["text"].length > 200)
             content.innerHTML+= "..."+ highlightText(cur["text"].substring(0,600))+"...";
         else
             content.innerHTML += highlightText(cur["text"]);
+
         d.appendChild(title);
         d.appendChild(src);
         d.appendChild(comp);
@@ -219,6 +236,7 @@ function handleResult(text){
     document.getElementById("loading").style.visibility = "hidden";
 }
 
+//easteregg.
 function alfalyze(){
     var rot = 0;
     /*setInterval(function(){
@@ -237,6 +255,7 @@ function alfalyze(){
 
     }, 20);
 }
+//Søker etter info om det faktisk er gyldig input og query ikke er tomt.
 function click(event){
     if(valid) {
         alert("Invalid values!")
@@ -253,16 +272,17 @@ function click(event){
     search();
 };
 
+//populerer kildelisten og viser loaderen.
 window.onload=function(){
 
     loader = document.getElementById("cover");
     loader.style.visibility = "visible";
+
     var option = document.createElement("option");
     option.setAttribute("value", "all");
     option.innerText = "all";
     document.getElementById("kilde").appendChild(option);
     document.getElementById("thebutton").onclick = function(event){click(event);};
-
     xml = new XMLHttpRequest();
     xml.open("GET", "/api/v3/all/names", true);
     xml.onload = function(){
@@ -280,11 +300,16 @@ window.onload=function(){
 };
 
 
+//funksjonalitet for å lage sammendrag
+
+
+//splitter opp til setninger
 function split_content_to_sentences(content){
     var content = content.replace("\n",". ");
     return content.split(". ");
 }
 
+//returnerer en liste med avsnitt hvor en antar 5 setninger er et avsnitt.
 function split_content_to_paragraphs(content){
     var c = content.split(". ");
     var toret = [];
@@ -306,17 +331,9 @@ function split_content_to_paragraphs(content){
     return toret;
 }
 
-function sentences_intersection(sent1, sent2){
-    s1 = sent1.split(" ");
-    s2 = sent2.split(" ");
 
-    if(s1.length + s2.length == 0)
-        return 0;
-
-    return intersection(s1, s2).length / ((s1.length + s2.length) / 2 );
-}
-
-
+//Rangerer setnigner basert på hvor mange ganger de bruker relevante ord.
+//Om ordet også er i tittelen så er setningen mer relevant.
 function get_sentences_ranks(title, content){
     var sentences = split_content_to_sentences(content);
 
@@ -347,6 +364,8 @@ function get_sentences_ranks(title, content){
     }
     return sentences_dic;
 }
+
+//Henter ut setningen med høyest score fra et avsnitt.
 function get_best_sentence(paragraph, sentences_dic){
 
     var sentences = split_content_to_sentences(paragraph);
@@ -367,6 +386,7 @@ function get_best_sentence(paragraph, sentences_dic){
 }
 
 
+//Sjekker bare om p inneholder noe fra en setning.
 function contains(p, q){
     var query_list = q.split(" ");
     for(var i = 0; i < q.length; i++){
@@ -377,6 +397,8 @@ function contains(p, q){
     return false;
 
 }
+
+//returnerer sammendrag.
 function get_summary(content, sentences_dic){
     var paragraphs = split_content_to_paragraphs(content);
     var summary = "";
@@ -389,6 +411,7 @@ function get_summary(content, sentences_dic){
     return summary;
 }
 
+//produserer score og sammendrag.
 function produceSummary(title, text){
     var dict = get_sentences_ranks(title, text);
     var res = get_summary(text, dict);
@@ -405,20 +428,3 @@ function produceSummary(title, text){
 //# April, 2013
 
 
-
-function intersection(a, b)
-{
-    var result = new Array();
-    while( a.length > 0 && b.length > 0 )
-    {
-        if      (a[0] < b[0] ){ a.shift(); }
-        else if (a[0] > b[0] ){ b.shift(); }
-        else /* they're equal */
-        {
-            result.push(a.shift());
-            b.shift();
-        }
-    }
-
-    return result;
-}
