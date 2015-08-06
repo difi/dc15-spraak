@@ -236,7 +236,7 @@ function loadSourceChart(selectedOwner) {
         var error = [];
         $.each(data.toptags, function(source, sourceData) {
             var percentNN = ((sourceData.lang_terms.nn != null ? sourceData.lang_terms.nn.doc_count : 0) / sourceData.doc_count) * 100;
-            var avgError = sourceData.confidences.nn != null ? 1 - sourceData.confidences.nn.avg : 0;
+            var avgError = (sourceData.confidences.nn != null ? 1 - sourceData.confidences.nn.avg : 0) + 0.05;
             error.push([percentNN * (1 - avgError), percentNN * (1 + avgError)]);
             data_list.push({name: getNorwegianSourceName(source), y: percentNN});
         });
