@@ -187,14 +187,12 @@ function loadComplexityChart(chartElement, selectedOwner, nnComplex, nbComplex, 
             type: 'areaspline'
         },
         title: {
-            text: 'Gjennomsnittlig kompleksitetsgrad nynorsk og bokmål hos ' + capitalize(selectedOwner)
+            text: 'Gjennomsnittlig kompleksitetsgrad'
         },
         legend: {
             layout: 'vertical',
-            align: 'left',
+            align: 'right',
             verticalAlign: 'top',
-            x: 570,
-            y: 60,
             floating: true,
             borderWidth: 1,
             backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
@@ -210,7 +208,8 @@ function loadComplexityChart(chartElement, selectedOwner, nnComplex, nbComplex, 
         },
         tooltip: {
             shared: true,
-            valueSuffix: ''
+            headerFormat: 'LIX-kompleksitet <br/> <b>{point.x}</b> <br/>',
+            pointFormat: '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:.2f}</b><br/>'
         },
         credits: {
             enabled: false
@@ -233,8 +232,11 @@ function loadComplexityChart(chartElement, selectedOwner, nnComplex, nbComplex, 
 function loadSourceChart(selectedOwner) {
     $.getJSON('/api/v3/owner/' + selectedOwner + '/all', function(data) {
         var data_list = [];
+        var error = [];
         $.each(data.toptags, function(source, sourceData) {
             var percentNN = ((sourceData.lang_terms.nn != null ? sourceData.lang_terms.nn.doc_count : 0) / sourceData.doc_count) * 100;
+            var avgError = sourceData.confidences.nn != null ? 1 - sourceData.confidences.nn.avg : 0;
+            error.push([percentNN * (1 - avgError), percentNN * (1 + avgError)]);
             data_list.push({name: getNorwegianSourceName(source), y: percentNN});
         });
 
@@ -257,25 +259,38 @@ function loadSourceChart(selectedOwner) {
                 enabled: false
             },
             tooltip: {
-                shared: true,
-                headerFormat: '',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> nynorsk<br/>'
+                shared: true
             },
             credits: {
                 enabled: false
             },
             series: [{
                 name: 'Andel nynorsk',
-                data: data_list
-            }],
+                data: data_list,
+                tooltip: {
+                    headerFormat: '',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> nynorsk<br/>'
+                }
+            },
+                {
+                    name: 'Gjennomsnittlig feilestimat',
+                    data: error,
+                    type: 'errorbar',
+                    tooltip: {
+                        pointFormat: 'Feilestimat <br/> Innenfor: {point.low:.2f} - {point.high:.2f} %)<br/>',
+                    }
+                }
+            ],
             plotOptions: {
                 series: {
                     borderWidth: 0,
                     dataLabels: {
-                        enabled: true,
-                        format: '{point.y:.1f}%',
-                        style: {
-                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        column: {
+                            enabled: true,
+                            format: '{point.y:.1f}%',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
                         }
                     }
                 }
