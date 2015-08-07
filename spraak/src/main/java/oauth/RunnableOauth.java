@@ -16,7 +16,7 @@ public class RunnableOauth implements Runnable {
         this.settings = settings;
     }
 
-    @Override
+
     public void run() {
         ArrayList<Thread> threads = new ArrayList<Thread>();
         if(this.settings.containsKey("twitter")) {
@@ -38,7 +38,6 @@ public class RunnableOauth implements Runnable {
                     alive = true;
             }
             if(!alive) {
-                System.out.println("All dead");
                 break;
             }
             try {

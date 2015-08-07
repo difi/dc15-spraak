@@ -2,11 +2,12 @@ package documentTextExtractor;
 
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
+import utils.Utils;
 
-import javax.print.Doc;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -49,7 +50,7 @@ public class DocExtractor implements DocumentTextExtractor {
 
     @Override
     public String getAllText() throws IOException {
-        return extractor.getText();
+        return extractor.getText().trim();
     }
 
     @Override
@@ -66,11 +67,27 @@ public class DocExtractor implements DocumentTextExtractor {
 
     @Override
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[\\s]+").length;
+        return Utils.getNumberOfWords(getAllText());
     }
 
     @Override
     public void closeDoc() throws IOException {
         extractor.close();
+    }
+
+    public int getCreationYear() throws IOException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+        return Integer.parseInt(dateFormat.format(doc.getSummaryInformation().getCreateDateTime()));
+    }
+
+    public String getTitle() throws IOException {
+        return doc.getSummaryInformation().getTitle();
+    }
+
+    /*
+    Everything except PDF without input fields is considered to be a form.
+     */
+    public boolean isForm() throws IOException {
+        return true;
     }
 }

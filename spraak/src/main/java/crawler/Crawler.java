@@ -2,10 +2,13 @@ package crawler; /**
  * Created by camp-mli on 16.06.2015.
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import documentTextExtractor.PdfExtractor;
+import documentTextExtractor.TextExtractor;
 import utils.Utils;
 
 import connectors.FileConnector;
@@ -35,10 +38,9 @@ public class Crawler extends WebCrawler {
     private String prev = null;
     private HashMap<String, Object> settings;
     private String[] myCrawlDomains;
-    private String myDomain;
     private ElasticConnector db;
     private String domain;
-
+    private static ArrayList<String> forms = new ArrayList();
     @Override
     public void onStart() {
 
@@ -50,9 +52,7 @@ public class Crawler extends WebCrawler {
 
         myCrawlDomains = (String[]) this.settings.get("domains");
 
-        myDomain = myCrawlDomains[0];
-        this.myDomain = myCrawlDomains[0];
-        this.domain = myCrawlDomains[0].split("//",2)[1];
+        this.domain = myCrawlDomains[0];
     }
 
     @Override
@@ -64,7 +64,18 @@ public class Crawler extends WebCrawler {
         }
         //TODO: Legg til funksjonalitet som laster ned fil
         else if(ACCEPTFILTERS.matcher(href).matches()){
-            return true;
+            this.db.setType("file");
+            TextExtractor t = new TextExtractor(url.getURL(), this.db);
+            try{
+                t.run();
+            }catch(OutOfMemoryError e){
+                System.out.println("Out of memory");
+                System.out.println(url.getURL());
+            }catch(Exception e){
+                System.out.println("Failed to grab pdf...");
+            }
+            this.db.setType("crawler");
+            return false;
         }
         for (String crawlDomain : myCrawlDomains) {
             if (href.startsWith(crawlDomain.substring(crawlDomain.indexOf("://")))) {
@@ -101,10 +112,17 @@ public class Crawler extends WebCrawler {
         return s;
     }
 
+    public boolean exists(String word){
+        for(String s : forms){
+            if(s.equals(word))
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public void visit(Page page) {
         if (page.getParseData() instanceof HtmlParseData) {
-            //System.out.println(this.myDomain);
             String str = "";
             for(int i = 0; i < page.getWebURL().getDepth(); i++)
                 str+="\t";
@@ -129,30 +147,32 @@ public class Crawler extends WebCrawler {
             }
 
             //finds forms.
-/*            Elements forms = doc.select("body").select("form");
-            System.out.println("Children: " + forms.get(0).childNodes().size());
-            for(Element el : forms){
-                boolean found = true;
-                for(Element b : el.getElementsByTag("input")) {
-                    if(b.toString().contains("search") ||
-                            b.toString().contains("søk") ||
-                            b.toString().contains("sok") ||
-                            b.toString().contains("feedback")){
-                        found = false;
-                        break;
-                    }
-                }
-                if(found){
-                    System.out.println("Valid form at \n"+ page.getWebURL().getURL() + "\nAction:"+el.attr("id")+"\n");
-                }
-            }*/
+
+//            Elements forms = doc.select("body").select("form");
+//            for(Element el : forms){
+//                String name = el.attr("action");
+//                for(Element b : el.getElementsByTag("input")) {
+//                    if(b.hasAttr("name"))
+//                        name += b.attr("name");
+//                }
+//                if(!exists(name)){
+//                    j.put("domain", this.domain);
+//                    j.put("site", page.getWebURL().getURL());
+//                    j.put("type", "form");
+//                    j.put("text", clean(el.text()));
+//                    j.put("words", Utils.getNumberOfWords(out));
+//                    this.forms.add(name);
+//                    this.db.write(j);
+//                }
+//            }
             out = this.clean(out);
 
             // TODO: Fix
-            j.put("domain", this.domain);
             j.put("type", "web");
+            j.put("domain", this.domain);
             j.put("site", page.getWebURL().getURL());
             j.put("text", out);
+            j.put("words", Utils.getNumberOfWords(out));
             this.db.write(j);
             return;
         }

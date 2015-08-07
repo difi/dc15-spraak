@@ -3,25 +3,38 @@ import connectors.ElasticConnector;
 import crawler.Scrapper;
 import oauth.RunnableOauth;
 import documentTextExtractor.TextExtractor;
+import oauth.TwitterCrawler;
+import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Time;
+import java.util.*;
+
+import org.apache.log4j.Logger;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 
 public class Setup {
 
-    private final ArrayList<Map> crawlerSettings;
-    private final ArrayList<String> fileSettings;
-    private final Map oAuthSettings;
-    private HashMap<String, Thread> modules;
 
-    public Setup(String filename){
+
+
+    private ArrayList<String> crawlerSettings;
+    private ArrayList<String> fileSettings;
+    private Map oAuthSettings;
+    private ArrayList<Thread> modules;
+    private JSONObject targets;
+
+
+
+    public Setup(String filename) {
         JSONParser parser = new JSONParser();
 
         Object obj = null;
@@ -36,30 +49,48 @@ public class Setup {
 
         // TODO: Remove hardcode
         JSONObject jsonObject = (JSONObject) obj;
-        jsonObject = (JSONObject)jsonObject.get("difi");
+        this.targets = (JSONObject) jsonObject.get("targets");
 
-        this.crawlerSettings = (ArrayList<Map>)jsonObject.get("crawler");
-        this.fileSettings = (ArrayList<String>)jsonObject.get("files");
-        this.oAuthSettings = (Map)jsonObject.get("oauth");
-        
 
-        this.modules = new HashMap<String, Thread>();
 
-        if(!this.crawlerSettings.isEmpty())
-            this.modules.put("crawler", new Thread(new Scrapper(this.crawlerSettings, new ElasticConnector("difi"))));
+        this.modules = new ArrayList<Thread>();
 
-        if(!this.fileSettings.isEmpty())
-            this.modules.put("file", new Thread(new TextExtractor(this.fileSettings, new ElasticConnector("difi"))));
 
-        if(!this.oAuthSettings.isEmpty())
-            this.modules.put("oauth", new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector("difi"))));
+        initiateThreads();
 
+    }
+
+    public void initiateThreads() {
+
+        Iterator<String> iterator = this.targets.keySet().iterator();
+
+        while(iterator.hasNext()){
+            String key = iterator.next();
+            JSONObject entry = (JSONObject) this.targets.get(key);
+            this.crawlerSettings = (ArrayList<String>) entry.get("crawler");
+            this.fileSettings = (ArrayList<String>) entry.get("files");
+            this.oAuthSettings = (Map) entry.get("oauth");
+            if(this.crawlerSettings != null )//|| !this.crawlerSettings.isEmpty())
+                this.modules.add(new Thread(new Scrapper(this.crawlerSettings, new ElasticConnector(key))));
+
+//            if(this.fileSettings != null )//|| !this.fileSettings.isEmpty())
+//                this.modules.add(new Thread(new TextExtractor(this.fileSettings, new ElasticConnector("difi"))));
+//
+            if(this.oAuthSettings != null )//|| !this.oAuthSettings.isEmpty())
+                this.modules.add(new Thread(new RunnableOauth(this.oAuthSettings, new ElasticConnector(key))));
+        }
+
+    }
+
+
+    public void setupConnector(){
+        // Replace with elastic
     }
 
     public void start(){
         final List<Thread> threads = new ArrayList<>();
 
-        for(Thread entry: this.modules.values()){
+        for(Thread entry: this.modules){
             entry.start();
             threads.add(entry);
         }
@@ -70,14 +101,57 @@ public class Setup {
                 if (t.isAlive())
                     alive = true;
             }
-            if(!alive)
+            if(!alive) {
+                System.out.println("Quitted");
                 break;
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //System.out.println("Checking threads");
         }
         return;
     }
 
+    public void initiateTrustManager() {
+        /*
+        Trust everything!
+         */
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+                    public void checkClientTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+
+        // Activate the new trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
-        Setup s = new Setup("setup.json");
+        //String log4jConfPath = "src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
+        //PropertyConfigurator.configure(log4jConfPath);
+
+        String path = "src/main/java/setup.json";
+        Setup s = new Setup(path);
+        s.initiateTrustManager();
+
         s.start();
     }
 

@@ -3,11 +3,13 @@ package documentTextExtractor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import utils.Utils;
 
 /**
  * Created by camp-aka on 18.06.2015.
@@ -46,7 +48,7 @@ public class DocxExtractor implements DocumentTextExtractor {
     }
 
     public String getAllText() throws IOException {
-        return extractor.getText();
+        return extractor.getText().trim();
     }
 
     public ArrayList<String> getAllParagraphs() throws IOException {
@@ -65,11 +67,26 @@ public class DocxExtractor implements DocumentTextExtractor {
     }
 
     public int getNumberOfWords() throws IOException {
-        return getAllText().split("[\\s]+").length;
+        return Utils.getNumberOfWords(getAllText());
     }
 
     public void closeDoc() throws IOException {
         // Do nothing. AutoCloseable.
     }
 
+    public int getCreationYear() throws IOException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+        return Integer.parseInt(dateFormat.format(doc.getProperties().getCoreProperties().getCreated()));
+    }
+
+    public String getTitle() throws IOException {
+        return doc.getProperties().getCoreProperties().getTitle();
+    }
+
+    /*
+   Everything except PDF without input fields is considered to be a form.
+    */
+    public boolean isForm() throws IOException {
+        return true;
+    }
 }

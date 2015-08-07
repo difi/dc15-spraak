@@ -12,5 +12,8 @@ public class RuleSet {
 	//endinger bokmål
 	endinger_bm = new ArrayList<String>(),
 	//ignorerte ord(endinger)
-	exempt = new ArrayList<String>();
+	exempt = new ArrayList<String>(),
+
+	//Utenlandske ord.
+	foreign = new ArrayList<>();
 }

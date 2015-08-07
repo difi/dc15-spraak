@@ -2,12 +2,12 @@ package documentTextExtractor;
 
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.text.Paragraph;
+import utils.Utils;
 
-import javax.swing.text.html.HTMLDocument;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 
@@ -56,7 +56,7 @@ public class OdtExtractor implements DocumentTextExtractor {
     public int getNumberOfPages() throws IOException {
         try {
             // Average number of words per page is 250. It will have to do for now.
-            return getNumberOfWords() / 250;
+            return (int) Math.ceil(getNumberOfWords() / 250.00);
         }
         catch (Exception e) {
             throw new IOException(e.getMessage());
@@ -70,7 +70,7 @@ public class OdtExtractor implements DocumentTextExtractor {
             if (textContent == null) {
                 return doc.getContentRoot().getTextContent();
             }
-            return textContent;
+            return textContent.trim();
         }
         catch (Exception e) {
             throw new IOException(e.getMessage());
@@ -99,11 +99,26 @@ public class OdtExtractor implements DocumentTextExtractor {
 
     @Override
     public int getNumberOfWords() throws IOException {
-        return  getAllText().split("[\\s]+").length;
+        return  Utils.getNumberOfWords(getAllText());
     }
 
     @Override
     public void closeDoc() throws IOException {
         doc.close();
+    }
+
+    public int getCreationYear() throws IOException {
+        return doc.getOfficeMetadata().getCreationDate().get(Calendar.YEAR);
+    }
+
+    public String getTitle() throws IOException {
+        return doc.getOfficeMetadata().getTitle();
+    }
+
+    /*
+   Everything except PDF without input fields is considered to be a form.
+    */
+    public boolean isForm() throws IOException {
+        return true;
     }
 }

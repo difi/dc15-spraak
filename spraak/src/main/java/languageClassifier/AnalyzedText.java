@@ -8,8 +8,15 @@ import javax.xml.soap.Text;
 public class AnalyzedText {
     public TextComplexity complexity;
     public String language;
-    public AnalyzedText(String lng, TextComplexity Score){
+    public float confidence;
+    public AnalyzedText(String lng, TextComplexity Score, float confidence){
         language = lng;
         complexity = Score;
+        this.confidence = confidence;
+    }
+
+    @Override
+    public String toString(){
+        return language + ": " + complexity + " - " + confidence;
     }
 }

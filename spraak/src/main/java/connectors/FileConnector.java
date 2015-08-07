@@ -17,7 +17,6 @@ public class FileConnector {
     }
 
     public void write(String msg){
-        System.out.println(msg);
         this.db.println(msg);
     }
 

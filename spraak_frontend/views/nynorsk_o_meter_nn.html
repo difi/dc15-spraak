@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block title %}Header/Footer{% endblock %}
+{% block header %} Nynorsk-o-meteret {% endblock %}
+{% block menu %} {% include 'menuNynorsk.html' %}{% endblock %}
+{% block content %}
+<div class="pure-g">
+    <div class="pure-u-1-12"></div>
+    <div class="pure-u-7-12">
+        <h1>Kor godt ligg det offentlege an?</h1>
+        <p>Under ser du kor mykje nynorsk som blir nytta totalt.</p>
+        <div id="nynorskOMeter"></div> <!-- chart.js -->
+        <p>I følge språkrådet er målet <b>minst 25%.</b></p>
+    </div>
+    <div class="pure-u-1-12"></div>
+    <div class="pure-u-1-12"></div>
+</div>
+{% endblock %}

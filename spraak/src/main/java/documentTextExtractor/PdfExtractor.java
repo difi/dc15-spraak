@@ -3,12 +3,15 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.util.PDFTextStripper;
+import utils.Utils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 
 /**
  * Created by Camp-AKA on 17.06.2015.
@@ -36,7 +39,7 @@ public class PdfExtractor implements DocumentTextExtractor {
 
     public String getText(int pageFrom, int pageTo) throws IOException {
         setTextStripperPageBounds(pageFrom, pageTo);
-        return textStripper.getText(pddoc);
+        return textStripper.getText(pddoc).replaceAll(SPLIT_STRING, "");
     }
 
     public void setSource(URL url) throws IOException {
@@ -53,7 +56,7 @@ public class PdfExtractor implements DocumentTextExtractor {
 
     // Might fail when pdf is large
     public String getAllText() throws IOException {
-        return getText(0,pddoc.getNumberOfPages());
+        return getText(0,pddoc.getNumberOfPages()).trim().replace(SPLIT_STRING, "");
     }
 
     public int getNumberOfPages() {
@@ -109,20 +112,31 @@ public class PdfExtractor implements DocumentTextExtractor {
         return pages;
     }
 
-    public Boolean containsInputFields() throws IOException {
+    public boolean isForm() throws IOException {
         PDAcroForm forms = pddoc.getDocumentCatalog().getAcroForm();
         return forms != null;
     }
 
     public int getNumberOfWords() throws IOException {
         String allText = textStripper.getText(pddoc);
-        return allText.split("[\\s]+").length;
+        return Utils.getNumberOfWords(allText.replaceAll(SPLIT_STRING, ""));
     }
 
     public void closeDoc() throws IOException {
         pddoc.close();
     }
 
+    public int getCreationYear() throws IOException {
+        Calendar date = pddoc.getDocumentInformation().getCreationDate();
+        if (date != null) {
+            return date.get(Calendar.YEAR);
+        }
+        return 0;
+    }
+
+    public String getTitle() throws IOException {
+        return pddoc.getDocumentInformation().getTitle();
+    }
 }
 
 

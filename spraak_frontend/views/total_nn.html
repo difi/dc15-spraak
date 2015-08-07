@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{% block title %}Totalt{% endblock %}
+{% block header %}Totalt{% endblock %}
+{% block menu %} {% include 'menuNynorsk.html' %}{% endblock %}
+{% block content %}
+
+<!-- Affected by chart.js -->
+
+<div class="pure-g">
+    <div class="pure-u-1-12"></div>
+    <div class="pure-u-20-24">
+        <h1>Velg etat</h1>
+        <div>
+            <input id="ownerSelectTypeahead" class="typeahead" type="text" placeholder="Skriv inn etat">
+        </div>
+        <div class="pure-button" id="ownerSelectButton" disabled>Gå</div>
+        <br/><br/>
+        <p id="noHitsMessageNN"></p>
+        <div id="stats" hidden>
+            <h2 id="owner"></h2>
+            <h3>Totalt</h3>
+            <div id="piechart"></div>
+            <p class="infoText" id="totalInfoTextNN"></p>
+            <br/><br/>
+            <div id="nnSourceChart"></div>
+            <br/><br/>
+            <div id="documentsByWordCountChart"></div>
+            <p class="infoText">Her reknar vi med 250 ord per side.</p>
+            <br/><br/>
+            <h3>Språkkompleksitet</h3>
+            <div id="lixChart"></div>
+            <div id="lixInfo">
+                <h4>LIX</h4>
+                <p>Lesbarleiksindeksen "LIX" avgjer kor lettlest ein tekst er ved å sjå på blant anna lengda på setningar. </p>
+                <table class="pure-table">
+                    <thead>
+                    <tr>
+                        <th>Poengsum</th>
+                        <th>Forklaring</th>
+                        <th>Tilsvarer</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>< 30</td>
+                        <td>Veldig lettlest</td>
+                        <td>Barnebøker</td>
+                    </tr>
+                    <tr>
+                        <td>30 - 40</td>
+                        <td>Lettlest</td>
+                        <td>Skjønnlitteratur, populærtidsskrift</td>
+                    </tr>
+                    <tr>
+                        <td>40 - 50</td>
+                        <td>Middels</td>
+                        <td>Vanlege avistekstar</td>
+                    </tr>
+                    <tr>
+                        <td>50 - 60</td>
+                        <td>Vanskelig</td>
+                        <td>Norm for offisielle tekstar</td>
+                    </tr>
+                    <tr>
+                        <td>> 60</td>
+                        <td>Veldig vanskelig</td>
+                        <td>Lovtekstar</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h2>Kor får me dette frå?</h2>
+            <p>Vi har samla inn data få følgjande nettstader knytta til etaten: </p>
+            <div id="domainHeadNN"></div>
+            <div id="domainsList"></div>
+        </div>
+    </div>
+    <div class="pure-u-1-12"></div>
+</div>
+{% endblock %}

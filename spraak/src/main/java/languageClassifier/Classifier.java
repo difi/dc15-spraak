@@ -4,11 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import org.apache.log4j.Logger;
 
 import com.carrotsearch.labs.langid.DetectedLanguage;
 import com.carrotsearch.labs.langid.LangIdV3;
@@ -17,33 +15,45 @@ import com.carrotsearch.labs.langid.Model;
 
 public class Classifier {
 	
-		
-	private static LangIdV3 langid;
+
+	private LangIdV3 langid;
+	private ShortClassifier shortClassifier = new ShortClassifier();
+	private static Model model;
 	
-	
-	//Sett modell til å kun lete etter nynorsk og bokmål.
-	private static void init() throws IOException{
-		Set<String> set = new HashSet<String>(Arrays.asList(new String[] {"nb","nn"}));
-		langid = new LangIdV3(Model.detectOnly(set));
+	/*
+	 * Sett modell til å kun lete etter nynorsk og bokmål.
+	 */
+	private void init() throws IOException{
+		//Språk som langid skal se etter.
+		Set<String> set = new HashSet(Arrays.asList(new String[] {"nb","nn","en","de","fr"}));
+		if(model==null)
+			model = Model.detectOnly(set);
+		langid = new LangIdV3(model);
 		loadConfig();
 		rule_set = dictionaries.get("default");
 	}
 	
-	//Laster default config "config.ini"
-	public static void loadConfig() throws IOException{
-		loadConfig("resources/config.ini","default");
+	/*
+	 * Laster default config "config.ini"
+	 */
+	public void loadConfig() throws IOException{
+		loadConfig("config.ini", "default");
 	}
 	
-	//map som inneholder alle regelsett som er lagret.
+	/*
+	 * map som inneholder alle regelsett som er lagret.
+	 */
 	static Map<String, RuleSet> dictionaries = new HashMap();
 	
-	//Laster inn en config-fil.
-	public static void loadConfig(String path,String name) throws IOException{
+	/*
+	 * Laster inn en config-fil.
+	 */
+	public void loadConfig(String path,String name) throws IOException{
 		if(dictionaries.containsKey(name)){
 			return;
 		}
 		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/config/"+path)));
 			String line = "";
 			RuleSet ruleset = new RuleSet();
 			String current = "";
@@ -53,12 +63,12 @@ public class Classifier {
 					continue;
 				else if(line.startsWith("_")){
 					current = line.substring(1);
-					System.out.println(current);
+
 					continue;
 				}
 				else{
 					if(line.isEmpty()){
-						
+						continue;
 					}
 					else if(current.equals("hele")){
 						ruleset.hele.add(line);
@@ -70,6 +80,8 @@ public class Classifier {
 						ruleset.endinger_bm.add(line);
 					}else if(current.equals("exempt")){
 						ruleset.exempt.add(line);
+					}else if(current.equals("foreign")){
+						ruleset.foreign.add(line);
 					}
 				}
 			}
@@ -81,12 +93,16 @@ public class Classifier {
 			throw(e);
 		}
 	}
-	//hent mulige regelsett.
+	/*
+	 * hent mulige regelsett.
+	 */
 	public Set<String> getRuleSets(){
 		return dictionaries.keySet();
 	}
 	
-	//Skift regler for nynorsk. Returnerer False om det ikke ble gjort.
+	/*
+	 * Skift regler for nynorsk. Returnerer False om det ikke ble gjort.
+	 */
 	public boolean setRuleSet(String name){
 		if(dictionaries.containsKey(name))
 		{
@@ -96,20 +112,27 @@ public class Classifier {
 		return false;
 	}
 	static RuleSet rule_set;
+
+
+
+	public Classifier() throws IOException {
+		init();
+	}
+
+
 	//klassifiserer tekst, bruker 'hjemmesnekra' static-class "ShortClassifier" om teksten er under 300 tegn lang.
-	public static AnalyzedText classify(String str) throws IOException{
-		if(langid == null){
-			init();
-		}
+	public AnalyzedText classify(String str) throws IOException{
 		int length = str.length();
 		if(length < 300){
-			return new AnalyzedText( ShortClassifier.classify(str,rule_set), (new TextComplexity(str)));
+			try{
+				String s = shortClassifier.classify(str,rule_set);
+				return new AnalyzedText(s, (new TextComplexity(str)), shortClassifier.percent);
+			}catch(Exception e){
+				//"Dette var ikkje norsk tekst", sa guten, og sendte strengen videre
+			}
 		}
-		else{
-			DetectedLanguage result = langid.classify(str, true);
-			return new AnalyzedText(result.getLangCode(),(new TextComplexity(str)));
-		}
-	}
-	
+		DetectedLanguage result = langid.classify(str, true);
+		return new AnalyzedText(result.getLangCode(), new TextComplexity(str), (float) result.getConfidence());
 
+	}
 }

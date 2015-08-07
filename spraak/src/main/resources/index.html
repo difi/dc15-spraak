@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        var interval;
+        var ctx;
+        var response = "";
+        var request;
+        window.onload = function(){
+            interval = setInterval(showCake, 200);
+            setInterval(pulse,30);
+            ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
+            img1 = document.getElementById("nb");
+            img2 = document.getElementById("nn");
+
+            updateCanvas();
+        };
+        var nn;
+        var nb;
+        var nn_comp;
+        var nb_comp;
+        var word_nn;
+        var word_nb;
+        var img1;
+        var img2;
+        var pulseNN = false;
+        var pulseNB = false;
+        var array =  [];
+        var arraynb =  [];
+        var text = "";
+        function showCake(){
+            request = new XMLHttpRequest();
+            request.open("GET", "getLanguageData", true);
+            request.onerror = function(){
+                console.log("ERROR");
+            }
+            request.onload = function () {
+
+                if(request.readyState==1)
+                    return;
+                if(nn==JSON.parse(request.response)["nn"] && nb == JSON.parse(request.response)["nb"])
+                    return;
+
+
+                if(nb != JSON.parse(request.response)["nb"]) {
+                    img2.style.zIndex = 0;
+                    img1.style.zIndex = 1;
+                    img2_expanding = true;
+                    img1.style.opacity= 1;
+                    img2.style.opacity= 0.5;
+                }
+                if(nn !=JSON.parse(request.response)["nn"]){
+                    img1.style.zIndex = 0;
+                    img2.style.zIndex = 1;
+                    img1_expanding = true;
+                    img1.style.opacity=0.5;
+                    img2.style.opacity= 1;
+                }
+                if(JSON.parse(request.response)["lastText"].length){
+                    text += JSON.parse(request.response)["lastText"];
+                }
+                if(text.length > 500){
+                    text = text.substr(text.length-500);
+                }
+                nn = JSON.parse(request.response)["nn"];
+                nb = JSON.parse(request.response)["nb"];
+                nn_comp = parseInt(JSON.parse(request.response)["nn_complexity"] / nn);
+                nb_comp = parseInt(JSON.parse(request.response)["nb_complexity"] / nb);
+                diff = word_nn;
+                diff_nb = word_nb;
+                word_nn = parseInt(JSON.parse(request.response)["nn_words"]);
+                word_nb = parseInt(JSON.parse(request.response)["nb_words"]);
+                console.log();
+                if(!isNaN(word_nn-diff))
+                    array.push(word_nn-diff);
+                else
+                    array.push(0);
+                if(!isNaN(word_nb-diff_nb))
+                    arraynb.push(word_nb-diff_nb);
+                else
+                    arraynb.push(0);
+                if(arraynb.length > 100)
+                    arraynb = arraynb.slice(1);
+                if(array.length > 100)
+                    array = array.slice(1);
+                updateCanvas();
+            };
+            request.send();
+        };
+
+        img1_width = 40;
+        img2_width = 40;
+        img1_expanding=true;
+        img2_expanding=false;
+        base = 100;
+        function pulse(){
+            if(Math.random() > 0.95)
+                img1_expanding = !img1_expanding;
+            if(Math.random() > 0.95)
+                img2_expanding = !img2_expanding;
+            if(img1_expanding){
+                img1_width +=Math.random()*2;
+                if(img1_width >=60)
+                    img1_expanding = false;
+            }
+            else{
+                img1_width -=Math.random()*2;
+                if(img1_width <=20)
+                    img1_expanding = true;
+            }
+
+            if(img2_expanding){
+                img2_width +=Math.random()*2;
+                if(img2_width >=60)
+                    img2_expanding = false;
+            }
+            else{
+                img2_width -=Math.random()*2;
+                if(img2_width <=20)
+                    img2_expanding = true;
+            }
+
+
+            img1.style.left = 300 - img1_width/2 + "px";
+            img1.style.top = 200 - img1_width/2 + "px";
+            img1.style.width=img1_width+"px";
+            img1.style.height=img1_width+"px";
+
+
+            img2.style.left = 300 - img2_width/2 + "px";
+            img2.style.top = 200 - img2_width/2 + "px";
+            img2.style.width=img2_width+"px";
+            img2.style.height=img2_width+"px";
+
+        }
+        function updateCanvas(){
+            document.getElementsByTagName("canvas")[0].style.zIndex = 5;
+            ctx.clearRect(0,0,1000,1000);
+            t = text.split(" ");
+            for(i = 0; i < t.length; i++){
+                cur = t[i];
+
+                ctx.font = "10px Georgia";
+                ctx.fillStyle = "rgba(0,100,0,0.3)";
+                //ctx.fillText(cur, i*40%280, 20 + Math.random()*580);
+                ctx.fillText(cur, i*30%300, 200 + parseInt((i/10))*30);
+            }
+            if(nn == 0 && nb == 0)
+                per = 0.5;
+            else
+                per = nn/(nb+nn);
+            var pero;
+            if(word_nn == 0 && word_nb == 0)
+                pero = 0.5;
+            else
+                pero = word_nn/(word_nb+word_nn);
+
+            nn_color = "rgba(150,150,150,0.7)";
+            nb_color = "rgba(96,100,100,0.7)";
+            ctx.beginPath();
+                ctx.moveTo(300,200);
+                    ctx.arc(300,200,100,0,Math.PI*2*per, false);
+                ctx.closePath();
+                ctx.fillStyle = nn_color;
+            ctx.fill();
+
+            ctx.beginPath();
+                ctx.moveTo(300,200);
+                    ctx.arc(300,200,100,Math.PI*2*per,Math.PI*2, false);
+                ctx.closePath();
+                ctx.fillStyle = nb_color;
+            ctx.fill();
+
+            ctx.fillStyle = nn_color;
+            ctx.font = "20px Georgia";
+            ctx.fillText("Nynorsk: " + nn + " - " +parseInt(per*100)+"%" ,0,30);
+            ctx.beginPath();
+                ctx.moveTo(300,200);
+                    ctx.arc(300,200,40,0,Math.PI*2, false);
+                ctx.closePath();
+            ctx.fillStyle = "black";
+            ctx.fill();
+
+
+            ctx.beginPath();
+            ctx.moveTo(300,200);
+            ctx.arc(300,200,70,0,Math.PI*2*pero, false);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(0,0,200,0.5)";
+            ctx.fill();
+
+
+            ctx.beginPath();
+                ctx.moveTo(300,200);
+                    ctx.arc(300,200,70,Math.PI*2*pero,Math.PI*2, false);
+                ctx.closePath();
+            ctx.fillStyle = "rgba(200,0,0,0.5)";
+            ctx.fill();
+
+
+
+
+            ctx.beginPath();
+                ctx.moveTo(300,200);
+                ctx.arc(300,200,40,0,Math.PI*2, false);
+                ctx.closePath();
+                ctx.fillStyle = "black";
+            ctx.fill();
+
+
+            ctx.fillStyle = nb_color;
+            ctx.fillText("Bokmål:  " + nb+ " - " +parseInt(100-(per*100))+"%",0,60);
+
+            ctx.fillStyle = "white";
+            ctx.fillText("Kompleksitet (snitt): ",0,100);
+            ctx.fillStyle = "rgba(0,0,240,1)";
+            ctx.fillText("Bokmål:  " + nb_comp,0,150);
+
+            ctx.fillStyle = "rgba(200,0,0,1)";
+            ctx.fillText("Nynorsk: " + nn_comp,0,120);
+
+
+
+
+
+
+            nmax = max(array);
+            if(nmax>=0) {
+                nmax = nmax == 0? 1 : nmax;
+                ctx.moveTo(0,200);
+                ctx.beginPath();
+                ctx.strokeStyle = "red";
+                for (i = 0; i < array.length; i++) {
+                    a = array[i];
+                    y = 200 - (parseInt(20 * a / nmax));
+                    ctx.lineTo(i * 4, y);
+                }
+                ctx.stroke();
+            }
+
+            nmax = max(arraynb);
+            if(nmax>=0) {
+                nmax = nmax == 0? 1 : nmax;
+                ctx.moveTo(0, 200);
+                ctx.beginPath();
+                ctx.strokeStyle = "blue";
+
+                for (i = 0; i < arraynb.length; i++) {
+                    a = arraynb[i];
+                    y = 200 - (parseInt(20 * a / nmax));
+                    ctx.lineTo(i * 4, y);
+                }
+                ctx.stroke();
+            }
+
+        }
+        function max(z) {
+            m = JSON.parse(JSON.stringify(z));
+            a = -1;
+            for(i = 0; i < m.length; i++) {
+                x = m[i];
+                if (x+0 > a) {
+                    a = x + 0;
+                }
+            }
+            return a;
+        }
+        var rot = 0;
+        var d;
+        function dance(){
+            document.getElementById("gif").style.visibility="visible";
+            d = document.getElementsByTagName("div")[0];
+            setInterval(function() {
+                d.style.transform="rotatey("+rot+"deg)";
+                rot+=0.2;
+            },5);
+
+        }
+    </script>
+
+    <style>
+        div{
+            position:relative;
+            height:400px;
+            width:400px;
+            margin-left: auto;
+            margin-right: auto;
+            color: red;
+        }
+        body{
+            background-color: #112222;
+        }
+        img{
+            position:absolute;
+
+        }
+        #nn{
+
+
+        }
+        #nb{
+
+        }
+        #gif{
+            z-index: 200;
+            visibility: hidden;
+            top:500px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <img id="nb" src="http://i.imgur.com/R2QOE3N.png" width="100px" height="100px">
+    <img id="nn" src="http://i.imgur.com/D09YMZ5.png" width="100px" height="100px">
+
+    <canvas id="canvas" width="400px" height ="800px">
+    </canvas>
+    <img id="gif" src="http://folk.ntnu.no/mariuthi/pictures/gorilla.gif">
+
+
+</div>
+</body>
+</html>
