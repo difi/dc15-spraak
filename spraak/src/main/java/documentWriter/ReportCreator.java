@@ -97,7 +97,6 @@ public class ReportCreator {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF8"));
             String content = br.readLine();
-            System.out.println(content);
             JSONParser parser = new JSONParser();
 
             br.close();

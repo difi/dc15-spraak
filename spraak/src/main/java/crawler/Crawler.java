@@ -123,7 +123,6 @@ public class Crawler extends WebCrawler {
     @Override
     public void visit(Page page) {
         if (page.getParseData() instanceof HtmlParseData) {
-            //System.out.println(this.myDomain);
             String str = "";
             for(int i = 0; i < page.getWebURL().getDepth(); i++)
                 str+="\t";

@@ -37,7 +37,7 @@ public class Classifier {
 	 * Laster default config "config.ini"
 	 */
 	public void loadConfig() throws IOException{
-		loadConfig("resources/config.ini","default");
+		loadConfig("config.ini", "default");
 	}
 	
 	/*
@@ -53,7 +53,7 @@ public class Classifier {
 			return;
 		}
 		try{
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/config/"+path)));
 			String line = "";
 			RuleSet ruleset = new RuleSet();
 			String current = "";
