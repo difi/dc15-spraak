@@ -45,7 +45,6 @@ function search(n){
         max = document.getElementById("maxord").value;
         mincomp = document.getElementById("minkomp").value;
         maxcomp = document.getElementById("maxkomp").value;
-        console.log(maxkomp.value);
     }
     var q = "";
     if(a){
@@ -70,7 +69,6 @@ function search(n){
         q +="&maxcomp="+parseInt(maxcomp);
     }
     q+= "&from="+start;
-    console.log(q);
     xml.open("GET","/api/v3/search/query/text="+query+q,true);
     xml.onload = function(){
         handleResult(xml.response);
@@ -110,8 +108,6 @@ function highlightText(text){
     var query_list = query.split(" ");
     var newtext = "";
     var text_split = text.split(/\.| |:|,|_|-|\|/g);
-    if(text_split.length == 0)
-        console.log(text);
     var neverfound = true;
     for(var i = 0; i < text.length; i++){
         var found = false;
@@ -130,9 +126,6 @@ function highlightText(text){
             newtext += text_split[i] + " ";
         }
     }
-    if(neverfound){
-        console.log("NEVER FOUND: " +text_split);
-    }
     return newtext;
 }
 
@@ -141,7 +134,6 @@ function handleResult(text){
     document.getElementById("noresults").style.visibility="hidden";
     var obj = JSON.parse(text);
     var arr = obj["hits"]["hits"];
-    console.log(obj);
     if(arr.length == 0){
         document.getElementById("loading").style.visibility = "hidden";
         if(start > 0){
@@ -335,11 +327,6 @@ function get_sentences_ranks(title, content){
                 score += count/sentences[i].split(" ").length;
                 //if(title.indexOf(query_list[k]) >= 0)
                 //      score *= 1.5;
-                if(isNaN(score)){
-                    console.log("Count: " + count);
-                    console.log("SentL: " +sentences[i].split(" ").length);
-                    console.log("Sent: " +sentences[i]);
-                }
             }
         }
         sentences_dic[sentences[i]] = score;
@@ -382,7 +369,6 @@ function contains(p, q){
 
 //returnerer sammendrag.
 function get_summary(content, sentences_dic){
-    console.log("\n\n\n\n\n\n\n");
     var paragraphs = split_content_to_paragraphs(content);
     var summary = "";
     for(var i = 0; i < paragraphs.length; i++){
