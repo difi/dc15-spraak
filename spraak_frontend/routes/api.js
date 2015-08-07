@@ -245,7 +245,6 @@ router.get("/v3/owners", (function(req, res) {
             var d = resp.toptags.buckets;
             var l = [];
             for(var i in d){
-                console.log(d[i])
                 l.push(d[i].key)
             }
             return l;
@@ -444,7 +443,6 @@ router.get("/v4/search/:word", (function(req, res) {
 
 //Denne kan antakeligvis fjernes og erstattes med søk fra v3.
 router.get("/v4/searchwithname/:word/:owner", (function(req, res) {
-    console.log("COUNTING AMT OF DOCS WITH WORD " + req.params.word + " WRITTEN BY " +req.params.etat);
     res.es({
         index: 'spraak',
         body: {
@@ -624,7 +622,6 @@ router.get("/v3/search/query/:query", (function(req, res) {
     for(var i = 0; i < query_split.length; i++){
         var key = query_split[i].split("=")[0];
         var val = query_split[i].split("=")[1];
-        console.log(key +": " + val);
         if(key=="text"){
             text = val;
         }else if(key=="source" && val != "all"){
@@ -845,12 +842,10 @@ router.get("/v3/stats/owner/:owner/:lang/:amt", (function(req, res) {
 function isNumber(obj) { return !isNaN(parseInt(obj)) && !isNaN(parseFloat(obj));}
 var cleanSmall = function(data){
 
-    console.log(data["filtered"]["gris"]["buckets"]);
     var newArray = new Array();
     for(i = 0; i < data["filtered"]["gris"]["buckets"].length; i++){
         var element =  data["filtered"]["gris"]["buckets"][i];
         if(element["key"].length > 4 && !isNumber(element)){
-            console.log(element["key"]);
             newArray.push(element);
         }
     }
