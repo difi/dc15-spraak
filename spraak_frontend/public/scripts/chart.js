@@ -129,6 +129,7 @@ if (url === "/total") {
             loadSourceChart(selectedOwner);
             loadComplexityChart(lixChart, selectedOwner, nnComplex, nbComplex, sources);
             loadPieChart(pieChart, selectedOwner, nnPercentAll, nbPercentAll);
+            loadDomainsList(selectedOwner);
 
         });
     });
@@ -235,7 +236,7 @@ function loadSourceChart(selectedOwner) {
         var error = [];
         $.each(data.toptags, function(source, sourceData) {
             var percentNN = ((sourceData.lang_terms.nn != null ? sourceData.lang_terms.nn.doc_count : 0) / sourceData.doc_count) * 100;
-            var avgError = sourceData.confidences.nn != null ? 1 - sourceData.confidences.nn.avg : 0;
+            var avgError = (sourceData.confidences.nn != null ? 1 - sourceData.confidences.nn.avg : 0) + 0.05;
             error.push([percentNN * (1 - avgError), percentNN * (1 + avgError)]);
             data_list.push({name: getNorwegianSourceName(source), y: percentNN});
         });
@@ -407,6 +408,26 @@ if(url === "/nynorsk_o_meter") {
 
         });
     });
+}
+
+function loadDomainsList(selectedOwner) {
+    var domainsList = $('#domainsList');
+    var dataList = $('<div></div>');
+    var head = $('#domainHead');
+    var headNN = $('#domainHeadNN');
+
+    $.getJSON('/api/v3/all/domains/' + selectedOwner, function(data) {
+        $.each(data.filtered.domains, function(key, val) {
+            var nnPercent = 100 * (val.lang_terms.nn != null ? val.lang_terms.nn.doc_count : 0) / val.doc_count;
+            dataList.before('<div class=pure-g><div class="pure-u-1-3"><p>' + key + '</p></div><div class="pure-u-1-3"><p>' + val.doc_count + '</p></div><div class="pure-u-1-3"><p>' + nnPercent.toFixed(2) + '</p></div></div>');
+        });
+    });
+    domainsList.empty();
+    head.empty();
+    headNN.empty();
+    head.append('<div class=pure-g><div class="pure-u-1-3"><p><b>Domene</b></p></div><div class="pure-u-1-3"><p><b>Antall dokumenter</b></p></div><div class="pure-u-1-3"><p><b>Prosent nynorsk</b></p></div></div>');
+    headNN.append('<div class=pure-g><div class="pure-u-1-3"><p><b>Domene</b></p></div><div class="pure-u-1-3"><p><b>Antal dokument</b></p></div><div class="pure-u-1-3"><p><b>Prosent nynorsk</b></p></div></div>');
+    domainsList.append(dataList);
 }
 
 function getNorwegianSourceName(dbSourceName) {
