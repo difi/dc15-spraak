@@ -104,6 +104,8 @@ public class ElasticConnector {
 
     public void write(JSONObject msg) {
 
+        if(true)
+            return;
         // Append UUID if available
         if(this.uuid != null)
             msg.put("uuid", this.uuid);

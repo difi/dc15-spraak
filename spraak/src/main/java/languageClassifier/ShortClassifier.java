@@ -83,7 +83,8 @@ public class ShortClassifier {
 		this.ruleset = ruleset;
 		String[] text_array = text.toLowerCase().split(" ");
         if(containsForeign(text_array)){
-            throw new Exception("No elements recognized");
+			System.out.println("THIS IS NOT NORSK!: " + text);
+			throw new Exception("No elements recognized");
         }
 
 		float[] result = check_text(ruleset.endinger, ruleset.hele, text_array);	
