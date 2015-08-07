@@ -130,9 +130,80 @@ if (url === "/total") {
             loadComplexityChart(lixChart, selectedOwner, nnComplex, nbComplex, sources);
             loadPieChart(pieChart, selectedOwner, nnPercentAll, nbPercentAll);
             loadDomainsList(selectedOwner);
+            loadDocumentsByWordCount(selectedOwner);
 
         });
     });
+}
+
+function loadDocumentsByWordCount(selectedOwner) {
+    var fileData = [];
+    var done = 0;
+    $.getJSON('/api/v4/bywordcount/type/file/' + selectedOwner + '/0/2500', function(data) {
+        $.each(data.owners, function(owner, ownerValue) {
+            var nnPercent = 100 * (ownerValue.topterms.file.lang_terms.nn != null ? ownerValue.topterms.file.lang_terms.nn.doc_count : 0) / ownerValue.topterms.file.doc_count;
+            fileData.push({name: 'Dokumenter under 10 sider', y: nnPercent})
+        });
+
+        $.getJSON('/api/v4/bywordcount/type/file/' + selectedOwner + '/2501/9999999', function(data) {
+            $.each(data.owners, function(owner, ownerValue) {
+                var nnPercent = 100 * (ownerValue.topterms.file.lang_terms.nn != null ? ownerValue.topterms.file.lang_terms.nn.doc_count : 0) / ownerValue.topterms.file.doc_count;
+                fileData.push({name: 'Dokumenter over 10 sider', y: nnPercent})
+            });
+
+            $('#documentsByWordCountChart').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Nynorskandel for dokumenter over og under ti sider'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: '% nynorsk'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    shared: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Andel nynorsk',
+                    data: fileData,
+                    tooltip: {
+                        headerFormat: '',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> nynorsk<br/>'
+                    }
+                }
+                ],
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            column: {
+                                enabled: true,
+                                format: '{point.y:.1f}%',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+
+
+
 }
 
 function loadPieChart(chartElement, selectedOwner, nnPercentAll, nbPercentAll) {
