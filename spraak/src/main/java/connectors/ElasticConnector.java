@@ -104,8 +104,6 @@ public class ElasticConnector {
 
     public void write(JSONObject msg) {
 
-        if(true)
-            return;
         // Append UUID if available
         if(this.uuid != null)
             msg.put("uuid", this.uuid);
@@ -122,7 +120,6 @@ public class ElasticConnector {
         }
         else if(this.type.equals("oauth")) {
             msg = this.checkOAuth(msg);
-            System.out.println(msg);
 
         }
 
@@ -169,11 +166,10 @@ public class ElasticConnector {
         int i = 0;
         while(i != 5) {
             try {
-//                IndexResponse respone = this.client.prepareIndex("spraak", this.type)
-//                        .setSource(msg)
-//                        .execute()
-//                        .actionGet();
-                System.out.println(msg);
+                IndexResponse respone = this.client.prepareIndex("spraak", this.type)
+                        .setSource(msg)
+                        .execute()
+                        .actionGet();
                 break;
             }catch(Exception e){
                 i += 1;

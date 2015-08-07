@@ -53,8 +53,7 @@ public class Classifier {
 			return;
 		}
 		try{
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("config/"+path)));
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/config/"+path)));
 			String line = "";
 			RuleSet ruleset = new RuleSet();
 			String current = "";

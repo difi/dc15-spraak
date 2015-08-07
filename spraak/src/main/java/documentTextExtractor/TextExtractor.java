@@ -189,7 +189,7 @@ public class TextExtractor implements Runnable {
             try{
                 json.put("ratio",Float.parseFloat(map.get(json.get("lang")).get("count")+"")/amt);
             }catch(Exception e){
-                System.out.println("Could not write the following to db: "+ path + "\nDivision by zero? Amount of paragraphs: " + amt);
+                System.out.println("Could not write the following to db: "+ path);
             }
             json.put("languages",map);
             json.put("confidence",confidence);
@@ -197,7 +197,7 @@ public class TextExtractor implements Runnable {
             json.put("words", wordCount);
             json.put("text",text);
 
-            System.out.println(json);
+
 
 
             db.write(json);

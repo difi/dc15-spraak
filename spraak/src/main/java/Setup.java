@@ -145,15 +145,11 @@ public class Setup {
     }
 
     public static void main(String[] args) {
-
         //String log4jConfPath = "src\\main\\java\\LogfilesDoNotDisturbThem\\log4j.properties";
         //PropertyConfigurator.configure(log4jConfPath);
 
-        String path = Setup.class.getResource("setup.json").getPath();
-        System.out.println("YOYOYO!" + path);
+        String path = "src/main/java/setup.json";
         Setup s = new Setup(path);
-
-
         s.initiateTrustManager();
 
         s.start();
