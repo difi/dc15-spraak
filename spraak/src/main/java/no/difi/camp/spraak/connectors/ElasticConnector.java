@@ -11,24 +11,24 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.json.simple.JSONObject;
 import no.difi.camp.spraak.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
-
-import org.apache.log4j.Logger;
 
 /**
  * Created by camp-mli on 19.06.2015.
  */
 public class ElasticConnector {
 
-    //Bare noe lars la til for � se hvor mye som er gjort.
+    //Bare noe lars la til for å se hvor mye som er gjort.
     private Client client;
     private String uuid = null;
     private String type;
     private String owner;
-    static Logger logger = Logger.getLogger(ElasticConnector.class);
+    static Logger logger = LoggerFactory.getLogger(ElasticConnector.class);
     private Classifier classifier;
     public ElasticConnector(String owner){
         try {
@@ -152,8 +152,8 @@ public class ElasticConnector {
             return;
         }
 
-        logger.info(msg.get("text"));
-        logger.info(msg.get("lang") + " - " + msg.get("complexity"));
+        logger.info(String.valueOf(msg.get("text")));
+        logger.info(String.valueOf(msg.get("lang") + " - " + msg.get("complexity")));
 
         msg.put("text", Utils.clean((String) msg.get("text")));
         msg.put("owner", this.owner);

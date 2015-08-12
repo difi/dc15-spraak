@@ -46,9 +46,9 @@
         </dependency>
 
         <dependency>
-        <groupId>org.apache.pdfbox</groupId>
-        <artifactId>pdfbox</artifactId>
-        <version>1.8.9</version>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>1.8.9</version>
         </dependency>
 
         <dependency>
@@ -100,12 +100,10 @@
         </dependency>
 
         <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>log4j</artifactId>
-         <version>1.2.17</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.12</version>
         </dependency>
-
-
     </dependencies>
 
     <build>
@@ -133,7 +131,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>no.difi.camp.spraak.Setup</mainClass>
+                            <mainClass>no.difi.camp.spraak.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

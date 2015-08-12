@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class Setup {
+public class Main {
 
     private ArrayList<String> crawlerSettings;
     private ArrayList<String> fileSettings;
@@ -26,7 +26,7 @@ public class Setup {
     private ArrayList<Thread> modules;
     private JSONObject targets;
 
-    public Setup(String filename) {
+    public Main(String filename) {
         JSONParser parser = new JSONParser();
 
         Object obj = null;
@@ -137,7 +137,7 @@ public class Setup {
     }
 
     public static void main(String[] args) {
-        Setup s = new Setup(args[0]);
+        Main s = new Main(args[0]);
         s.initiateTrustManager();
         s.start();
     }
