@@ -1,0 +1,33 @@
+{
+  "targets": {
+    "difi": {
+      "crawler": [
+        "http://difi.no"
+      ]
+    },
+    "regjeringen": {
+      "crawler": [
+        "http://regjeringen.no"
+      ]
+    },
+    "l�nekassen": {
+      "crawler": [
+        "https://www.lanekassen.no/"
+      ]
+    },
+    "spr�kr�det": {
+      "crawler": [
+        "http://www.sprakradet.no/"
+      ]
+    }
+  }
+}
+
+
+
+
+
+
+
+
+

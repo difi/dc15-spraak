@@ -133,7 +133,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Setup</mainClass>
+                            <mainClass>no.difi.camp.spraak.Setup</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
