@@ -20,7 +20,8 @@
           "consumer_key": "M5yYZrrjpbmj5nK7sSPY4Wpaq",
           "consumer_secret": "zbSnKkeuaPGQL6vxoIntEjH68yXlL1SkS9BiizknBppCm6Vp1n",
           "access_token": "3331100338-jaP5xQGCKl5dPysSrY347Qnd1qWivkzyhla70BS",
-          "access_token_secret": "JjM6zTmIEWSzQHvlL9fy3Npen181INoOH85abtBJXUO3e"
+          "access_token_secret": "JjM6zTmIEWSzQHvlL9fy3Npen181INoOH85abtBJXUO3e",
+          "timeline": ["difi_no", "dificamp"]
         }
       },
     },
@@ -44,7 +45,7 @@
   "udir": {
   "crawler": [
   "http://udir.no",
-  "http://nasjonaleprøver.no"
+  "http://nasjonaleprÃ¸ver.no"
   ]
   },
   "vegvesenet": {
@@ -88,9 +89,9 @@
   "http://www.nyinorge.no/"
   ]
   },
-  "Forbrukerrådet": {
+  "ForbrukerrÃ¥det": {
   "crawler": [
-  "http://forbrukerrådet.no",
+  "http://forbrukerrÃ¥det.no",
   "http://forbrukereuropa.no"
   ]
   },
@@ -109,7 +110,7 @@
   "http://utdanning.no/",
   ]
   },
-  "lånekassen": {
+  "lÃ¥nekassen": {
   "crawler": [
   "https://www.lanekassen.no/"
   ]
@@ -162,12 +163,4 @@
     "table": "something"
   }
 }
-
-
-
-
-
-
-
-
 
